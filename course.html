@@ -1,30 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Course Player</title>
+
+<title>Physical Design Layout</title>
 
 <style>
 
 body{
-margin:0;
+font-family:Poppins;
 background:#0f172a;
 color:white;
 text-align:center;
-font-family:Poppins;
+padding:40px;
 }
 
 iframe{
-margin-top:40px;
 width:80%;
-height:520px;
+height:450px;
 border:none;
-border-radius:8px;
-box-shadow:0 10px 30px rgba(0,0,0,0.6);
 }
 
-a{
+.price-old{
+text-decoration:line-through;
+color:#aaa;
+}
+
+.price-new{
 color:#38bdf8;
+font-size:24px;
+}
+
+button{
+padding:14px 26px;
+background:#38bdf8;
+border:none;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
 }
 
 </style>
@@ -33,24 +45,22 @@ color:#38bdf8;
 
 <body>
 
-<h1>DesignTech VLSI Course Player</h1>
+<h1>Physical Design Layout</h1>
 
-<iframe id="player"></iframe>
+<p>Free Preview Lesson</p>
 
-<br><br>
+<iframe src="https://www.youtube.com/embed/CHaOflmuIQg"></iframe>
 
-<a href="index.html">← Back to Courses</a>
+<h2>Unlock Full Course</h2>
 
-<script>
+<p>
+<span class="price-old">₹3999</span>
+<span class="price-new"> ₹1999</span>
+</p>
 
-const params = new URLSearchParams(window.location.search);
-const video = params.get("video");
-
-document.getElementById("player").src =
-"https://www.youtube.com/embed/" + video;
-
-</script>
+<a href="upi://pay?pa=7550233792@ybl&pn=DesignTechVLSI&am=1999&cu=INR">
+<button>Enroll Now</button>
+</a>
 
 </body>
 </html>
-```
