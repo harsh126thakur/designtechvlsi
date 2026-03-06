@@ -1,7 +1,5 @@
-```html
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta charset="UTF-8">
@@ -21,7 +19,7 @@ color:white;
 overflow-x:hidden;
 }
 
-/* starfield */
+/* star background */
 
 #starfield{
 position:fixed;
@@ -32,7 +30,7 @@ height:100%;
 z-index:-3;
 }
 
-/* neon circuit grid */
+/* neon grid */
 
 .circuit{
 position:fixed;
@@ -49,19 +47,6 @@ animation:gridmove 20s linear infinite;
 @keyframes gridmove{
 0%{transform:translateY(0)}
 100%{transform:translateY(80px)}
-}
-
-/* floating chips */
-
-.chip{
-position:fixed;
-opacity:0.5;
-animation:floatchip 20s linear infinite;
-}
-
-@keyframes floatchip{
-0%{transform:translateY(100vh) rotate(0deg)}
-100%{transform:translateY(-200px) rotate(360deg)}
 }
 
 /* navbar */
@@ -123,11 +108,33 @@ gap:30px;
 background:#1e293b;
 padding:30px;
 border-radius:12px;
+position:relative;
 transition:0.3s;
 }
 
 .card:hover{
 transform:translateY(-10px);
+}
+
+.discount{
+position:absolute;
+top:10px;
+right:10px;
+background:red;
+padding:5px 10px;
+border-radius:5px;
+font-size:12px;
+}
+
+.price-old{
+text-decoration:line-through;
+color:#aaa;
+}
+
+.price-new{
+color:#38bdf8;
+font-size:20px;
+margin-left:8px;
 }
 
 /* founder */
@@ -213,13 +220,11 @@ background:#020617;
 <h2>DesignTech VLSI</h2>
 
 <div>
-
 <a href="#">Home</a>
 <a href="#courses">Courses</a>
 <a href="#founder">Founder</a>
 <a href="#guidance">Guidance</a>
 <a href="#contact">Contact</a>
-
 </div>
 
 </nav>
@@ -237,37 +242,47 @@ background:#020617;
 <section id="courses" class="courses">
 
 <div class="card">
+<div class="discount">50% OFF</div>
 <h3>Physical Design Layout</h3>
+<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
 <a href="https://youtube.com/playlist?list=PLIpZuMTXXr7EKxwWAct3Js68EgI31HFzf" target="_blank">
-<button>Start Course</button>
+<button>Enroll Now</button>
 </a>
 </div>
 
 <div class="card">
+<div class="discount">50% OFF</div>
 <h3>VLSI Lecture Series</h3>
+<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
 <a href="https://youtube.com/playlist?list=PLIpZuMTXXr7E6NzSvQAUnaDsuBq49ZhOT" target="_blank">
-<button>Start Course</button>
+<button>Enroll Now</button>
 </a>
 </div>
 
 <div class="card">
+<div class="discount">50% OFF</div>
 <h3>Cadence Analog Basics</h3>
+<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
 <a href="https://youtube.com/playlist?list=PLIpZuMTXXr7FYhSge6w-AtkM0CfEoR3x1" target="_blank">
-<button>Start Course</button>
+<button>Enroll Now</button>
 </a>
 </div>
 
 <div class="card">
+<div class="discount">40% OFF</div>
 <h3>Signal and System</h3>
+<p><span class="price-old">₹499</span><span class="price-new">₹299</span></p>
 <a href="https://youtube.com/playlist?list=PLIpZuMTXXr7FXI2D4b7Miqk_ROqtPOoEK" target="_blank">
-<button>Start Course</button>
+<button>Enroll Now</button>
 </a>
 </div>
 
 <div class="card">
+<div class="discount">40% OFF</div>
 <h3>Network Theory</h3>
+<p><span class="price-old">₹499</span><span class="price-new">₹299</span></p>
 <a href="https://youtube.com/playlist?list=PLIpZuMTXXr7GR_hhSM2nvcO9D9gNl1_7i" target="_blank">
-<button>Start Course</button>
+<button>Enroll Now</button>
 </a>
 </div>
 
@@ -304,15 +319,11 @@ Through DesignTech VLSI he aims to simplify advanced semiconductor concepts and 
 <h2>Student Testimonials</h2>
 
 <div class="testimonial-card">
-
-<p>"DesignTech VLSI helped me understand physical design concepts clearly and prepare for interviews."</p>
-
+<p>"DesignTech VLSI helped me understand physical design concepts clearly."</p>
 </div>
 
 <div class="testimonial-card">
-
-<p>"Great mentorship and practical explanation of VLSI design flows."</p>
-
+<p>"Great mentorship and clear explanation of VLSI design flows."</p>
 </div>
 
 </section>
@@ -332,9 +343,7 @@ Through DesignTech VLSI he aims to simplify advanced semiconductor concepts and 
 <br><br>
 
 <a href="upi://pay?pa=7550233792@ybl&pn=DesignTechVLSI&am=1999&cu=INR">
-
 <button>Pay ₹1999 via UPI</button>
-
 </a>
 
 <p>After payment send screenshot to:</p>
@@ -350,9 +359,7 @@ Through DesignTech VLSI he aims to simplify advanced semiconductor concepts and 
 <p>Email</p>
 
 <a href="mailto:harsh_rt@ece.iitr.ac.in">
-
 harsh_rt@ece.iitr.ac.in
-
 </a>
 
 <br><br>
@@ -360,9 +367,7 @@ harsh_rt@ece.iitr.ac.in
 <p>YouTube Channel</p>
 
 <a href="https://youtube.com/@designtechvlsi?si=PdQo9iTpoDj21nzN" target="_blank">
-
 DesignTech VLSI
-
 </a>
 
 <br><br>
@@ -370,9 +375,7 @@ DesignTech VLSI
 <p>LinkedIn</p>
 
 <a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/" target="_blank">
-
 Harsh Raj Thakur
-
 </a>
 
 </section>
@@ -394,13 +397,11 @@ canvas.height=window.innerHeight;
 let stars=[];
 
 for(let i=0;i<300;i++){
-
 stars.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
 size:Math.random()*2
 });
-
 }
 
 function animate(){
@@ -408,7 +409,6 @@ function animate(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
 stars.forEach(star=>{
-
 star.y+=0.3;
 
 if(star.y>canvas.height){
@@ -430,4 +430,3 @@ animate();
 
 </body>
 </html>
-```
