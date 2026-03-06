@@ -1,49 +1,35 @@
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DesignTech VLSI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
-}
-
 body{
+font-family:Poppins, sans-serif;
+margin:0;
 background:#0f172a;
 color:white;
 }
 
 /* NAVBAR */
 
-header{
+nav{
 display:flex;
 justify-content:space-between;
-align-items:center;
-padding:20px 80px;
+padding:20px 60px;
 background:#020617;
-}
-
-.logo{
-font-size:24px;
-font-weight:bold;
-color:#38bdf8;
 }
 
 nav a{
 color:white;
+margin-left:20px;
 text-decoration:none;
-margin-left:25px;
-font-size:16px;
-}
-
-nav a:hover{
-color:#38bdf8;
 }
 
 /* HERO */
@@ -51,100 +37,77 @@ color:#38bdf8;
 .hero{
 text-align:center;
 padding:120px 20px;
-background:linear-gradient(135deg,#0ea5e9,#1e293b);
+background:linear-gradient(120deg,#0ea5e9,#1e293b);
 }
 
 .hero h1{
 font-size:55px;
-margin-bottom:20px;
 }
 
 .hero p{
 font-size:20px;
-opacity:0.9;
 }
 
-/* SECTION TITLE */
-
-.section-title{
-text-align:center;
-font-size:35px;
-margin:70px 0 40px 0;
-}
-
-/* COURSE GRID */
+/* COURSES */
 
 .courses{
+padding:60px;
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:30px;
-padding:0 80px;
 }
 
-.course-card{
+.card{
 background:#1e293b;
-padding:30px;
+padding:25px;
 border-radius:10px;
 transition:0.3s;
 }
 
-.course-card:hover{
+.card:hover{
 transform:translateY(-8px);
-background:#334155;
 }
 
-.course-card h3{
-margin-bottom:10px;
-}
-
-/* VIDEO GRID */
-
-.videos{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:30px;
-padding:0 80px 80px 80px;
-}
-
-.video-card{
-background:#1e293b;
-padding:20px;
-border-radius:10px;
-}
-
-.video-card h4{
-margin-bottom:15px;
-}
-
-iframe{
-width:100%;
-height:200px;
+button{
+padding:10px 20px;
+background:#38bdf8;
 border:none;
-border-radius:8px;
+border-radius:5px;
+cursor:pointer;
 }
 
-/* ABOUT */
+/* FOUNDER */
 
-.about{
-padding:80px;
-text-align:center;
+.founder{
+padding:60px;
 background:#020617;
+display:flex;
+flex-wrap:wrap;
+align-items:center;
+gap:40px;
 }
 
-.about p{
-max-width:800px;
-margin:auto;
-font-size:18px;
-line-height:1.6;
+.founder img{
+width:220px;
+border-radius:50%;
 }
 
-/* FOOTER */
+.founder-text{
+max-width:600px;
+}
+
+/* PAYMENT */
+
+.payment{
+padding:60px;
+text-align:center;
+background:#111827;
+}
 
 footer{
 text-align:center;
-padding:30px;
+padding:20px;
 background:#020617;
-margin-top:50px;
 }
 
 </style>
@@ -152,98 +115,98 @@ margin-top:50px;
 
 <body>
 
-<header>
-
-<div class="logo">DesignTech VLSI</div>
-
 <nav>
+<h2>DesignTech VLSI</h2>
+<div>
 <a href="#">Home</a>
-<a href="#">Courses</a>
-<a href="#">Tutorials</a>
-<a href="#">Research</a>
-<a href="#">Contact</a>
+<a href="#courses">Courses</a>
+<a href="#founder">Founder</a>
+<a href="#guidance">Guidance</a>
+</div>
 </nav>
-
-</header>
-
-<!-- HERO -->
 
 <section class="hero">
 
-<h1>Learn VLSI Design</h1>
+<h1>DesignTech VLSI</h1>
 
-<p>RTL to GDS | Physical Design | SKY130 | Layout Design</p>
-
-</section>
-
-<!-- COURSES -->
-
-<h2 class="section-title">Courses</h2>
-
-<section class="courses">
-
-<div class="course-card">
-<h3>RTL to GDS Flow</h3>
-<p>Complete ASIC design flow from RTL to GDSII.</p>
-</div>
-
-<div class="course-card">
-<h3>Physical Design</h3>
-<p>Floorplanning, placement, CTS, routing and signoff.</p>
-</div>
-
-<div class="course-card">
-<h3>Layout Design</h3>
-<p>Learn layout design with DRC and LVS verification.</p>
-</div>
-
-<div class="course-card">
-<h3>SKY130 Open PDK</h3>
-<p>Full chip design using open-source PDK.</p>
-</div>
+<p>VLSI Tutorials • ECE Interview Preparation • PhD Guidance</p>
 
 </section>
 
-<!-- VIDEOS -->
+<section id="courses" class="courses">
 
-<h2 class="section-title">Featured Tutorials</h2>
-
-<section class="videos">
-
-<div class="video-card">
-<h4>RTL to GDS Flow Introduction</h4>
-<iframe src="https://www.youtube.com/embed/YOUR_VIDEO"></iframe>
+<div class="card">
+<h3>Physical Design Layout</h3>
+<a href="course.html?video=CHaOflmuIQg"><button>Start Course</button></a>
 </div>
 
-<div class="video-card">
-<h4>Floorplanning Tutorial</h4>
-<iframe src="https://www.youtube.com/embed/YOUR_VIDEO"></iframe>
+<div class="card">
+<h3>VLSI Lecture Series</h3>
+<a href="course.html?video=qVqu8EHGK34"><button>Start Course</button></a>
 </div>
 
-<div class="video-card">
-<h4>DRC and LVS Tutorial</h4>
-<iframe src="https://www.youtube.com/embed/YOUR_VIDEO"></iframe>
+<div class="card">
+<h3>Cadence Analog Basics</h3>
+<a href="course.html?video=P4Qi3iRSHBc"><button>Start Course</button></a>
+</div>
+
+<div class="card">
+<h3>Signal and System</h3>
+<a href="course.html?video=EEgGKQJSXb8"><button>Start Course</button></a>
+</div>
+
+<div class="card">
+<h3>Network Theory</h3>
+<a href="course.html?video=dUYwUIGJcZE"><button>Start Course</button></a>
 </div>
 
 </section>
 
-<!-- ABOUT -->
+<section id="founder" class="founder">
 
-<section class="about">
+<img src="founder.jpg" alt="Founder">
 
-<h2 class="section-title">About DesignTech VLSI</h2>
+<div class="founder-text">
+
+<h2>Founder</h2>
 
 <p>
-DesignTech VLSI is a platform dedicated to teaching ASIC and VLSI design.
-Learn practical chip design including RTL to GDS flow, SKY130 open-source
-PDK, layout design, and advanced arithmetic architectures.
+DesignTech VLSI is founded by an IITian dedicated to helping students
+and engineers build careers in semiconductor and VLSI design.
+
+This platform provides tutorials, interview preparation, and personal
+guidance for those interested in ASIC design, research, and industry tools.
 </p>
+
+</div>
+
+</section>
+
+<section id="guidance" class="payment">
+
+<h2>Personal VLSI Guidance</h2>
+
+<p>One-to-one mentoring for VLSI career, interviews and research.</p>
+
+<h3>₹1999</h3>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+
+<input type="hidden" name="cmd" value="_xclick">
+<input type="hidden" name="business" value="kspqa126@gmail.com">
+<input type="hidden" name="item_name" value="DesignTech VLSI Guidance">
+<input type="hidden" name="amount" value="1999">
+<input type="hidden" name="currency_code" value="INR">
+
+<input type="submit" value="Pay with PayPal" style="padding:15px 25px;background:#ffc439;border:none;border-radius:5px;cursor:pointer;">
+
+</form>
 
 </section>
 
 <footer>
 
-<p>© 2026 DesignTech VLSI | All Rights Reserved</p>
+<p>© 2026 DesignTech VLSI</p>
 
 </footer>
 
