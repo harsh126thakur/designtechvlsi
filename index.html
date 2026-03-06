@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,7 +20,7 @@ color:white;
 overflow-x:hidden;
 }
 
-/* starfield canvas */
+/* starfield */
 
 #starfield{
 position:fixed;
@@ -30,18 +31,17 @@ height:100%;
 z-index:-3;
 }
 
-/* neon circuit overlay */
+/* neon grid */
 
 .circuit{
 position:fixed;
 width:100%;
 height:100%;
 background-image:
-linear-gradient(#0ea5e933 1px, transparent 1px),
-linear-gradient(90deg,#0ea5e933 1px, transparent 1px);
+linear-gradient(#38bdf822 1px, transparent 1px),
+linear-gradient(90deg,#38bdf822 1px, transparent 1px);
 background-size:80px 80px;
 z-index:-2;
-opacity:0.3;
 animation:gridmove 20s linear infinite;
 }
 
@@ -54,10 +54,9 @@ animation:gridmove 20s linear infinite;
 
 .chip{
 position:fixed;
-width:40px;
 opacity:0.6;
 z-index:-1;
-animation:floatchip 20s infinite linear;
+animation:floatchip 18s linear infinite;
 }
 
 @keyframes floatchip{
@@ -160,6 +159,22 @@ padding:80px;
 background:#111827;
 }
 
+/* contact */
+
+.contact{
+text-align:center;
+padding:80px;
+background:#020617;
+line-height:2;
+}
+
+.contact a{
+color:#38bdf8;
+text-decoration:none;
+}
+
+/* footer */
+
 footer{
 text-align:center;
 padding:20px;
@@ -176,9 +191,19 @@ background:#020617;
 
 <div class="circuit"></div>
 
-<img src="https://img.icons8.com/fluency/96/microchip.png" class="chip" style="left:10%">
-<img src="https://img.icons8.com/fluency/96/microchip.png" class="chip" style="left:40%">
-<img src="https://img.icons8.com/fluency/96/microchip.png" class="chip" style="left:70%">
+<!-- floating chip SVG icons -->
+
+<svg class="chip" style="left:10%" width="40" height="40" viewBox="0 0 24 24" fill="#38bdf8">
+<path d="M9 3v2H7a2 2 0 0 0-2 2v2H3v2h2v2H3v2h2v2a2 2 0 0 0 2 2h2v2h2v-2h2v2h2v-2h2a2 2 0 0 0 2-2v-2h2v-2h-2v-2h2v-2h-2V7a2 2 0 0 0-2-2h-2V3h-2v2h-2V3H9z"/>
+</svg>
+
+<svg class="chip" style="left:45%" width="40" height="40" viewBox="0 0 24 24" fill="#38bdf8">
+<path d="M9 3v2H7a2 2 0 0 0-2 2v2H3v2h2v2H3v2h2v2a2 2 0 0 0 2 2h2v2h2v-2h2v2h2v-2h2a2 2 0 0 0 2-2v-2h2v-2h-2v-2h2v-2h-2V7a2 2 0 0 0-2-2h-2V3h-2v2h-2V3H9z"/>
+</svg>
+
+<svg class="chip" style="left:75%" width="40" height="40" viewBox="0 0 24 24" fill="#38bdf8">
+<path d="M9 3v2H7a2 2 0 0 0-2 2v2H3v2h2v2H3v2h2v2a2 2 0 0 0 2 2h2v2h2v-2h2v2h2v-2h2a2 2 0 0 0 2-2v-2h2v-2h-2v-2h2v-2h-2V7a2 2 0 0 0-2-2h-2V3h-2v2h-2V3H9z"/>
+</svg>
 
 <nav>
 
@@ -189,6 +214,7 @@ background:#020617;
 <a href="#courses">Courses</a>
 <a href="#founder">Founder</a>
 <a href="#guidance">Guidance</a>
+<a href="#contact">Contact</a>
 </div>
 
 </nav>
@@ -240,22 +266,17 @@ background:#020617;
 
 <p>
 
-Harsh Raj Thakur is the founder of DesignTech VLSI and a passionate mentor in semiconductor education.
+Harsh Raj Thakur is the founder of DesignTech VLSI and an educator dedicated to helping students build strong careers in semiconductor engineering.
 
-He has qualified GATE six times with strong ranks and completed two master’s degrees:
-High Voltage Engineering from NIT Calicut and VLSI from NIT Meghalaya.
+He has qualified the Graduate Aptitude Test in Engineering (GATE) six times with strong ranks and completed two master's degrees: High Voltage Engineering from NIT Calicut and VLSI Engineering from NIT Meghalaya.
 
-During his academic career he served as Placement Coordinator at NIT Meghalaya,
-helping students secure opportunities in industry.
+During his academic career he served as Placement Coordinator at NIT Meghalaya and actively helped students connect with industry opportunities.
 
-He also co-founded the NITIANS Deep Learning Network and has mentored more than
-5000 students in electronics, machine learning, and semiconductor design.
+He also co-founded the NITIANS Deep Learning Network and has mentored more than 5000 students in electronics, machine learning, and semiconductor design.
 
-His industry exposure includes project work and training with Maven Silicon
-on practical VLSI design flows.
+His industry exposure includes training and project experience with Maven Silicon where he worked on practical VLSI design flows.
 
-Through DesignTech VLSI he aims to simplify semiconductor education
-and guide students towards careers in ASIC design, research, and advanced electronics.
+Through DesignTech VLSI he focuses on simplifying complex semiconductor concepts and guiding students toward careers in ASIC design, research, and advanced electronics.
 
 </p>
 
@@ -285,6 +306,34 @@ and guide students towards careers in ASIC design, research, and advanced electr
 
 </section>
 
+<section id="contact" class="contact">
+
+<h2>Connect with DesignTech VLSI</h2>
+
+<p>Email</p>
+
+<a href="mailto:harsh_rt@ece.iitr.ac.in">
+harsh_rt@ece.iitr.ac.in
+</a>
+
+<br><br>
+
+<p>YouTube Channel</p>
+
+<a href="https://youtube.com/@designtechvlsi?si=PdQo9iTpoDj21nzN" target="_blank">
+DesignTech VLSI
+</a>
+
+<br><br>
+
+<p>LinkedIn</p>
+
+<a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/" target="_blank">
+Harsh Raj Thakur
+</a>
+
+</section>
+
 <footer>
 
 <p>© 2026 DesignTech VLSI | Founder Harsh Raj Thakur</p>
@@ -295,47 +344,37 @@ and guide students towards careers in ASIC design, research, and advanced electr
 
 /* starfield animation */
 
-const canvas=document.getElementById("starfield");
-const ctx=canvas.getContext("2d");
+const canvas = document.getElementById("starfield");
+const ctx = canvas.getContext("2d");
 
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 let stars=[];
 
-for(let i=0;i<300;i++){
+for(let i=0;i<350;i++){
 stars.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
-z:Math.random()*canvas.width
+size:Math.random()*2
 });
 }
 
 function animate(){
 
-ctx.fillStyle="black";
-ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
-for(let i=0;i<stars.length;i++){
+stars.forEach(star=>{
+star.y += 0.4;
 
-let star=stars[i];
-
-star.z-=2;
-
-if(star.z<=0){
-star.z=canvas.width;
+if(star.y > canvas.height){
+star.y = 0;
 }
-
-let k=128/star.z;
-
-let px=star.x*k+canvas.width/2;
-let py=star.y*k+canvas.height/2;
-
-let size=(1-star.z/canvas.width)*4;
 
 ctx.fillStyle="white";
-ctx.fillRect(px,py,size,size);
-}
+ctx.fillRect(star.x, star.y, star.size, star.size);
+
+});
 
 requestAnimationFrame(animate);
 
@@ -347,3 +386,4 @@ animate();
 
 </body>
 </html>
+```
