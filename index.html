@@ -1,39 +1,32 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>DesignTech VLSI</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
 <style>
 
 body{
 margin:0;
 font-family:Poppins;
-background:#0f172a;
+background:#020617;
 color:white;
 overflow-x:hidden;
 }
 
-/* animated gradient background */
+/* particles background */
 
-body::before{
-content:"";
+#particles-js{
 position:fixed;
-width:200%;
-height:200%;
-background:linear-gradient(45deg,#0ea5e9,#1e293b,#6366f1,#0ea5e9);
-animation:bgmove 20s linear infinite;
+width:100%;
+height:100%;
 z-index:-1;
-opacity:0.2;
-}
-
-@keyframes bgmove{
-0%{transform:translate(0,0)}
-50%{transform:translate(-25%,-25%)}
-100%{transform:translate(0,0)}
 }
 
 /* navbar */
@@ -42,7 +35,8 @@ nav{
 display:flex;
 justify-content:space-between;
 padding:20px 60px;
-background:#020617;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(10px);
 }
 
 nav a{
@@ -55,36 +49,40 @@ text-decoration:none;
 
 .hero{
 text-align:center;
-padding:120px 20px;
+padding:140px 20px;
 }
 
 .hero h1{
 font-size:60px;
+background:linear-gradient(90deg,#38bdf8,#6366f1);
+-webkit-background-clip:text;
+color:transparent;
 }
 
 .hero p{
 font-size:22px;
+opacity:0.9;
 }
 
-/* course cards */
+/* courses */
 
 .courses{
 padding:60px;
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:30px;
 }
 
 .card{
-background:#1e293b;
+background:rgba(30,41,59,0.8);
 padding:30px;
-border-radius:12px;
+border-radius:14px;
 transition:0.4s;
-box-shadow:0 10px 20px rgba(0,0,0,0.4);
+backdrop-filter:blur(10px);
 }
 
 .card:hover{
-transform:translateY(-12px) scale(1.03);
+transform:translateY(-10px);
 box-shadow:0 20px 40px rgba(0,0,0,0.6);
 }
 
@@ -97,13 +95,13 @@ cursor:pointer;
 font-weight:bold;
 }
 
-/* founder section */
+/* founder */
 
 .founder{
 display:flex;
 flex-wrap:wrap;
 align-items:center;
-gap:40px;
+gap:50px;
 padding:80px;
 background:#020617;
 }
@@ -112,12 +110,12 @@ background:#020617;
 width:260px;
 border-radius:50%;
 border:4px solid #38bdf8;
-box-shadow:0 10px 30px rgba(0,0,0,0.7);
 }
 
 .founder-text{
-max-width:700px;
-line-height:1.7;
+max-width:750px;
+line-height:1.8;
+font-size:17px;
 }
 
 /* payment */
@@ -135,11 +133,15 @@ background:#020617;
 }
 
 </style>
+
 </head>
 
 <body>
 
+<div id="particles-js"></div>
+
 <nav>
+
 <h2>DesignTech VLSI</h2>
 
 <div>
@@ -155,7 +157,7 @@ background:#020617;
 
 <h1>DesignTech VLSI</h1>
 
-<p>Learn VLSI Design • Crack ECE Interviews • Build Semiconductor Careers</p>
+<p>VLSI Tutorials • ECE Interview Preparation • Semiconductor Careers</p>
 
 </section>
 
@@ -194,31 +196,34 @@ background:#020617;
 
 <div class="founder-text">
 
-<h2>Founder – Harsh Raj Thakur</h2>
+<h2>Harsh Raj Thakur</h2>
 
 <p>
 
-Harsh Raj Thakur is an accomplished VLSI educator and researcher.
+Harsh Raj Thakur is the founder of DesignTech VLSI and an educator dedicated to
+guiding students towards careers in semiconductor engineering and advanced
+electronics research.
 
-✔ GATE Qualified **6 times with strong ranks**  
-✔ Completed **two Master’s degrees**  
- • High Voltage Engineering – NIT Calicut  
- • VLSI – NIT Meghalaya  
+He has qualified the Graduate Aptitude Test in Engineering (GATE) six times
+with strong ranks, reflecting deep academic strength in core electronics.
 
-✔ Former **Placement Coordinator – NIT Meghalaya**  
+He completed two master's degrees: High Voltage Engineering from NIT Calicut
+and VLSI Engineering from NIT Meghalaya. During his academic journey he served
+as Placement Coordinator at NIT Meghalaya, actively helping students connect
+with industry opportunities.
 
-✔ **Industrial experience with Maven Silicon**  
-✔ Worked on live ASIC design projects  
+Harsh also co-founded the NITIANS Deep Learning Network and has mentored more
+than 5000 students in electronics, machine learning, and semiconductor design.
 
-✔ **Best Project Award in B.Tech (Tamil Nadu)**  
+His industry exposure includes training and project experience with Maven
+Silicon, where he worked on live VLSI design flows.
 
-✔ **Co-Founder – NITIANS Deep Learning Network**  
+Earlier in his career he received the Best Project Award during his B.Tech
+studies in Tamil Nadu.
 
-✔ Mentored **5000+ students** in electronics, VLSI, and research careers  
-
-✔ Experience working with **DGAR Assam Rifles**
-
-Through **DesignTech VLSI**, he aims to help students master semiconductor design and build strong careers in the VLSI industry.
+Through DesignTech VLSI he focuses on simplifying complex VLSI concepts and
+helping students prepare for research careers, semiconductor jobs, and
+competitive examinations like GATE.
 
 </p>
 
@@ -230,7 +235,7 @@ Through **DesignTech VLSI**, he aims to help students master semiconductor desig
 
 <h2>Personal VLSI Guidance</h2>
 
-<p>One-to-one mentorship for VLSI career, research guidance and interview preparation.</p>
+<p>One-to-one mentorship for VLSI career development and interview preparation.</p>
 
 <h3>₹1999</h3>
 
@@ -253,6 +258,22 @@ Through **DesignTech VLSI**, he aims to help students master semiconductor desig
 <p>© 2026 DesignTech VLSI | Founder Harsh Raj Thakur</p>
 
 </footer>
+
+<script>
+
+particlesJS("particles-js",{
+particles:{
+number:{value:80},
+color:{value:"#38bdf8"},
+shape:{type:"circle"},
+opacity:{value:0.5},
+size:{value:3},
+line_linked:{enable:true,color:"#38bdf8"},
+move:{speed:2}
+}
+});
+
+</script>
 
 </body>
 </html>
