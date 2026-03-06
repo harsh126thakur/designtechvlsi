@@ -1,0 +1,55 @@
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Course Player</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#0f172a;
+color:white;
+text-align:center;
+}
+
+iframe{
+margin-top:40px;
+width:80%;
+height:500px;
+border:none;
+}
+
+a{
+color:#38bdf8;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>DesignTech VLSI Course</h1>
+
+<iframe id="player"></iframe>
+
+<br><br>
+
+<a href="index.html">← Back to Courses</a>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const video = params.get("video");
+
+document.getElementById("player").src =
+"https://www.youtube.com/embed/" + video;
+
+</script>
+
+</body>
+</html>
+```
