@@ -37,12 +37,12 @@ color:white;
 text-decoration:none;
 }
 
-.course-container{
+.container{
 display:flex;
 height:calc(100vh - 70px);
 }
 
-/* VIDEO */
+/* VIDEO AREA */
 
 .video-area{
 flex:3;
@@ -56,9 +56,9 @@ border:none;
 border-radius:10px;
 }
 
-.video-title{
-font-size:24px;
+.title{
 margin-top:15px;
+font-size:22px;
 color:#38bdf8;
 }
 
@@ -77,17 +77,17 @@ margin:0;
 border-bottom:1px solid #1e293b;
 }
 
-.video-item{
+.lesson{
 padding:15px 20px;
 cursor:pointer;
 border-bottom:1px solid #1e293b;
 }
 
-.video-item:hover{
+.lesson:hover{
 background:#1e293b;
 }
 
-.video-item.active{
+.lesson.active{
 background:#1e293b;
 color:#38bdf8;
 }
@@ -106,60 +106,32 @@ color:#38bdf8;
 
 </nav>
 
-<div class="course-container">
+<div class="container">
 
 <div class="video-area">
 
-<iframe id="videoPlayer"
-src="https://www.youtube.com/embed/9Wq2R0C4yLE"
+<iframe id="player"
+src="https://www.youtube.com/embed/videoseries?list=PLIpZuMTXXr7G8HBzpZYEnNhGrdqprqhwi&index=0"
 allowfullscreen>
 </iframe>
 
-<div id="videoTitle" class="video-title">
-Lesson 1
-</div>
+<div class="title">Cadence Analog Basics</div>
 
 </div>
 
 <div class="playlist">
 
-<h3>Cadence Analog Basics</h3>
+<h3>Course Lessons</h3>
 
-<div class="video-item active" onclick="playVideo('9Wq2R0C4yLE','NMOS Simulation using Cadence')">
-1. NMOS Simulation using Cadence
-</div>
-
-<div class="video-item" onclick="playVideo('KXAkxS9M9RU','NMOS Input Output Curve')">
-2. NMOS Input Output Curve
-</div>
-
-<div class="video-item" onclick="playVideo('pW7sEoG9n4Q','Transconductance gm Analysis')">
-3. Transconductance gm
-</div>
-
-<div class="video-item" onclick="playVideo('a3n9S8T3LKo','Cadence Setup')">
-4. Cadence Setup
-</div>
-
-<div class="video-item" onclick="playVideo('dS9P2Q0K7sE','Schematic Design')">
-5. Schematic Design
-</div>
-
-<div class="video-item" onclick="playVideo('g3L9Z2R7Y2o','DC Simulation')">
-6. DC Simulation
-</div>
-
-<div class="video-item" onclick="playVideo('Y8R3X5E0sW8','AC Analysis')">
-7. AC Analysis
-</div>
-
-<div class="video-item" onclick="playVideo('J3P8D5K4R0o','Transient Analysis')">
-8. Transient Analysis
-</div>
-
-<div class="video-item" onclick="playVideo('R4X2P7W6S0o','Layout Basics')">
-9. Layout Basics
-</div>
+<div class="lesson active" onclick="play(0,this)">1. Lecture 1</div>
+<div class="lesson" onclick="play(1,this)">2. Lecture 2</div>
+<div class="lesson" onclick="play(2,this)">3. Lecture 3</div>
+<div class="lesson" onclick="play(3,this)">4. Lecture 4</div>
+<div class="lesson" onclick="play(4,this)">5. Lecture 5</div>
+<div class="lesson" onclick="play(5,this)">6. Lecture 6</div>
+<div class="lesson" onclick="play(6,this)">7. Lecture 7</div>
+<div class="lesson" onclick="play(7,this)">8. Lecture 8</div>
+<div class="lesson" onclick="play(8,this)">9. Lecture 9</div>
 
 </div>
 
@@ -167,20 +139,16 @@ Lesson 1
 
 <script>
 
-function playVideo(id,title){
+function play(index,element){
 
-document.getElementById("videoPlayer").src =
-"https://www.youtube.com/embed/"+id
+document.getElementById("player").src =
+"https://www.youtube.com/embed/videoseries?list=PLIpZuMTXXr7G8HBzpZYEnNhGrdqprqhwi&index="+index
 
-document.getElementById("videoTitle").innerText = title
+let lessons=document.querySelectorAll(".lesson")
 
-var items = document.querySelectorAll(".video-item")
+lessons.forEach(l=>l.classList.remove("active"))
 
-items.forEach(function(i){
-i.classList.remove("active")
-})
-
-event.currentTarget.classList.add("active")
+element.classList.add("active")
 
 }
 
