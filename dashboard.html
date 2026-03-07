@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Student Dashboard | DesignTech VLSI</title>
+<title>Dashboard | DesignTech VLSI</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
@@ -103,21 +103,6 @@ margin-top:60px;
 
 <body>
 
-<script>
-
-// Protect dashboard (login required)
-if(localStorage.getItem("loggedIn") !== "true"){
-window.location.href="login.html"
-}
-
-// Prevent browser back after logout
-history.pushState(null,null,location.href)
-window.onpopstate=function(){
-history.go(1)
-}
-
-</script>
-
 <nav>
 
 <h2>DesignTech VLSI</h2>
@@ -125,7 +110,7 @@ history.go(1)
 <div>
 
 <a href="index.html">Home</a>
-<a href="#" onclick="logout()">Logout</a>
+<a href="#" id="logout">Logout</a>
 
 </div>
 
@@ -143,7 +128,7 @@ history.go(1)
 
 <h3>Physical Design Layout</h3>
 
-<p>Complete RTL to GDSII flow using industry tools.</p>
+<p>Complete RTL to GDSII flow.</p>
 
 <a href="payment.html?course=course1">
 <button>Unlock Course</button>
@@ -157,7 +142,7 @@ history.go(1)
 
 <h3>VLSI Lecture Series</h3>
 
-<p>Learn VLSI fundamentals and semiconductor basics.</p>
+<p>Learn VLSI fundamentals.</p>
 
 <a href="payment.html?course=course2">
 <button>Unlock Course</button>
@@ -171,7 +156,7 @@ history.go(1)
 
 <h3>Cadence Analog Basics</h3>
 
-<p>Analog circuit design using Cadence Virtuoso.</p>
+<p>Analog design using Cadence.</p>
 
 <a href="payment.html?course=course3">
 <button>Unlock Course</button>
@@ -185,7 +170,7 @@ history.go(1)
 
 <h3>Signals and Systems</h3>
 
-<p>Core concepts for signal processing.</p>
+<p>Core signal processing concepts.</p>
 
 <a href="payment.html?course=course4">
 <button>Unlock Course</button>
@@ -199,7 +184,7 @@ history.go(1)
 
 <h3>Network Theory</h3>
 
-<p>Electrical circuit analysis fundamentals.</p>
+<p>Circuit analysis fundamentals.</p>
 
 <a href="payment.html?course=course5">
 <button>Unlock Course</button>
@@ -213,7 +198,7 @@ history.go(1)
 
 <h3>1-to-1 VLSI Mentorship</h3>
 
-<p>Personal guidance for semiconductor careers.</p>
+<p>Personal semiconductor career guidance.</p>
 
 <a href="payment.html?course=mentorship">
 <button>Book Mentorship</button>
@@ -231,15 +216,41 @@ history.go(1)
 
 </footer>
 
-<script>
+<script type="module">
 
-function logout(){
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-localStorage.removeItem("loggedIn")
+const firebaseConfig = {
+apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
+authDomain: "designtechvlsi.firebaseapp.com",
+projectId: "designtechvlsi",
+storageBucket: "designtechvlsi.firebasestorage.app",
+messagingSenderId: "268545364402",
+appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
+measurementId: "G-F5KGZK2JDK"
+};
 
-window.location.href="index.html"
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
+onAuthStateChanged(auth,(user)=>{
+
+if(!user){
+window.location.href="login.html";
 }
+
+});
+
+document.getElementById("logout").addEventListener("click",function(){
+
+signOut(auth).then(()=>{
+
+window.location.href="index.html";
+
+});
+
+});
 
 </script>
 
