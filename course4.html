@@ -1,37 +1,311 @@
+```html
 <!DOCTYPE html>
 <html>
 
 <head>
-<title>Signal and Systems</title>
-<link rel="stylesheet" href="style.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Signal and Systems | DesignTech VLSI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins;
+background:#020617;
+color:white;
+overflow-x:hidden;
+}
+
+/* star background */
+
+#starfield{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-4;
+}
+
+/* grid */
+
+.grid{
+position:fixed;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(#38bdf822 1px, transparent 1px),
+linear-gradient(90deg,#38bdf822 1px, transparent 1px);
+background-size:80px 80px;
+z-index:-3;
+animation:gridmove 20s linear infinite;
+}
+
+@keyframes gridmove{
+0%{transform:translateY(0)}
+100%{transform:translateY(80px)}
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:60px 20px;
+}
+
+.hero{
+text-align:center;
+margin-bottom:40px;
+}
+
+.hero h1{
+font-size:42px;
+background:linear-gradient(90deg,#38bdf8,#6366f1);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+/* video */
+
+iframe{
+width:100%;
+height:450px;
+border-radius:10px;
+margin-bottom:30px;
+}
+
+/* lecture cards */
+
+.lecture{
+background:#1e293b;
+padding:15px;
+border-radius:10px;
+margin-bottom:10px;
+display:flex;
+justify-content:space-between;
+cursor:pointer;
+}
+
+.lock{
+color:#f87171;
+}
+
+/* enroll */
+
+.enroll{
+background:#111827;
+padding:40px;
+border-radius:12px;
+text-align:center;
+margin-top:50px;
+}
+
+button{
+padding:14px 28px;
+border:none;
+background:#38bdf8;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#22c1f0;
+}
+
+footer{
+text-align:center;
+padding:30px;
+margin-top:60px;
+background:#020617;
+}
+
+</style>
+
 </head>
 
 <body>
 
-<h1>Signal and Systems</h1>
+<canvas id="starfield"></canvas>
+<div class="grid"></div>
 
-<h3>Free Preview</h3>
+<div class="container">
 
-<iframe width="800" height="450"
-src="https://www.youtube.com/embed/EEgGKQJSXb8">
-</iframe>
+<div class="hero">
 
-<h3>Course Content</h3>
+<h1 id="courseTitle"></h1>
 
-<ul>
-<li>Lecture 1 – Basic Signals</li>
-<li>Lecture 2 – Fourier Transform 🔒</li>
-<li>Lecture 3 – Laplace Transform 🔒</li>
-</ul>
+<p>Fundamentals of signals, Fourier analysis and Laplace transform</p>
 
-<h2>Enroll Now</h2>
+</div>
 
-<p>Price ₹299</p>
+<iframe id="player"></iframe>
 
-<a href="upi://pay?pa=7550233792@ybl&pn=DesignTechVLSI&am=299">
-Pay with UPI
+<h2>Course Lectures</h2>
+
+<div id="lectureList"></div>
+
+<div class="enroll">
+
+<h2>Unlock Full Course</h2>
+
+<p style="font-size:28px;color:#22c55e;">₹299</p>
+
+<a href="upi://pay?pa=7550233792@ybl&pn=DesignTechVLSI&am=299&cu=INR">
+
+<button>Pay with UPI</button>
+
 </a>
+
+<p style="margin-top:15px">
+
+After payment send screenshot to  
+<b>harsh_rt@ece.iitr.ac.in</b>
+
+</p>
+
+</div>
+
+</div>
+
+<footer>
+
+<p>© 2026 DesignTech VLSI</p>
+
+</footer>
+
+
+<script>
+
+/* COURSE SETTINGS */
+
+const courseTitle="Signal and Systems"
+
+const firstVideo="EEgGKQJSXb8"
+
+
+document.getElementById("courseTitle").innerText=courseTitle
+
+document.getElementById("player").src=
+"https://www.youtube.com/embed/"+firstVideo
+
+
+let unlocked=false
+
+function playVideo(video,free){
+
+if(free || unlocked){
+
+document.getElementById("player").src=
+"https://www.youtube.com/embed/"+video
+
+}else{
+
+let pass=prompt("Enter Course Access Password")
+
+if(pass==="designtech"){
+
+unlocked=true
+
+document.getElementById("player").src=
+"https://www.youtube.com/embed/"+video
+
+}else{
+
+alert("Please enroll to access this lecture")
+
+}
+
+}
+
+}
+
+
+/* lecture generation */
+
+const list=document.getElementById("lectureList")
+
+const lectures=[
+"Basic Signals",
+"Fourier Transform",
+"Laplace Transform"
+]
+
+lectures.forEach((title,index)=>{
+
+let div=document.createElement("div")
+
+div.className="lecture"
+
+if(index===0){
+
+div.innerHTML="<span>Lecture 1 – "+title+"</span><span>Free</span>"
+
+div.onclick=()=>playVideo(firstVideo,true)
+
+}else{
+
+div.innerHTML="<span>Lecture "+(index+1)+" – "+title+"</span><span class='lock'>🔒 Locked</span>"
+
+div.onclick=()=>playVideo(firstVideo,false)
+
+}
+
+list.appendChild(div)
+
+})
+
+
+/* star animation */
+
+const canvas=document.getElementById("starfield")
+const ctx=canvas.getContext("2d")
+
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
+
+let stars=[]
+
+for(let i=0;i<200;i++){
+
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2
+})
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+stars.forEach(star=>{
+
+star.y+=0.2
+
+if(star.y>canvas.height){
+star.y=0
+}
+
+ctx.fillStyle="white"
+ctx.fillRect(star.x,star.y,star.size,star.size)
+
+})
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
+
+</script>
 
 </body>
 
 </html>
+```
