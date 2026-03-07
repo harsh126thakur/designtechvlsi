@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Signal and Systems | DesignTech VLSI</title>
+<title>Signals and Systems | DesignTech VLSI</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
@@ -17,86 +17,68 @@ margin:0;
 font-family:Poppins;
 background:#020617;
 color:white;
-overflow-x:hidden;
 }
 
-#starfield{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:-4;
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 60px;
+background:#0f172a;
 }
 
-.grid{
-position:fixed;
-width:100%;
-height:100%;
-background-image:
-linear-gradient(#38bdf822 1px, transparent 1px),
-linear-gradient(90deg,#38bdf822 1px, transparent 1px);
-background-size:80px 80px;
-z-index:-3;
-animation:gridmove 20s linear infinite;
+nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
 }
 
-@keyframes gridmove{
-0%{transform:translateY(0)}
-100%{transform:translateY(80px)}
+nav a:hover{
+color:#38bdf8;
 }
 
 .container{
 max-width:1000px;
 margin:auto;
-padding:60px 20px;
+padding:80px 20px;
 }
 
-.hero{
-text-align:center;
-margin-bottom:40px;
+h1{
+font-size:40px;
+color:#38bdf8;
+margin-bottom:20px;
 }
 
-.hero h1{
-font-size:42px;
-background:linear-gradient(90deg,#38bdf8,#6366f1);
--webkit-background-clip:text;
-color:transparent;
+h2{
+margin-top:40px;
+color:#6366f1;
 }
 
-iframe{
-width:100%;
-height:450px;
-border-radius:10px;
-margin-bottom:30px;
+ul{
+line-height:1.8;
 }
 
-.lecture{
-background:#1e293b;
-padding:15px;
-border-radius:10px;
-margin-bottom:10px;
-display:flex;
-justify-content:space-between;
-cursor:pointer;
+.price{
+margin-top:30px;
+font-size:22px;
 }
 
-.lock{
-color:#f87171;
+.price-old{
+text-decoration:line-through;
+color:#aaa;
 }
 
-.enroll{
-background:#111827;
-padding:40px;
-border-radius:12px;
-text-align:center;
-margin-top:50px;
+.price-new{
+color:#22c55e;
+margin-left:10px;
+font-weight:bold;
 }
 
 button{
+margin-top:40px;
 padding:14px 28px;
-border:none;
 background:#38bdf8;
+border:none;
 border-radius:6px;
 font-size:16px;
 cursor:pointer;
@@ -108,9 +90,9 @@ background:#22c1f0;
 
 footer{
 text-align:center;
-padding:30px;
-margin-top:60px;
-background:#020617;
+padding:40px;
+background:#0f172a;
+margin-top:80px;
 }
 
 </style>
@@ -119,191 +101,89 @@ background:#020617;
 
 <body>
 
-<canvas id="starfield"></canvas>
-<div class="grid"></div>
+<nav>
 
-<div class="container">
+<h2>DesignTech VLSI</h2>
 
-<div class="hero">
+<div>
 
-<h1>Signal and Systems</h1>
-
-<p>Fundamentals of signals, Fourier analysis and Laplace transform</p>
+<a href="index.html">Home</a>
+<a href="login.html">Login</a>
+<a href="signup.html">Sign Up</a>
 
 </div>
 
-<iframe id="player"
-src="https://www.youtube.com/embed/EEgGKQJSXb8"
-allowfullscreen>
-</iframe>
+</nav>
 
-<h2>Course Lectures</h2>
+<div class="container">
 
-<div id="lectureList"></div>
+<h1>Signals and Systems</h1>
 
-<div class="enroll" id="buyBox">
+<p>
+This course explains the fundamental concepts of signals and systems which are essential for electronics, communication, and VLSI engineers.  
+The course focuses on building strong conceptual understanding required for interviews and advanced engineering subjects.
+</p>
 
-<h2>Unlock Full Course</h2>
+<h2>Topics Covered</h2>
 
-<p style="font-size:28px;color:#22c55e;">₹299</p>
+<ul>
 
-<a href="payment.html?course=course4">
+<li>Introduction to Signals</li>
+<li>Continuous-Time and Discrete-Time Signals</li>
+<li>System Properties</li>
+<li>Linear Time Invariant Systems</li>
+<li>Convolution</li>
+<li>Fourier Series</li>
+<li>Fourier Transform</li>
+<li>Laplace Transform</li>
+<li>Z Transform</li>
+<li>System Stability and Causality</li>
 
-<button>Buy Course</button>
+</ul>
+
+<h2>Course Benefits</h2>
+
+<ul>
+
+<li>Strong foundation for communication and DSP</li>
+<li>Important concepts for GATE and interviews</li>
+<li>Clear mathematical understanding</li>
+<li>Conceptual learning with practical examples</li>
+
+</ul>
+
+<h2>Who Should Take This Course</h2>
+
+<ul>
+
+<li>ECE Students</li>
+<li>Students preparing for GATE</li>
+<li>Beginners learning signal processing</li>
+<li>Engineers preparing for technical interviews</li>
+
+</ul>
+
+<div class="price">
+
+<span class="price-old">₹499</span>
+<span class="price-new">₹299</span>
+
+</div>
+
+<a href="login.html">
+
+<button>Login to Enroll</button>
 
 </a>
 
 </div>
 
-</div>
-
 <footer>
+
 <p>© 2026 DesignTech VLSI</p>
+
 </footer>
 
-
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
-<script src="firebase-config.js"></script>
-
-<script>
-
-const db = firebase.firestore()
-
-let unlocked=false
-
-firebase.auth().onAuthStateChanged(function(user){
-
-if(!user){
-
-alert("Please login to access the course")
-
-window.location="login.html"
-
-}
-
-else{
-
-db.collection("users").doc(user.uid).get().then(doc=>{
-
-let data=doc.data()
-
-if(data.course4){
-
-unlocked=true
-
-document.getElementById("buyBox").style.display="none"
-
-}
-
-})
-
-}
-
-})
-
-
-function playVideo(video,free){
-
-if(free || unlocked){
-
-document.getElementById("player").src=
-"https://www.youtube.com/embed/"+video
-
-}
-
-else{
-
-alert("Please purchase the course to unlock this lecture")
-
-}
-
-}
-
-
-/* Lecture List */
-
-const lectures=[
-{title:"Basic Signals",video:"EEgGKQJSXb8"},
-{title:"Fourier Transform",video:"EEgGKQJSXb8"},
-{title:"Laplace Transform",video:"EEgGKQJSXb8"}
-]
-
-const list=document.getElementById("lectureList")
-
-lectures.forEach((lec,index)=>{
-
-let div=document.createElement("div")
-
-div.className="lecture"
-
-if(index===0){
-
-div.innerHTML="<span>Lecture 1 – "+lec.title+"</span><span>Free</span>"
-
-div.onclick=()=>playVideo(lec.video,true)
-
-}
-
-else{
-
-div.innerHTML="<span>Lecture "+(index+1)+" – "+lec.title+"</span><span class='lock'>🔒 Locked</span>"
-
-div.onclick=()=>playVideo(lec.video,false)
-
-}
-
-list.appendChild(div)
-
-})
-
-
-/* Star Animation */
-
-const canvas=document.getElementById("starfield")
-const ctx=canvas.getContext("2d")
-
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
-
-let stars=[]
-
-for(let i=0;i<200;i++){
-
-stars.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2
-})
-
-}
-
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-stars.forEach(star=>{
-
-star.y+=0.2
-
-if(star.y>canvas.height){
-star.y=0
-}
-
-ctx.fillStyle="white"
-ctx.fillRect(star.x,star.y,star.size,star.size)
-
-})
-
-requestAnimationFrame(animate)
-
-}
-
-animate()
-
-</script>
-
 </body>
+
 </html>
