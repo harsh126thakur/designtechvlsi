@@ -67,84 +67,94 @@ margin-top:20px;
 
 </div>
 
-<button onclick="logout()">Logout</button>
+<button id="logoutBtn">Logout</button>
 
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script type="module">
 
-<script>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
 const firebaseConfig = {
 apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
 authDomain: "designtechvlsi.firebaseapp.com",
 projectId: "designtechvlsi",
-storageBucket: "designtechvlsi.appspot.com",
+storageBucket: "designtechvlsi.firebasestorage.app",
 messagingSenderId: "268545364402",
 appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
 measurementId: "G-F5KGZK2JDK"
 };
 
-firebase.initializeApp(firebaseConfig);
 
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
 
-firebase.auth().onAuthStateChanged(function(user){
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+
+onAuthStateChanged(auth, async (user) => {
 
 if(!user){
 
-window.location="login.html"
+window.location="login.html";
+return;
 
 }
 
-else{
+const uid = user.uid;
 
-db.collection("users").doc(user.uid).get().then((doc)=>{
+const docRef = doc(db,"users",uid);
 
-let data = doc.data()
+const docSnap = await getDoc(docRef);
+
+if(docSnap.exists()){
+
+let data = docSnap.data();
+
 
 if(data.course1){
 document.getElementById("course1").innerHTML =
-"<a href='course1.html'>Physical Design Layout</a>"
+"<a href='course1.html'>Physical Design Layout</a>";
 }
 
 if(data.course2){
 document.getElementById("course2").innerHTML =
-"<a href='course2.html'>VLSI Lecture Series</a>"
+"<a href='course2.html'>VLSI Lecture Series</a>";
 }
 
 if(data.course3){
 document.getElementById("course3").innerHTML =
-"<a href='course3.html'>Cadence Analog Basics</a>"
+"<a href='course3.html'>Cadence Analog Basics</a>";
 }
 
 if(data.course4){
 document.getElementById("course4").innerHTML =
-"<a href='course4.html'>Signal and Systems</a>"
+"<a href='course4.html'>Signal and Systems</a>";
 }
 
 if(data.course5){
 document.getElementById("course5").innerHTML =
-"<a href='course5.html'>Network Theory</a>"
+"<a href='course5.html'>Network Theory</a>";
 }
 
-})
-
 }
 
-})
+});
 
 
-function logout(){
+document.getElementById("logoutBtn").addEventListener("click",()=>{
 
-firebase.auth().signOut().then(function(){
+signOut(auth).then(()=>{
 
-window.location="login.html"
+window.location="login.html";
 
-})
+});
 
-}
+});
+
 
 </script>
 
