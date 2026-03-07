@@ -121,49 +121,88 @@ margin-top:60px;
 
 <div class="courses">
 
+<!-- COURSE 1 -->
+
 <div class="card">
-<div class="lock">LOCKED</div>
+
+<div class="lock" id="lock-course1">LOCKED</div>
+
 <h3>Physical Design Layout</h3>
+
 <p>Complete RTL to GDSII flow.</p>
-<a href="payment.html?course=course1">
-<button>Unlock Course</button>
-</a>
+
+<button onclick="buyCourse('course1',1999)">
+Unlock Course
+</button>
+
+<button onclick="openCourse('course1')" id="open-course1" style="display:none">
+Open Course
+</button>
+
 </div>
 
+<!-- COURSE 2 -->
+
 <div class="card">
+
 <div class="lock">LOCKED</div>
+
 <h3>VLSI Lecture Series</h3>
+
 <p>Learn VLSI fundamentals.</p>
-<a href="payment.html?course=course2">
-<button>Unlock Course</button>
-</a>
+
+<button onclick="buyCourse('course2',1999)">
+Unlock Course
+</button>
+
 </div>
 
+<!-- COURSE 3 -->
+
 <div class="card">
+
 <div class="lock">LOCKED</div>
+
 <h3>Cadence Analog Basics</h3>
+
 <p>Analog design using Cadence.</p>
-<a href="payment.html?course=course3">
-<button>Unlock Course</button>
-</a>
+
+<button onclick="buyCourse('course3',1999)">
+Unlock Course
+</button>
+
 </div>
 
+<!-- COURSE 4 -->
+
 <div class="card">
+
 <div class="lock">LOCKED</div>
+
 <h3>Signals and Systems</h3>
+
 <p>Core signal processing concepts.</p>
-<a href="payment.html?course=course4">
-<button>Unlock Course</button>
-</a>
+
+<button onclick="buyCourse('course4',299)">
+Unlock Course
+</button>
+
 </div>
 
+<!-- COURSE 5 -->
+
 <div class="card">
+
 <div class="lock">LOCKED</div>
+
 <h3>Network Theory</h3>
+
 <p>Circuit analysis fundamentals.</p>
-<a href="payment.html?course=course5">
-<button>Unlock Course</button>
-</a>
+
+<button onclick="buyCourse('course5',299)">
+Unlock Course
+</button>
+
 </div>
 
 </div>
@@ -173,6 +212,11 @@ margin-top:60px;
 <footer>
 <p>© 2026 DesignTech VLSI</p>
 </footer>
+
+
+<!-- RAZORPAY -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 
 <script type="module">
 
@@ -197,12 +241,14 @@ measurementId: "G-F5KGZK2JDK"
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-/* CHECK LOGIN + SHOW NAME */
+/* CHECK LOGIN */
 
 onAuthStateChanged(auth,(user)=>{
 
 if(!user){
+
 window.location.href="login.html";
+
 }else{
 
 const name=user.displayName || "Student";
@@ -224,6 +270,75 @@ window.location.href="index.html";
 });
 
 });
+
+</script>
+
+
+<script>
+
+/* RAZORPAY PAYMENT */
+
+function buyCourse(course,price){
+
+var options = {
+
+key: "rzp_live_SONJ2W1OZ1qVLZ",
+
+amount: price * 100,
+
+currency: "INR",
+
+name: "DesignTech VLSI",
+
+description: course + " Access",
+
+handler: function (response){
+
+localStorage.setItem(course,"unlocked")
+
+alert("Payment Successful")
+
+location.reload()
+
+}
+
+};
+
+var rzp = new Razorpay(options);
+
+rzp.open();
+
+}
+
+
+/* CHECK COURSE ACCESS */
+
+function checkCourses(){
+
+if(localStorage.getItem("course1")=="unlocked"){
+
+document.getElementById("lock-course1").innerText="UNLOCKED"
+
+document.getElementById("open-course1").style.display="block"
+
+}
+
+}
+
+checkCourses();
+
+
+/* OPEN COURSE */
+
+function openCourse(course){
+
+if(course=="course1"){
+
+window.location.href="course1player.html"
+
+}
+
+}
 
 </script>
 
