@@ -59,10 +59,6 @@ background:#22c1f0;
 background:#ea4335;
 }
 
-#recaptcha-container{
-margin-top:15px;
-}
-
 a{
 color:#38bdf8;
 text-decoration:none;
@@ -86,20 +82,6 @@ text-decoration:none;
 
 <hr style="margin:25px 0; border:1px solid #334155;">
 
-<h3>Phone OTP Verification</h3>
-
-<input type="tel" id="phone" placeholder="+91XXXXXXXXXX">
-
-<div id="recaptcha-container"></div>
-
-<button id="sendOtp">Send OTP</button>
-
-<input type="text" id="otp" placeholder="Enter OTP">
-
-<button id="verifyOtp">Verify OTP</button>
-
-<hr style="margin:25px 0; border:1px solid #334155;">
-
 <button id="googleLogin" class="google">Sign Up with Google</button>
 
 <p style="margin-top:20px;">
@@ -115,10 +97,9 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import {
 getAuth,
 createUserWithEmailAndPassword,
+sendEmailVerification,
 signInWithPopup,
-GoogleAuthProvider,
-RecaptchaVerifier,
-signInWithPhoneNumber
+GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -143,13 +124,18 @@ const password=document.getElementById("password").value;
 
 createUserWithEmailAndPassword(auth,email,password)
 
-.then(()=>{
-alert("Account created successfully");
-window.location.href="dashboard.html";
+.then((userCredential)=>{
+
+sendEmailVerification(userCredential.user);
+
+alert("Verification email sent. Please check your inbox.");
+
 })
 
 .catch((error)=>{
+
 alert(error.message);
+
 })
 
 });
@@ -163,57 +149,15 @@ document.getElementById("googleLogin").addEventListener("click",()=>{
 signInWithPopup(auth,provider)
 
 .then(()=>{
+
 window.location.href="dashboard.html";
-})
-
-.catch((error)=>{
-alert(error.message);
-})
-
-});
-
-/* PHONE OTP */
-
-window.recaptchaVerifier = new RecaptchaVerifier(auth,'recaptcha-container',{
-'size':'normal',
-'callback':()=>{}
-});
-
-const appVerifier=window.recaptchaVerifier;
-
-document.getElementById("sendOtp").addEventListener("click",()=>{
-
-const phoneNumber=document.getElementById("phone").value;
-
-signInWithPhoneNumber(auth,phoneNumber,appVerifier)
-
-.then((confirmationResult)=>{
-
-window.confirmationResult=confirmationResult;
-
-alert("OTP Sent");
 
 })
 
 .catch((error)=>{
+
 alert(error.message);
-})
 
-});
-
-document.getElementById("verifyOtp").addEventListener("click",()=>{
-
-const code=document.getElementById("otp").value;
-
-confirmationResult.confirm(code)
-
-.then(()=>{
-alert("Phone verified");
-window.location.href="dashboard.html";
-})
-
-.catch(()=>{
-alert("Invalid OTP");
 })
 
 });
@@ -221,4 +165,5 @@ alert("Invalid OTP");
 </script>
 
 </body>
+
 </html>
