@@ -1,22 +1,253 @@
+```html id="s3co59"
 <!DOCTYPE html>
 <html>
 
 <head>
 
-<title>Free Courses</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="style.css">
+<title>Free Courses | DesignTech VLSI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins;
+background:#020617;
+color:#e2e8f0;
+overflow-x:hidden;
+}
+
+/* star background */
+
+#starfield{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-4;
+}
+
+/* neon grid */
+
+.grid{
+
+position:fixed;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(#38bdf822 1px, transparent 1px),
+linear-gradient(90deg,#38bdf822 1px, transparent 1px);
+
+background-size:80px 80px;
+
+z-index:-3;
+
+animation:gridmove 20s linear infinite;
+
+}
+
+@keyframes gridmove{
+
+0%{transform:translateY(0)}
+100%{transform:translateY(80px)}
+
+}
+
+/* header */
+
+header{
+text-align:center;
+padding:60px;
+}
+
+header h1{
+font-size:48px;
+background:linear-gradient(90deg,#38bdf8,#6366f1);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+/* container */
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:40px;
+}
+
+/* video grid */
+
+.videos{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+gap:40px;
+
+}
+
+.video-card{
+
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+transition:0.3s;
+
+}
+
+.video-card:hover{
+
+transform:translateY(-10px);
+box-shadow:0 0 20px #38bdf8;
+
+}
+
+iframe{
+width:100%;
+border-radius:8px;
+}
+
+/* footer */
+
+footer{
+text-align:center;
+padding:30px;
+margin-top:80px;
+background:#020617;
+}
+
+</style>
 
 </head>
 
 <body>
 
-<h1>Free Courses on YouTube</h1>
+<canvas id="starfield"></canvas>
+<div class="grid"></div>
 
-<iframe width="800" height="450"
+<header>
+
+<h1>Free VLSI Courses</h1>
+<p>Learn Semiconductor Design from YouTube</p>
+
+</header>
+
+<div class="container">
+
+<div class="videos">
+
+<div class="video-card">
+
+<h3>Physical Design Layout Tutorial</h3>
+
+<iframe height="220"
 src="https://www.youtube.com/embed/CHaOflmuIQg">
 </iframe>
+
+</div>
+
+
+<div class="video-card">
+
+<h3>VLSI Lecture Series</h3>
+
+<iframe height="220"
+src="https://www.youtube.com/embed/qVqu8EHGK34">
+</iframe>
+
+</div>
+
+
+<div class="video-card">
+
+<h3>Cadence Analog Design</h3>
+
+<iframe height="220"
+src="https://www.youtube.com/embed/P4Qi3iRSHBc">
+</iframe>
+
+</div>
+
+
+<div class="video-card">
+
+<h3>Signal and Systems</h3>
+
+<iframe height="220"
+src="https://www.youtube.com/embed/EEgGKQJSXb8">
+</iframe>
+
+</div>
+
+
+<div class="video-card">
+
+<h3>Network Theory</h3>
+
+<iframe height="220"
+src="https://www.youtube.com/embed/dUYwUIGJcZE">
+</iframe>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+<p>© 2026 DesignTech VLSI</p>
+
+</footer>
+
+<script>
+
+const canvas=document.getElementById("starfield");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let stars=[];
+
+for(let i=0;i<200;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2
+});
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+stars.forEach(star=>{
+
+star.y+=0.2;
+
+if(star.y>canvas.height){
+star.y=0;
+}
+
+ctx.fillStyle="white";
+ctx.fillRect(star.x,star.y,star.size,star.size);
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
 
 </body>
 
 </html>
+```
