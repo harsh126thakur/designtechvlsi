@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Sign Up | DesignTech VLSI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins;
+background:#020617;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.signup-box{
+background:#1e293b;
+padding:40px;
+border-radius:12px;
+width:340px;
+text-align:center;
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:15px;
+border:none;
+border-radius:6px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin-top:20px;
+background:#38bdf8;
+border:none;
+border-radius:6px;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#22c1f0;
+}
+
+#recaptcha-container{
+margin-top:15px;
+}
+
+a{
+color:#38bdf8;
+text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="signup-box">
+
+<h2>Create Account</h2>
+
+<input type="text" id="name" placeholder="Full Name">
+
+<input type="email" id="email" placeholder="Email">
+
+<input type="text" id="phone" placeholder="+91 Phone Number">
+
+<button onclick="sendOTP()">Send OTP</button>
+
+<input type="text" id="otp" placeholder="Enter OTP">
+
+<button onclick="verifyOTP()">Verify OTP</button>
+
+<div id="recaptcha-container"></div>
+
+<p style="margin-top:20px;">
+Already have an account? <a href="login.html">Login</a>
+</p>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+getAuth,
+RecaptchaVerifier,
+signInWithPhoneNumber
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
+authDomain: "designtechvlsi.firebaseapp.com",
+projectId: "designtechvlsi",
+storageBucket: "designtechvlsi.firebasestorage.app",
+messagingSenderId: "268545364402",
+appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
+measurementId: "G-F5KGZK2JDK"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.recaptchaVerifier = new RecaptchaVerifier(
+"recaptcha-container",
+{
+size:"normal",
+callback:(response)=>{}
+},
+auth
+);
+
+window.sendOTP=function(){
+
+const phone=document.getElementById("phone").value;
+
+const appVerifier=window.recaptchaVerifier;
+
+signInWithPhoneNumber(auth,phone,appVerifier)
+
+.then((confirmationResult)=>{
+
+window.confirmationResult=confirmationResult;
+
+alert("OTP Sent");
+
+})
+
+.catch((error)=>{
+
+alert(error.message);
+
+});
+
+}
+
+window.verifyOTP=function(){
+
+const code=document.getElementById("otp").value;
+
+confirmationResult.confirm(code)
+
+.then((result)=>{
+
+alert("Account Created Successfully");
+
+window.location.href="dashboard.html";
+
+})
+
+.catch((error)=>{
+
+alert("Invalid OTP");
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
