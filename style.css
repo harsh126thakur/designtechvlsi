@@ -356,3 +356,57 @@ animation:circuits 30s linear infinite;
 100%{transform:translateX(200px)}
 
 }
+/* testimonials */
+
+.testimonials{
+
+padding:80px 40px;
+text-align:center;
+
+}
+
+.testimonials h2{
+
+font-size:36px;
+color:#38bdf8;
+margin-bottom:50px;
+
+}
+
+.testimonial-container{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:30px;
+
+}
+
+.testimonial-card{
+
+background:#1e293b;
+padding:30px;
+border-radius:12px;
+transition:0.3s;
+
+}
+
+.testimonial-card:hover{
+
+transform:translateY(-10px);
+box-shadow:0 0 20px #38bdf8;
+
+}
+
+.testimonial-card p{
+
+font-style:italic;
+line-height:1.6;
+
+}
+
+.testimonial-card h4{
+
+margin-top:20px;
+color:#38bdf8;
+
+}
