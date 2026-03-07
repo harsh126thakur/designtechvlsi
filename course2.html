@@ -20,8 +20,6 @@ color:white;
 overflow-x:hidden;
 }
 
-/* star background */
-
 #starfield{
 position:fixed;
 top:0;
@@ -30,8 +28,6 @@ width:100%;
 height:100%;
 z-index:-4;
 }
-
-/* grid */
 
 .grid{
 position:fixed;
@@ -68,8 +64,6 @@ background:linear-gradient(90deg,#38bdf8,#6366f1);
 color:transparent;
 }
 
-/* video */
-
 .video-box{
 background:#1e293b;
 padding:25px;
@@ -84,8 +78,6 @@ height:450px;
 border-radius:10px;
 }
 
-/* lectures */
-
 .lecture{
 background:#1e293b;
 padding:16px;
@@ -99,8 +91,6 @@ cursor:pointer;
 .lock{
 color:#f87171;
 }
-
-/* enroll */
 
 .enroll{
 background:#111827;
@@ -161,7 +151,6 @@ background:#020617;
 <iframe id="player"
 src="https://www.youtube.com/embed/qVqu8EHGK34"
 allowfullscreen>
-
 </iframe>
 
 </div>
@@ -169,98 +158,110 @@ allowfullscreen>
 
 <h2>Course Lectures</h2>
 
-<div class="lecture" onclick="playVideo('qVqu8EHGK34', true)">
+<div class="lecture" onclick="playVideo('qVqu8EHGK34',true)">
 <span>Lecture 1 – Introduction</span>
 <span>Free</span>
 </div>
 
-<div class="lecture" onclick="playVideo('VIDEO2', false)">
+<div class="lecture" onclick="playVideo('VIDEO2',false)">
 <span>Lecture 2 – CMOS Basics</span>
 <span class="lock">🔒 Locked</span>
 </div>
 
-<div class="lecture" onclick="playVideo('VIDEO3', false)">
+<div class="lecture" onclick="playVideo('VIDEO3',false)">
 <span>Lecture 3 – RTL Design</span>
 <span class="lock">🔒 Locked</span>
 </div>
 
-<div class="lecture" onclick="playVideo('VIDEO4', false)">
+<div class="lecture" onclick="playVideo('VIDEO4',false)">
 <span>Lecture 4 – Timing Analysis</span>
 <span class="lock">🔒 Locked</span>
 </div>
 
 
-<div class="enroll">
+<div class="enroll" id="buyBox">
 
 <h2>Enroll in Full Course</h2>
 
 <p class="price">₹1999</p>
 
-<a href="upi://pay?pa=7550233792@ybl&pn=DesignTechVLSI&am=1999&cu=INR">
+<a href="payment.html?course=course2">
 
-<button>Pay with UPI</button>
+<button>Buy Course</button>
 
 </a>
-
-<p style="margin-top:15px">
-
-After payment send screenshot to  
-<b>harsh_rt@ece.iitr.ac.in</b>
-
-</p>
-
-<p style="margin-top:10px">
-
-You will receive the **course access password**.
-
-</p>
 
 </div>
 
 </div>
 
 <footer>
-
 <p>© 2026 DesignTech VLSI</p>
-
 </footer>
 
 
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+
 <script>
 
-/* unlock system */
+const db = firebase.firestore()
 
 let unlocked=false
 
-function playVideo(video, free){
+firebase.auth().onAuthStateChanged(function(user){
+
+if(!user){
+
+alert("Please login to access the course")
+
+window.location="login.html"
+
+}
+
+else{
+
+db.collection("users").doc(user.uid).get().then(doc=>{
+
+let data=doc.data()
+
+if(data.course2){
+
+unlocked=true
+
+document.getElementById("buyBox").style.display="none"
+
+}
+
+})
+
+}
+
+})
+
+
+function playVideo(video,free){
 
 if(free || unlocked){
 
 document.getElementById("player").src=
 "https://www.youtube.com/embed/"+video
 
-}else{
+}
 
-let pass=prompt("Enter Course Access Password")
+else{
 
-if(pass==="designtech"){
-
-unlocked=true
-
-document.getElementById("player").src=
-"https://www.youtube.com/embed/"+video
-
-}else{
-
-alert("Please enroll to access full course")
+alert("Please purchase the course to unlock this lecture")
 
 }
 
 }
 
-}
 
-/* star animation */
+/* STAR BACKGROUND */
 
 const canvas=document.getElementById("starfield")
 const ctx=canvas.getContext("2d")
@@ -302,35 +303,6 @@ requestAnimationFrame(animate)
 }
 
 animate()
-
-</script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-
-<script>
-
-const firebaseConfig = {
-apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
-authDomain: "designtechvlsi.firebaseapp.com",
-projectId: "designtechvlsi",
-storageBucket: "designtechvlsi.appspot.com",
-messagingSenderId: "268545364402",
-appId: "1:268545364402:web:57a3d1d3fb8535998754ab"
-};
-
-firebase.initializeApp(firebaseConfig);
-
-firebase.auth().onAuthStateChanged(function(user){
-
-if(!user){
-
-alert("Please login to access the course")
-
-window.location="login.html"
-
-}
-
-});
 
 </script>
 
