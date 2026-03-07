@@ -1,27 +1,286 @@
+```html
 <!DOCTYPE html>
 <html>
 
 <head>
 
-<title>7 Day Guarantee</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="style.css">
+<title>7 Day Guarantee | DesignTech VLSI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins;
+background:#020617;
+color:#e2e8f0;
+overflow-x:hidden;
+}
+
+/* star background */
+
+#starfield{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-4;
+}
+
+/* neon grid */
+
+.grid{
+position:fixed;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(#38bdf822 1px, transparent 1px),
+linear-gradient(90deg,#38bdf822 1px, transparent 1px);
+background-size:80px 80px;
+z-index:-3;
+animation:gridmove 20s linear infinite;
+}
+
+@keyframes gridmove{
+0%{transform:translateY(0)}
+100%{transform:translateY(80px)}
+}
+
+/* header */
+
+header{
+text-align:center;
+padding:80px 20px;
+}
+
+header h1{
+font-size:48px;
+background:linear-gradient(90deg,#38bdf8,#6366f1);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+/* container */
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:40px;
+}
+
+/* trust section */
+
+.trust-grid{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:30px;
+margin-top:40px;
+
+}
+
+.trust-card{
+
+background:#1e293b;
+padding:30px;
+border-radius:12px;
+text-align:center;
+transition:0.3s;
+
+}
+
+.trust-card:hover{
+
+transform:translateY(-10px);
+box-shadow:0 0 20px #38bdf8;
+
+}
+
+/* icons */
+
+.icon{
+
+font-size:40px;
+margin-bottom:15px;
+
+}
+
+/* highlight section */
+
+.highlight{
+
+background:#0f172a;
+padding:40px;
+border-radius:12px;
+margin-top:60px;
+text-align:center;
+
+}
+
+/* button */
+
+button{
+
+padding:14px 28px;
+border:none;
+background:#38bdf8;
+color:black;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
+margin-top:20px;
+
+}
+
+button:hover{
+background:#22c1f0;
+}
+
+/* footer */
+
+footer{
+text-align:center;
+padding:30px;
+margin-top:80px;
+background:#020617;
+}
+
+</style>
 
 </head>
 
 <body>
 
+<canvas id="starfield"></canvas>
+<div class="grid"></div>
+
+<header>
+
 <h1>7-Day Money Back Guarantee</h1>
+
+<p>Try the course risk-free with full confidence</p>
+
+</header>
+
+<div class="container">
+
+<div class="trust-grid">
+
+<div class="trust-card">
+
+<div class="icon">🛡</div>
+
+<h3>No Risk Learning</h3>
+
+<p>If you feel the course is not useful within 7 days, you can request a full refund.</p>
+
+</div>
+
+<div class="trust-card">
+
+<div class="icon">💳</div>
+
+<h3>Secure Payment</h3>
+
+<p>Your payment is processed securely through trusted payment methods.</p>
+
+</div>
+
+<div class="trust-card">
+
+<div class="icon">🎓</div>
+
+<h3>Quality Content</h3>
+
+<p>The course content is designed to help students build real semiconductor design skills.</p>
+
+</div>
+
+</div>
+
+
+<div class="highlight">
+
+<h2>Your Satisfaction Matters</h2>
 
 <p>
 
-If you are not satisfied with the course within 7 days,
-you can request a refund.
+We believe in the quality of our training.  
+If the course does not meet your expectations, you can request a refund within 7 days.
 
-No questions asked.
+No complicated forms. No questions asked.
 
 </p>
+
+<button onclick="location.href='index.html'">
+
+Explore Courses
+
+</button>
+
+</div>
+
+</div>
+
+<footer>
+
+<p>© 2026 DesignTech VLSI</p>
+
+</footer>
+
+
+<script>
+
+const canvas=document.getElementById("starfield");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let stars=[];
+
+for(let i=0;i<200;i++){
+
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2
+
+});
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+stars.forEach(star=>{
+
+star.y+=0.2;
+
+if(star.y>canvas.height){
+star.y=0;
+}
+
+ctx.fillStyle="white";
+ctx.fillRect(star.x,star.y,star.size,star.size);
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
 
 </body>
 
 </html>
+```
