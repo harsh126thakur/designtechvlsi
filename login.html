@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 
@@ -19,6 +20,7 @@ display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
+margin:0;
 }
 
 .login-box{
@@ -46,8 +48,13 @@ border-radius:6px;
 cursor:pointer;
 }
 
+button:hover{
+background:#22c1f0;
+}
+
 a{
 color:#38bdf8;
+text-decoration:none;
 }
 
 </style>
@@ -73,10 +80,12 @@ color:#38bdf8;
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
 
 const firebaseConfig = {
+
 apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
 authDomain: "designtechvlsi.firebaseapp.com",
 projectId: "designtechvlsi",
@@ -84,9 +93,13 @@ storageBucket: "designtechvlsi.firebasestorage.app",
 messagingSenderId: "268545364402",
 appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
 measurementId: "G-F5KGZK2JDK"
+
 };
 
 firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+
 
 function login(){
 
@@ -95,9 +108,37 @@ let password=document.getElementById("password").value
 
 firebase.auth().signInWithEmailAndPassword(email,password)
 
-.then(function(){
+.then(function(userCredential){
+
+let uid=userCredential.user.uid
+
+db.collection("users").doc(uid).get().then((doc)=>{
+
+let data = doc.data()
+
+/* CHECK IF COURSE PURCHASED */
+
+if(
+data.course1 ||
+data.course2 ||
+data.course3 ||
+data.course4 ||
+data.course5 ||
+data.mentorship
+){
 
 window.location="dashboard.html"
+
+}
+else{
+
+/* REDIRECT TO PAYMENT */
+
+window.location="payment.html?course="+data.selectedCourse
+
+}
+
+})
 
 })
 
@@ -113,3 +154,4 @@ alert(error.message)
 
 </body>
 </html>
+```
