@@ -153,6 +153,58 @@ element.classList.add("active")
 }
 
 </script>
+<script type="module">
 
-</body>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { getAuth,onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import { getFirestore,doc,getDoc }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
+authDomain: "designtechvlsi.firebaseapp.com",
+projectId: "designtechvlsi",
+storageBucket: "designtechvlsi.firebasestorage.app",
+messagingSenderId: "268545364402",
+appId: "1:268545364402:web:57a3d1d3fb8535998754ab"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+/* SECURITY CHECK */
+
+onAuthStateChanged(auth, async (user)=>{
+
+if(!user){
+
+window.location.href="login.html";
+
+return;
+
+}
+
+const ref = doc(db,"users",user.uid,"courses","course3");
+
+const snap = await getDoc(ref);
+
+if(!snap.exists()){
+
+alert("You must purchase this course first");
+
+window.location.href="dashboard.html";
+
+}
+
+});
+
+</script></body>
 </html>
