@@ -99,6 +99,15 @@ signInWithEmailAndPassword(auth,email,password)
 
 .then((userCredential)=>{
 
+const user = userCredential.user
+
+if(!user.emailVerified){
+
+alert("Please verify your email before login.")
+return
+
+}
+
 window.location.href="dashboard.html"
 
 })
@@ -112,9 +121,6 @@ alert(error.message)
 })
 
 </script>
-if(!user.emailVerified){
-alert("Please verify your email first");
-return;
-}  
+
 </body>
 </html>
