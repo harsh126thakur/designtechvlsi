@@ -3,11 +3,15 @@
 
 <head>
 
-<title>Student Dashboard</title>
+<title>Student Dashboard | DesignTech VLSI</title>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
 <script src="firebase-config.js"></script>
 
@@ -18,7 +22,25 @@ background:#020617;
 color:white;
 font-family:Poppins;
 text-align:center;
-padding-top:100px;
+padding:60px;
+}
+
+h1{
+margin-bottom:40px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:30px;
+max-width:900px;
+margin:auto;
+}
+
+.card{
+background:#1e293b;
+padding:30px;
+border-radius:10px;
 }
 
 button{
@@ -26,7 +48,19 @@ padding:10px 20px;
 background:#6366f1;
 border:none;
 color:white;
-border-radius:5px;
+border-radius:6px;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+background:#4f46e5;
+}
+
+.logout{
+position:absolute;
+top:20px;
+right:20px;
 }
 
 </style>
@@ -35,51 +69,96 @@ border-radius:5px;
 
 <body>
 
-<h1>Welcome to DesignTech VLSI</h1>
+<button class="logout" onclick="logout()">Logout</button>
 
-<div id="courses" style="display:none">
+<h1>Student Dashboard</h1>
 
-<h2>Your Courses</h2>
+<div class="grid">
 
-<a href="course1.html">VLSI Physical Design Course</a>
-
+<div class="card">
+<h3>Physical Design Layout</h3>
+<div id="course1"></div>
 </div>
 
-<div id="buyCourse" style="display:none">
+<div class="card">
+<h3>VLSI Lecture Series</h3>
+<div id="course2"></div>
+</div>
 
-<h2>No Course Access</h2>
+<div class="card">
+<h3>Cadence Analog Basics</h3>
+<div id="course3"></div>
+</div>
 
-<p>Please purchase course or apply valid coupon.</p>
+<div class="card">
+<h3>Signals & Systems</h3>
+<div id="course4"></div>
+</div>
+
+<div class="card">
+<h3>Network Theory</h3>
+<div id="course5"></div>
+</div>
+
+<div class="card">
+<h3>1-to-1 Mentorship</h3>
+<div id="mentorship"></div>
+</div>
 
 </div>
 
 <script>
 
-firebase.auth().onAuthStateChanged(async (user)=>{
+firebase.auth().onAuthStateChanged(async function(user){
 
-if(user){
+if(!user){
 
-let uid = user.uid;
+window.location="login.html"
+return
 
-let doc = await db.collection("students").doc(uid).get();
+}
 
-let data = doc.data();
+let uid=user.uid
 
-if(data.courseAccess){
+let doc=await db.collection("users").doc(uid).get()
 
-document.getElementById("courses").style.display="block";
+let data=doc.data()
+
+showCourse("course1",data.course1,"course1.html")
+showCourse("course2",data.course2,"course2.html")
+showCourse("course3",data.course3,"course3.html")
+showCourse("course4",data.course4,"course4.html")
+showCourse("course5",data.course5,"course5.html")
+showCourse("mentorship",data.mentorship,"mentorship.html")
+
+})
+
+function showCourse(id,access,link){
+
+if(access){
+
+document.getElementById(id).innerHTML=
+`<a href="${link}"><button>Open Course</button></a>`
 
 }else{
 
-document.getElementById("buyCourse").style.display="block";
+document.getElementById(id).innerHTML=
+`<a href="payment.html?course=${id}"><button>Buy Course</button></a>`
 
 }
 
 }
 
-});
+function logout(){
+
+firebase.auth().signOut()
+
+window.location="login.html"
+
+}
 
 </script>
 
 </body>
+
 </html>
