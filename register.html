@@ -47,6 +47,10 @@ font-weight:bold;
 cursor:pointer;
 }
 
+button:hover{
+background:#22c1f0;
+}
+
 </style>
 
 </head>
@@ -67,11 +71,13 @@ cursor:pointer;
 
 </div>
 
+
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
 <script src="firebase-config.js"></script>
+
 
 <script>
 
@@ -79,13 +85,18 @@ async function register(){
 
 let email=document.getElementById("email").value
 let password=document.getElementById("password").value
-let coupon=document.getElementById("coupon").value.trim()
+let coupon=document.getElementById("coupon").value.trim().toUpperCase()
+
+if(email=="" || password==""){
+alert("Please enter email and password")
+return
+}
 
 try{
 
-let userCredential=await firebase.auth().createUserWithEmailAndPassword(email,password)
+let userCredential = await firebase.auth().createUserWithEmailAndPassword(email,password)
 
-let uid=userCredential.user.uid
+let uid = userCredential.user.uid
 
 await db.collection("users").doc(uid).set({
 
@@ -99,18 +110,19 @@ mentorship:false
 
 })
 
-/* Coupon Check */
+
+/* COUPON CHECK */
 
 if(coupon!=""){
 
-let couponDoc=await db.collection("coupons").doc(coupon).get()
+let couponDoc = await db.collection("coupons").doc(coupon).get()
 
 if(couponDoc.exists){
 
-let data=couponDoc.data()
+let data = couponDoc.data()
 
-let today=new Date()
-let expiry=new Date(data.expiry)
+let today = new Date()
+let expiry = new Date(data.expiry)
 
 if(!data.active){
 
@@ -118,13 +130,13 @@ alert("Coupon Disabled")
 
 }
 
-else if(today>expiry){
+else if(today > expiry){
 
 alert("Coupon Expired")
 
 }
 
-else if(data.usedCount>=data.maxUses){
+else if(data.usedCount >= data.maxUses){
 
 alert("Coupon Limit Reached")
 
@@ -134,7 +146,7 @@ else{
 
 await db.collection("coupons").doc(coupon).update({
 
-usedCount:firebase.firestore.FieldValue.increment(1)
+usedCount: firebase.firestore.FieldValue.increment(1)
 
 })
 
@@ -162,6 +174,7 @@ alert("Invalid Coupon Code")
 }
 
 }
+
 
 alert("Registration Successful")
 
