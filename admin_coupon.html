@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Create Coupon</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script src="firebase-config.js"></script>
+
+</head>
+
+<body>
+
+<h2>Create Coupon</h2>
+
+<input type="text" id="code" placeholder="Coupon Code">
+
+<input type="number" id="maxUses" placeholder="Max Uses">
+
+<input type="date" id="expiry">
+
+<button onclick="createCoupon()">Create Coupon</button>
+
+<script>
+
+async function createCoupon(){
+
+let code = document.getElementById("code").value;
+let maxUses = document.getElementById("maxUses").value;
+let expiry = document.getElementById("expiry").value;
+
+await db.collection("coupons").doc(code).set({
+
+code:code,
+type:"free",
+expiry:expiry,
+maxUses:Number(maxUses),
+usedCount:0,
+active:true
+
+});
+
+alert("Coupon Created");
+
+}
+
+</script>
+
+</body>
+</html>
