@@ -1,12 +1,12 @@
-```html
 <!DOCTYPE html>
 <html>
 
 <head>
 
-<title>DesignTech VLSI</title>
-
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>DesignTech VLSI</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
@@ -18,6 +18,34 @@ font-family:Poppins;
 background:#020617;
 color:white;
 overflow-x:hidden;
+}
+
+/* STAR BACKGROUND */
+
+#stars{
+position:fixed;
+width:100%;
+height:100%;
+z-index:-3;
+}
+
+/* GRID */
+
+.grid{
+position:fixed;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(#38bdf822 1px, transparent 1px),
+linear-gradient(90deg,#38bdf822 1px, transparent 1px);
+background-size:80px 80px;
+z-index:-2;
+animation:gridmove 20s linear infinite;
+}
+
+@keyframes gridmove{
+0%{transform:translateY(0)}
+100%{transform:translateY(80px)}
 }
 
 /* NAVBAR */
@@ -39,7 +67,7 @@ text-decoration:none;
 
 .hero{
 text-align:center;
-padding:120px 20px;
+padding:140px 20px;
 }
 
 .hero h1{
@@ -49,7 +77,7 @@ background:linear-gradient(90deg,#38bdf8,#8b5cf6);
 color:transparent;
 }
 
-/* COURSE GRID */
+/* COURSES */
 
 .courses{
 padding:60px;
@@ -58,15 +86,15 @@ grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:30px;
 }
 
-.course-card{
+.card{
 background:#0f172a;
 padding:30px;
 border-radius:12px;
-transition:0.3s;
 text-align:center;
+transition:0.3s;
 }
 
-.course-card:hover{
+.card:hover{
 transform:translateY(-10px);
 }
 
@@ -84,14 +112,14 @@ margin-left:8px;
 /* ABOUT */
 
 .about{
-padding:80px;
 display:flex;
 gap:40px;
+padding:80px;
 align-items:center;
 }
 
 .about img{
-width:220px;
+width:240px;
 border-radius:50%;
 }
 
@@ -110,6 +138,21 @@ padding:30px;
 border-radius:10px;
 }
 
+/* TESTIMONIAL */
+
+.testimonials{
+padding:60px;
+text-align:center;
+}
+
+.test-card{
+background:#0f172a;
+padding:25px;
+border-radius:10px;
+margin:20px auto;
+max-width:600px;
+}
+
 /* FAQ */
 
 .faq{
@@ -118,8 +161,8 @@ padding:60px;
 
 .faq-item{
 background:#0f172a;
-margin-bottom:20px;
 padding:20px;
+margin-bottom:20px;
 border-radius:10px;
 }
 
@@ -137,6 +180,10 @@ background:#0f172a;
 
 <body>
 
+<canvas id="stars"></canvas>
+
+<div class="grid"></div>
+
 <nav>
 
 <h2>DesignTech VLSI</h2>
@@ -151,85 +198,45 @@ background:#0f172a;
 
 </nav>
 
-
 <section class="hero">
 
 <h1>DesignTech VLSI</h1>
 
-<p>Learn VLSI Design | Cadence Tools | RTL to GDS Flow</p>
+<p>Learn RTL to GDS | Cadence Tools | Semiconductor Careers</p>
 
 </section>
 
 
 <section id="courses" class="courses">
 
-<div class="course-card">
-
+<div class="card">
 <h3>Physical Design Layout</h3>
-
-<p>
-<span class="price-old">₹3999</span>
-<span class="price-new">₹1999</span>
-</p>
-
+<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
 <a href="course1.html">View Course</a>
-
 </div>
 
-
-<div class="course-card">
-
+<div class="card">
 <h3>VLSI Lecture Series</h3>
-
-<p>
-<span class="price-old">₹3999</span>
-<span class="price-new">₹1999</span>
-</p>
-
+<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
 <a href="course2.html">View Course</a>
-
 </div>
 
-
-<div class="course-card">
-
+<div class="card">
 <h3>Cadence Analog Basics</h3>
-
-<p>
-<span class="price-old">₹3999</span>
-<span class="price-new">₹1999</span>
-</p>
-
+<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
 <a href="course3.html">View Course</a>
-
 </div>
 
-
-<div class="course-card">
-
+<div class="card">
 <h3>Signal and Systems</h3>
-
-<p>
-<span class="price-old">₹499</span>
-<span class="price-new">₹299</span>
-</p>
-
+<p><span class="price-old">₹499</span><span class="price-new">₹299</span></p>
 <a href="course4.html">View Course</a>
-
 </div>
 
-
-<div class="course-card">
-
+<div class="card">
 <h3>Network Theory</h3>
-
-<p>
-<span class="price-old">₹499</span>
-<span class="price-new">₹299</span>
-</p>
-
+<p><span class="price-old">₹499</span><span class="price-new">₹299</span></p>
 <a href="course5.html">View Course</a>
-
 </div>
 
 </section>
@@ -245,15 +252,15 @@ background:#0f172a;
 
 <p>
 
-Harsh Raj Thakur  
-GATE Qualified 6 Times  
+Harsh Raj Thakur
 
+GATE Qualified 6 Times  
 M.Tech VLSI – NIT Meghalaya  
 M.Tech High Voltage Engineering – NIT Calicut  
 
-Industrial Experience – Maven Silicon
+Industrial Experience – Maven Silicon  
 
-Mentored 5000+ students.
+Mentored more than 5000 students.
 
 </p>
 
@@ -266,17 +273,44 @@ Mentored 5000+ students.
 
 <div class="box">
 <h3>Industry Level Knowledge</h3>
-<p>Learn real semiconductor design flow.</p>
+<p>Learn semiconductor design flow.</p>
 </div>
 
 <div class="box">
 <h3>Hands-on Tools</h3>
-<p>Cadence, layout design and RTL synthesis.</p>
+<p>Cadence Innovus, Virtuoso and RTL synthesis.</p>
 </div>
 
 <div class="box">
 <h3>Career Guidance</h3>
-<p>Preparation for semiconductor jobs.</p>
+<p>Preparation for semiconductor companies.</p>
+</div>
+
+</section>
+
+
+<section class="testimonials">
+
+<h2>Student Testimonials</h2>
+
+<div class="test-card">
+
+<p>
+
+"DesignTech VLSI helped me understand physical design concepts clearly."
+
+</p>
+
+</div>
+
+<div class="test-card">
+
+<p>
+
+"Best mentorship for VLSI beginners."
+
+</p>
+
 </div>
 
 </section>
@@ -290,7 +324,7 @@ Mentored 5000+ students.
 
 <h3>Do I need prior VLSI knowledge?</h3>
 
-<p>No, courses start from basics.</p>
+<p>No courses start from basics.</p>
 
 </div>
 
@@ -298,7 +332,7 @@ Mentored 5000+ students.
 
 <h3>Will I learn industry tools?</h3>
 
-<p>Yes practical tool training is provided.</p>
+<p>Yes practical training is included.</p>
 
 </div>
 
@@ -309,9 +343,61 @@ Mentored 5000+ students.
 
 <p>© 2026 DesignTech VLSI</p>
 
+<p>
+
+YouTube | LinkedIn | Email
+
+</p>
+
 </footer>
 
-</body>
 
+<script>
+
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let stars=[];
+
+for(let i=0;i<300;i++){
+
+stars.push({
+
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2
+
+});
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+stars.forEach(star=>{
+
+star.y+=0.3;
+
+if(star.y>canvas.height){
+star.y=0;
+}
+
+ctx.fillStyle="white";
+ctx.fillRect(star.x,star.y,star.size,star.size);
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
+
+</body>
 </html>
-```
