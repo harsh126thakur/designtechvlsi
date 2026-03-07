@@ -3,57 +3,30 @@
 
 <head>
 
-<title>Student Dashboard | DesignTech VLSI</title>
+<title>Student Dashboard</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<script src="firebase-config.js"></script>
 
 <style>
 
 body{
-font-family:Poppins;
 background:#020617;
 color:white;
-padding:40px;
-margin:0;
-}
-
-.card{
-background:#1e293b;
-padding:30px;
-margin:20px 0;
-border-radius:10px;
-}
-
-.course{
-margin:10px 0;
-padding:12px;
-background:#0f172a;
-border-radius:6px;
-}
-
-a{
-color:#38bdf8;
-text-decoration:none;
-}
-
-.lock{
-color:#f87171;
+font-family:Poppins;
+text-align:center;
+padding-top:100px;
 }
 
 button{
 padding:10px 20px;
-background:#ef4444;
+background:#6366f1;
 border:none;
-border-radius:6px;
 color:white;
-cursor:pointer;
-margin-top:20px;
-}
-
-button:hover{
-background:#dc2626;
+border-radius:5px;
 }
 
 </style>
@@ -62,121 +35,49 @@ background:#dc2626;
 
 <body>
 
-<h1>Student Dashboard</h1>
+<h1>Welcome to DesignTech VLSI</h1>
 
-<div class="card">
+<div id="courses" style="display:none">
 
-<h3>My Courses</h3>
+<h2>Your Courses</h2>
 
-<div id="course1" class="course lock">🔒 Physical Design Layout</div>
-<div id="course2" class="course lock">🔒 VLSI Lecture Series</div>
-<div id="course3" class="course lock">🔒 Cadence Analog Basics</div>
-<div id="course4" class="course lock">🔒 Signal and Systems</div>
-<div id="course5" class="course lock">🔒 Network Theory</div>
-<div id="mentorship" class="course lock">🔒 1-to-1 Mentorship</div>
+<a href="course1.html">VLSI Physical Design Course</a>
 
 </div>
 
-<button onclick="logout()">Logout</button>
+<div id="buyCourse" style="display:none">
 
+<h2>No Course Access</h2>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<p>Please purchase course or apply valid coupon.</p>
+
+</div>
 
 <script>
 
-const firebaseConfig = {
+firebase.auth().onAuthStateChanged(async (user)=>{
 
-apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
-authDomain: "designtechvlsi.firebaseapp.com",
-projectId: "designtechvlsi",
-storageBucket: "designtechvlsi.firebasestorage.app",
-messagingSenderId: "268545364402",
-appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
-measurementId: "G-F5KGZK2JDK"
+if(user){
 
-};
+let uid = user.uid;
 
-firebase.initializeApp(firebaseConfig);
+let doc = await db.collection("students").doc(uid).get();
 
-const db = firebase.firestore();
+let data = doc.data();
 
+if(data.courseAccess){
 
-firebase.auth().onAuthStateChanged(function(user){
+document.getElementById("courses").style.display="block";
 
-if(!user){
+}else{
 
-window.location="login.html"
+document.getElementById("buyCourse").style.display="block";
 
 }
 
-else{
-
-db.collection("users").doc(user.uid).get().then((doc)=>{
-
-let data = doc.data()
-
-/* UNLOCK COURSES */
-
-if(data.course1){
-
-document.getElementById("course1").innerHTML =
-"<a href='course1.html'>Physical Design Layout</a>"
-
 }
 
-if(data.course2){
-
-document.getElementById("course2").innerHTML =
-"<a href='course2.html'>VLSI Lecture Series</a>"
-
-}
-
-if(data.course3){
-
-document.getElementById("course3").innerHTML =
-"<a href='course3.html'>Cadence Analog Basics</a>"
-
-}
-
-if(data.course4){
-
-document.getElementById("course4").innerHTML =
-"<a href='course4.html'>Signal and Systems</a>"
-
-}
-
-if(data.course5){
-
-document.getElementById("course5").innerHTML =
-"<a href='course5.html'>Network Theory</a>"
-
-}
-
-if(data.mentorship){
-
-document.getElementById("mentorship").innerHTML =
-"<a href='mentorship.html'>Join Mentorship Session</a>"
-
-}
-
-})
-
-}
-
-})
-
-
-function logout(){
-
-firebase.auth().signOut().then(function(){
-
-window.location="login.html"
-
-})
-
-}
+});
 
 </script>
 
