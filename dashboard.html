@@ -124,7 +124,47 @@ margin-top:60px;
 
 <div class="courses">
 
-<!-- COURSE 3 (example with coupon) -->
+<!-- COURSE 1 -->
+
+<div class="card">
+
+<div class="lock" id="lock-course1">LOCKED</div>
+
+<h3>Physical Design Layout</h3>
+
+<input id="coupon-course1" placeholder="Coupon Code">
+
+<button id="buy-course1" onclick="buyCourse('course1',1999)">
+Unlock Course
+</button>
+
+<button id="open-course1" onclick="openCourse('course1')" style="display:none">
+Open Course
+</button>
+
+</div>
+
+<!-- COURSE 2 -->
+
+<div class="card">
+
+<div class="lock" id="lock-course2">LOCKED</div>
+
+<h3>VLSI Lecture Series</h3>
+
+<input id="coupon-course2" placeholder="Coupon Code">
+
+<button id="buy-course2" onclick="buyCourse('course2',1999)">
+Unlock Course
+</button>
+
+<button id="open-course2" onclick="openCourse('course2')" style="display:none">
+Open Course
+</button>
+
+</div>
+
+<!-- COURSE 3 -->
 
 <div class="card">
 
@@ -132,13 +172,53 @@ margin-top:60px;
 
 <h3>Cadence Analog Basics</h3>
 
-<input id="coupon-course3" placeholder="Enter Coupon Code">
+<input id="coupon-course3" placeholder="Coupon Code">
 
-<button onclick="buyCourse('course3',1)">
-Unlock Course
+<button id="buy-course3" onclick="buyCourse('course3',1)">
+Unlock Course ₹1
 </button>
 
 <button id="open-course3" onclick="openCourse('course3')" style="display:none">
+Open Course
+</button>
+
+</div>
+
+<!-- COURSE 4 -->
+
+<div class="card">
+
+<div class="lock" id="lock-course4">LOCKED</div>
+
+<h3>Signals and Systems</h3>
+
+<input id="coupon-course4" placeholder="Coupon Code">
+
+<button id="buy-course4" onclick="buyCourse('course4',299)">
+Unlock Course
+</button>
+
+<button id="open-course4" onclick="openCourse('course4')" style="display:none">
+Open Course
+</button>
+
+</div>
+
+<!-- COURSE 5 -->
+
+<div class="card">
+
+<div class="lock" id="lock-course5">LOCKED</div>
+
+<h3>Network Theory</h3>
+
+<input id="coupon-course5" placeholder="Coupon Code">
+
+<button id="buy-course5" onclick="buyCourse('course5',299)">
+Unlock Course
+</button>
+
+<button id="open-course5" onclick="openCourse('course5')" style="display:none">
 Open Course
 </button>
 
@@ -160,19 +240,10 @@ Open Course
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import {
-getAuth,
-onAuthStateChanged,
-signOut
-}
+import { getAuth,onAuthStateChanged,signOut }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import {
-getFirestore,
-doc,
-setDoc,
-getDoc
-}
+import { getFirestore,doc,setDoc,getDoc }
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -210,7 +281,11 @@ const name=user.displayName || "Student";
 
 document.getElementById("welcome").innerText="Welcome, "+name;
 
+checkAccess("course1");
+checkAccess("course2");
 checkAccess("course3");
+checkAccess("course4");
+checkAccess("course5");
 
 }
 
@@ -228,7 +303,7 @@ window.location.href="index.html";
 
 });
 
-/* CHECK COURSE ACCESS */
+/* CHECK ACCESS */
 
 async function checkAccess(course){
 
@@ -241,6 +316,8 @@ if(snap.exists()){
 document.getElementById("lock-"+course).innerText="UNLOCKED";
 
 document.getElementById("open-"+course).style.display="block";
+
+document.getElementById("buy-"+course).style.display="none";
 
 }
 
@@ -325,11 +402,15 @@ rzp.open();
 
 window.openCourse = function(course){
 
-if(course=="course3"){
+if(course=="course1") window.location.href="course1player.html";
 
-window.location.href="course3player.html";
+if(course=="course2") window.location.href="course2player.html";
 
-}
+if(course=="course3") window.location.href="course3player.html";
+
+if(course=="course4") window.location.href="course4player.html";
+
+if(course=="course5") window.location.href="course5player.html";
 
 }
 
