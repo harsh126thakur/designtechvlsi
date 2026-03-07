@@ -1,61 +1,85 @@
 body{
 
 margin:0;
-font-family:Arial;
+font-family:Poppins;
 background:#020617;
 color:white;
 
 }
 
-header{
+.grid{
 
-display:flex;
-justify-content:space-between;
-padding:20px;
-background:#0f172a;
+position:fixed;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(#38bdf822 1px, transparent 1px),
+linear-gradient(90deg,#38bdf822 1px, transparent 1px);
+
+background-size:80px 80px;
+
+z-index:-3;
+
+animation:gridmove 20s linear infinite;
 
 }
 
-nav a{
+@keyframes gridmove{
 
-margin-left:20px;
-color:white;
-text-decoration:none;
+0%{transform:translateY(0)}
+
+100%{transform:translateY(80px)}
 
 }
 
 .hero{
 
 text-align:center;
-padding:100px 20px;
+padding:120px;
 
 }
 
-.icon-grid{
+.cube-container{
 
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:30px;
-padding:60px;
-
-}
-
-.icon-card{
-
-background:#0f172a;
-padding:30px;
-border-radius:12px;
-text-align:center;
-text-decoration:none;
-color:white;
-transition:0.3s;
+perspective:800px;
+display:flex;
+justify-content:center;
+margin-top:40px;
 
 }
 
-.icon-card:hover{
+.cube{
 
-transform:translateY(-8px);
-background:#1e293b;
+width:120px;
+height:120px;
+position:relative;
+transform-style:preserve-3d;
+animation:rotateCube 12s infinite linear;
+
+}
+
+.cube div{
+
+position:absolute;
+width:120px;
+height:120px;
+border:2px solid #38bdf8;
+background:rgba(56,189,248,0.1);
+
+}
+
+.front{transform:translateZ(60px);}
+.back{transform:rotateY(180deg) translateZ(60px);}
+.right{transform:rotateY(90deg) translateZ(60px);}
+.left{transform:rotateY(-90deg) translateZ(60px);}
+.top{transform:rotateX(90deg) translateZ(60px);}
+.bottom{transform:rotateX(-90deg) translateZ(60px);}
+
+@keyframes rotateCube{
+
+0%{transform:rotateX(0) rotateY(0)}
+
+100%{transform:rotateX(360deg) rotateY(360deg)}
 
 }
 
@@ -77,16 +101,34 @@ text-align:center;
 
 }
 
-.price{
+.price-old{
 
-font-size:20px;
+text-decoration:line-through;
+color:#aaa;
 
 }
 
-.price span{
+.price-new{
 
 color:#22c55e;
 margin-left:10px;
+
+}
+
+.benefit-grid{
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:30px;
+padding:60px;
+
+}
+
+.benefit{
+
+background:#0f172a;
+padding:25px;
+border-radius:10px;
 
 }
 
