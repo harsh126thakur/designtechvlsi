@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <title>Register | DesignTech VLSI</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-
-<script src="firebase-config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
 
@@ -24,7 +21,7 @@ align-items:center;
 height:100vh;
 }
 
-.box{
+.container{
 background:#0f172a;
 padding:40px;
 border-radius:10px;
@@ -33,19 +30,20 @@ width:350px;
 
 input{
 width:100%;
-padding:12px;
-margin:10px 0;
+padding:10px;
+margin-top:10px;
 border:none;
 border-radius:5px;
 }
 
 button{
 width:100%;
-padding:12px;
-background:#6366f1;
-color:white;
+padding:10px;
+margin-top:15px;
+background:#38bdf8;
 border:none;
 border-radius:5px;
+font-weight:bold;
 cursor:pointer;
 }
 
@@ -55,23 +53,27 @@ cursor:pointer;
 
 <body>
 
-<div class="box">
+<div class="container">
 
-<h2>Student Registration</h2>
+<h2>Register</h2>
 
-<input type="text" id="name" placeholder="Full Name">
+<input id="email" type="email" placeholder="Email">
 
-<input type="email" id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
 
-<input type="password" id="password" placeholder="Password">
-
-<input type="text" id="coupon" placeholder="Coupon Code (Optional)">
+<input id="coupon" type="text" placeholder="Coupon Code (Optional)">
 
 <button onclick="register()">Register</button>
 
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script src="firebase-config.js"></script>
 <script src="register.js"></script>
 
 </body>
+
 </html>
