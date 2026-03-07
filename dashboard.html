@@ -271,7 +271,25 @@ description: course + " Access",
 
 handler: function (){
 
-localStorage.setItem(course,"unlocked")
+import { getFirestore, doc, setDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
+
+const db = getFirestore(app)
+
+handler: async function () {
+
+const user = auth.currentUser
+
+await setDoc(doc(db,"users",user.uid,"courses",course),{
+unlocked:true,
+time:Date.now()
+})
+
+alert("Course unlocked")
+
+location.reload()
+
+}
 
 alert("Payment Successful")
 
