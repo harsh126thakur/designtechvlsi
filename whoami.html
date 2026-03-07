@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 
@@ -17,12 +18,52 @@ margin:0;
 font-family:Poppins;
 background:#020617;
 color:#e2e8f0;
+overflow-x:hidden;
 }
+
+/* STAR BACKGROUND */
+
+#starfield{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-4;
+}
+
+/* NEON GRID */
+
+.grid{
+
+position:fixed;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(#38bdf822 1px, transparent 1px),
+linear-gradient(90deg,#38bdf822 1px, transparent 1px);
+
+background-size:80px 80px;
+
+z-index:-3;
+
+animation:gridmove 20s linear infinite;
+
+}
+
+@keyframes gridmove{
+
+0%{transform:translateY(0)}
+
+100%{transform:translateY(80px)}
+
+}
+
+/* HEADER */
 
 header{
 text-align:center;
 padding:60px;
-background:#020617;
 }
 
 header h1{
@@ -32,11 +73,15 @@ background:linear-gradient(90deg,#38bdf8,#6366f1);
 color:transparent;
 }
 
+/* CONTAINER */
+
 .container{
 max-width:1100px;
 margin:auto;
 padding:40px;
 }
+
+/* PROFILE */
 
 .profile{
 display:flex;
@@ -56,6 +101,8 @@ box-shadow:0 0 25px #38bdf8;
 line-height:1.8;
 }
 
+/* SECTIONS */
+
 .section{
 margin-top:60px;
 }
@@ -64,6 +111,8 @@ margin-top:60px;
 color:#38bdf8;
 margin-bottom:20px;
 }
+
+/* CARDS */
 
 .cards{
 display:grid;
@@ -77,9 +126,13 @@ padding:20px;
 border-radius:10px;
 }
 
+/* PUBLICATIONS */
+
 .publications li{
 margin-bottom:18px;
 }
+
+/* BUTTON LINKS */
 
 .links a{
 display:inline-block;
@@ -91,6 +144,8 @@ text-decoration:none;
 border-radius:6px;
 font-weight:500;
 }
+
+/* FOOTER */
 
 footer{
 text-align:center;
@@ -104,6 +159,9 @@ background:#020617;
 </head>
 
 <body>
+
+<canvas id="starfield"></canvas>
+<div class="grid"></div>
 
 <header>
 
@@ -122,8 +180,6 @@ background:#020617;
 
 <p>
 
-<p>
-
 Harsh Raj Thakur is currently a <b>Research Scholar</b> at the 
 <a href="https://www.iitr.ac.in" target="_blank">
 Indian Institute of Technology Roorkee (IIT Roorkee)
@@ -132,7 +188,6 @@ Indian Institute of Technology Roorkee (IIT Roorkee)
 He is also the founder of <b>DesignTech VLSI</b>, an educational platform dedicated to 
 teaching VLSI design, semiconductor technologies, and EDA tools.
 
-</p>
 </p>
 
 <p>
@@ -174,13 +229,9 @@ ResearchGate
 <div class="cards">
 
 <div class="card">VLSI Physical Design</div>
-
 <div class="card">RTL to GDS Flow</div>
-
 <div class="card">Electronic Design Automation</div>
-
 <div class="card">Semiconductor Device Modeling</div>
-
 <div class="card">AI Applications in Chip Design</div>
 
 </div>
@@ -192,7 +243,7 @@ ResearchGate
 
 <h2>Publications</h2>
 
-<ul>
+<ul class="publications">
 
 <li>
 <b>A Transistor-level Implementation of Radix-2 and Radix-4 FFT Using Logical Effort</b><br>
@@ -259,6 +310,53 @@ The goal is to help students transition from academic learning to semiconductor 
 
 </footer>
 
+
+<script>
+
+const canvas=document.getElementById("starfield");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let stars=[];
+
+for(let i=0;i<200;i++){
+
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2
+});
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+stars.forEach(star=>{
+
+star.y+=0.2;
+
+if(star.y>canvas.height){
+star.y=0;
+}
+
+ctx.fillStyle="white";
+ctx.fillRect(star.x,star.y,star.size,star.size);
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
+
 </body>
 
 </html>
+```
