@@ -3,138 +3,53 @@
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>Physical Design Layout | DesignTech VLSI</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
 
 body{
-margin:0;
 font-family:Poppins;
 background:#020617;
 color:white;
-overflow-x:hidden;
-}
-
-/* STAR BACKGROUND */
-
-#starfield{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:-4;
-}
-
-/* GRID */
-
-.grid{
-position:fixed;
-width:100%;
-height:100%;
-background-image:
-linear-gradient(#38bdf822 1px, transparent 1px),
-linear-gradient(90deg,#38bdf822 1px, transparent 1px);
-background-size:80px 80px;
-z-index:-3;
-animation:gridmove 20s linear infinite;
-}
-
-@keyframes gridmove{
-0%{transform:translateY(0)}
-100%{transform:translateY(80px)}
+padding:40px;
 }
 
 .container{
-max-width:1000px;
+max-width:900px;
 margin:auto;
-padding:60px 20px;
 }
 
-.hero{
-text-align:center;
-margin-bottom:40px;
+.video{
+margin:30px 0;
 }
 
-.hero h1{
-font-size:42px;
-background:linear-gradient(90deg,#38bdf8,#6366f1);
--webkit-background-clip:text;
-color:transparent;
-}
-
-/* video */
-
-.video-box{
+.course-box{
 background:#1e293b;
-padding:25px;
-border-radius:12px;
-text-align:center;
-margin-bottom:40px;
-}
-
-iframe{
-width:100%;
-height:450px;
+padding:30px;
 border-radius:10px;
-}
-
-/* lectures */
-
-.lecture{
-background:#1e293b;
-padding:16px;
-border-radius:10px;
-margin-bottom:10px;
-display:flex;
-justify-content:space-between;
-cursor:pointer;
+margin-top:20px;
 }
 
 .lock{
 color:#f87171;
 }
 
-/* enroll */
-
-.enroll{
-background:#111827;
-padding:40px;
-border-radius:12px;
-text-align:center;
-margin-top:50px;
-}
-
-.price{
-font-size:28px;
-color:#22c55e;
-margin-bottom:20px;
-}
-
 button{
-padding:14px 28px;
-border:none;
+padding:12px 22px;
 background:#38bdf8;
-color:black;
+border:none;
 border-radius:6px;
-font-size:16px;
+font-size:14px;
 cursor:pointer;
+margin-top:15px;
 }
 
 button:hover{
 background:#22c1f0;
-}
-
-footer{
-text-align:center;
-padding:30px;
-margin-top:60px;
-background:#020617;
 }
 
 </style>
@@ -143,169 +58,71 @@ background:#020617;
 
 <body>
 
-<canvas id="starfield"></canvas>
-<div class="grid"></div>
-
 <div class="container">
 
-<div class="hero">
 <h1>Physical Design Layout</h1>
-<p>Learn Floorplanning, Placement and Routing</p>
-</div>
+
+<p>Learn the complete Physical Design flow from Floorplanning to Routing.</p>
 
 
-<div class="video-box">
+<h3>Free Preview</h3>
 
-<h2>Course Video</h2>
+<div class="video">
 
-<iframe id="player"
+<iframe width="100%" height="420"
 src="https://www.youtube.com/embed/CHaOflmuIQg"
+frameborder="0"
 allowfullscreen>
-
 </iframe>
 
 </div>
 
 
-<h2>Course Lectures</h2>
+<div class="course-box">
 
-<div class="lecture" onclick="playVideo('CHaOflmuIQg', true)">
-<span>Lecture 1 – Introduction</span>
-<span>Free</span>
-</div>
+<h3>Course Content</h3>
 
-<div class="lecture" onclick="playVideo('VIDEO2', false)">
-<span>Lecture 2 – Floorplanning</span>
-<span class="lock">🔒 Locked</span>
-</div>
+<ul>
 
-<div class="lecture" onclick="playVideo('VIDEO3', false)">
-<span>Lecture 3 – Placement</span>
-<span class="lock">🔒 Locked</span>
-</div>
+<li>Lecture 1 – Introduction (Free)</li>
 
-<div class="lecture" onclick="playVideo('VIDEO4', false)">
-<span>Lecture 4 – Routing</span>
-<span class="lock">🔒 Locked</span>
+<li id="l2" class="lock">Lecture 2 – Floorplanning 🔒</li>
+
+<li id="l3" class="lock">Lecture 3 – Placement 🔒</li>
+
+<li id="l4" class="lock">Lecture 4 – Routing 🔒</li>
+
+</ul>
+
 </div>
 
 
-<div class="enroll">
+<div class="course-box">
 
-<h2>Unlock Full Course</h2>
+<h2>Enroll Now</h2>
 
-<p class="price">₹1999</p>
+<p>Price ₹1999</p>
 
-<a href="upi://pay?pa=7550233792@ybl&pn=DesignTechVLSI&am=1999&cu=INR">
+<a href="upi://pay?pa=7550233792@ybl&pn=DesignTechVLSI&am=1999&cu=INR&tn=course1">
 
-<button>Pay with UPI</button>
+<button>Pay ₹1999 via UPI</button>
 
 </a>
 
-<p style="margin-top:15px">
+<p>After payment send screenshot to:</p>
 
-After payment send screenshot to  
-<b>harsh_rt@ece.iitr.ac.in</b>
-
-</p>
-
-<p style="margin-top:10px">
-
-You will receive the **course access password**.
-
-</p>
+<p><b>harsh_rt@ece.iitr.ac.in</b></p>
 
 </div>
 
 </div>
 
-<footer>
-
-<p>© 2026 DesignTech VLSI</p>
-
-</footer>
 
 
-<script>
-
-/* video unlock system */
-
-let unlocked=false
-
-function playVideo(video, free){
-
-if(free || unlocked){
-
-document.getElementById("player").src=
-"https://www.youtube.com/embed/"+video
-
-}else{
-
-let pass=prompt("Enter Course Access Password")
-
-if(pass==="designtech"){
-
-unlocked=true
-
-document.getElementById("player").src=
-"https://www.youtube.com/embed/"+video
-
-}else{
-
-alert("Please enroll to access full course")
-
-}
-
-}
-
-}
-
-/* star animation */
-
-const canvas=document.getElementById("starfield")
-const ctx=canvas.getContext("2d")
-
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
-
-let stars=[]
-
-for(let i=0;i<200;i++){
-
-stars.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2
-})
-
-}
-
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-stars.forEach(star=>{
-
-star.y+=0.2
-
-if(star.y>canvas.height){
-star.y=0
-}
-
-ctx.fillStyle="white"
-ctx.fillRect(star.x,star.y,star.size,star.size)
-
-})
-
-requestAnimationFrame(animate)
-
-}
-
-animate()
-
-</script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 
 <script>
 
@@ -320,20 +137,46 @@ appId: "1:268545364402:web:57a3d1d3fb8535998754ab"
 
 firebase.initializeApp(firebaseConfig);
 
+const db = firebase.firestore();
+
+
 firebase.auth().onAuthStateChanged(function(user){
 
 if(!user){
 
-alert("Please login to access the course")
+alert("Please login first")
 
 window.location="login.html"
 
 }
 
-});
+else{
+
+db.collection("users").doc(user.uid).get().then((doc)=>{
+
+let data = doc.data()
+
+if(data.course1){
+
+document.getElementById("l2").innerHTML =
+"Lecture 2 – Floorplanning"
+
+document.getElementById("l3").innerHTML =
+"Lecture 3 – Placement"
+
+document.getElementById("l4").innerHTML =
+"Lecture 4 – Routing"
+
+}
+
+})
+
+}
+
+})
 
 </script>
 
-</body>
 
+</body>
 </html>
