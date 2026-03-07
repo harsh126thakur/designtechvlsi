@@ -101,6 +101,49 @@ window.location="login.html"
 }
 
 </script>
+<script>
 
+firebase.auth().onAuthStateChanged(function(user){
+
+if(!user){
+
+window.location="login.html"
+
+}
+
+else{
+
+db.collection("users").doc(user.uid).get().then((doc)=>{
+
+let data=doc.data()
+
+if(data.course1){
+
+document.getElementById("course1").innerHTML=
+"<a href='course1.html'>Physical Design Layout</a>"
+
+}
+
+if(data.course2){
+
+document.getElementById("course2").innerHTML=
+"<a href='course2.html'>VLSI Lecture Series</a>"
+
+}
+
+if(data.course3){
+
+document.getElementById("course3").innerHTML=
+"<a href='course3.html'>Cadence Analog Basics</a>"
+
+}
+
+})
+
+}
+
+})
+
+</script>
 </body>
 </html>
