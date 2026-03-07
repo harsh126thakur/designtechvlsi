@@ -72,8 +72,16 @@ border-radius:6px;
 font-size:12px;
 }
 
+input{
+padding:8px;
+border:none;
+border-radius:6px;
+margin-top:10px;
+width:80%;
+}
+
 button{
-margin-top:15px;
+margin-top:12px;
 padding:10px 20px;
 border:none;
 background:#38bdf8;
@@ -116,39 +124,7 @@ margin-top:60px;
 
 <div class="courses">
 
-<!-- COURSE 1 -->
-
-<div class="card">
-
-<div class="lock" id="lock-course1">LOCKED</div>
-
-<h3>Physical Design Layout</h3>
-
-<button onclick="buyCourse('course1',1999)">Unlock Course</button>
-
-<button id="open-course1" onclick="openCourse('course1')" style="display:none">
-Open Course
-</button>
-
-</div>
-
-<!-- COURSE 2 -->
-
-<div class="card">
-
-<div class="lock" id="lock-course2">LOCKED</div>
-
-<h3>VLSI Lecture Series</h3>
-
-<button onclick="buyCourse('course2',1999)">Unlock Course</button>
-
-<button id="open-course2" onclick="openCourse('course2')" style="display:none">
-Open Course
-</button>
-
-</div>
-
-<!-- COURSE 3 -->
+<!-- COURSE 3 (example with coupon) -->
 
 <div class="card">
 
@@ -156,41 +132,13 @@ Open Course
 
 <h3>Cadence Analog Basics</h3>
 
-<button onclick="buyCourse('course3',1)">Unlock Course ₹1</button>
+<input id="coupon-course3" placeholder="Enter Coupon Code">
+
+<button onclick="buyCourse('course3',1)">
+Unlock Course
+</button>
 
 <button id="open-course3" onclick="openCourse('course3')" style="display:none">
-Open Course
-</button>
-
-</div>
-
-<!-- COURSE 4 -->
-
-<div class="card">
-
-<div class="lock" id="lock-course4">LOCKED</div>
-
-<h3>Signals and Systems</h3>
-
-<button onclick="buyCourse('course4',299)">Unlock Course</button>
-
-<button id="open-course4" onclick="openCourse('course4')" style="display:none">
-Open Course
-</button>
-
-</div>
-
-<!-- COURSE 5 -->
-
-<div class="card">
-
-<div class="lock" id="lock-course5">LOCKED</div>
-
-<h3>Network Theory</h3>
-
-<button onclick="buyCourse('course5',299)">Unlock Course</button>
-
-<button id="open-course5" onclick="openCourse('course5')" style="display:none">
 Open Course
 </button>
 
@@ -212,10 +160,19 @@ Open Course
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import { getAuth,onAuthStateChanged,signOut }
+import {
+getAuth,
+onAuthStateChanged,
+signOut
+}
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import { getFirestore,doc,setDoc,getDoc }
+import {
+getFirestore,
+doc,
+setDoc,
+getDoc
+}
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -253,11 +210,7 @@ const name=user.displayName || "Student";
 
 document.getElementById("welcome").innerText="Welcome, "+name;
 
-checkAccess("course1");
-checkAccess("course2");
 checkAccess("course3");
-checkAccess("course4");
-checkAccess("course5");
 
 }
 
@@ -275,15 +228,69 @@ window.location.href="index.html";
 
 });
 
-/* PAYMENT */
+/* CHECK COURSE ACCESS */
 
-window.buyCourse=function(course,price){
+async function checkAccess(course){
+
+const ref = doc(db,"users",currentUser.uid,"courses",course);
+
+const snap = await getDoc(ref);
+
+if(snap.exists()){
+
+document.getElementById("lock-"+course).innerText="UNLOCKED";
+
+document.getElementById("open-"+course).style.display="block";
+
+}
+
+}
+
+/* PAYMENT + COUPON */
+
+window.buyCourse = async function(course,price){
+
+let couponCode = document.getElementById("coupon-"+course)?.value?.trim();
+
+let finalPrice = price;
+
+if(couponCode){
+
+const ref = doc(db,"coupons",couponCode);
+
+const snap = await getDoc(ref);
+
+if(snap.exists()){
+
+let data = snap.data();
+
+if(data.active){
+
+let discount = data.discount;
+
+finalPrice = price - (price*discount/100);
+
+alert("Coupon Applied: "+discount+"% OFF");
+
+}else{
+
+alert("Coupon expired");
+
+}
+
+}else{
+
+alert("Invalid coupon");
+
+}
+
+}
 
 var options = {
 
 key:"rzp_live_SONJ2W1OZ1qVLZ",
 
-amount:price*100,
+amount:finalPrice*100,
 
 currency:"INR",
 
@@ -291,7 +298,7 @@ name:"DesignTech VLSI",
 
 description:course+" access",
 
-handler:async function(){
+handler: async function(){
 
 await setDoc(doc(db,"users",currentUser.uid,"courses",course),{
 
@@ -308,43 +315,21 @@ location.reload();
 
 };
 
-var rzp=new Razorpay(options);
+var rzp = new Razorpay(options);
 
 rzp.open();
 
 }
 
-/* CHECK ACCESS */
-
-async function checkAccess(course){
-
-const ref=doc(db,"users",currentUser.uid,"courses",course);
-
-const snap=await getDoc(ref);
-
-if(snap.exists()){
-
-document.getElementById("lock-"+course).innerText="UNLOCKED";
-
-document.getElementById("open-"+course).style.display="block";
-
-}
-
-}
-
 /* OPEN COURSE */
 
-window.openCourse=function(course){
+window.openCourse = function(course){
 
-if(course=="course1") window.location.href="course1player.html";
+if(course=="course3"){
 
-if(course=="course2") window.location.href="course2player.html";
+window.location.href="course3player.html";
 
-if(course=="course3") window.location.href="course3player.html";
-
-if(course=="course4") window.location.href="course4player.html";
-
-if(course=="course5") window.location.href="course5player.html";
+}
 
 }
 
