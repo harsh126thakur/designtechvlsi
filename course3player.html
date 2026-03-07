@@ -111,7 +111,7 @@ color:#38bdf8;
 <div class="video-area">
 
 <iframe id="player"
-src="https://www.youtube.com/embed/videoseries?list=PLIpZuMTXXr7G8HBzpZYEnNhGrdqprqhwi&index=0"
+src="https://www.youtube.com/embed/videoseries?list=PLIpZuMTXXr7G8HBzpZYEnNhGrdqprqhwi&index=0&modestbranding=1&rel=0"
 allowfullscreen>
 </iframe>
 
@@ -123,15 +123,15 @@ allowfullscreen>
 
 <h3>Course Lessons</h3>
 
-<div class="lesson active" onclick="play(0,this)">1. Lecture 1</div>
-<div class="lesson" onclick="play(1,this)">2. Lecture 2</div>
-<div class="lesson" onclick="play(2,this)">3. Lecture 3</div>
-<div class="lesson" onclick="play(3,this)">4. Lecture 4</div>
-<div class="lesson" onclick="play(4,this)">5. Lecture 5</div>
-<div class="lesson" onclick="play(5,this)">6. Lecture 6</div>
-<div class="lesson" onclick="play(6,this)">7. Lecture 7</div>
-<div class="lesson" onclick="play(7,this)">8. Lecture 8</div>
-<div class="lesson" onclick="play(8,this)">9. Lecture 9</div>
+<div class="lesson active" onclick="play(0,this)">Lecture 1</div>
+<div class="lesson" onclick="play(1,this)">Lecture 2</div>
+<div class="lesson" onclick="play(2,this)">Lecture 3</div>
+<div class="lesson" onclick="play(3,this)">Lecture 4</div>
+<div class="lesson" onclick="play(4,this)">Lecture 5</div>
+<div class="lesson" onclick="play(5,this)">Lecture 6</div>
+<div class="lesson" onclick="play(6,this)">Lecture 7</div>
+<div class="lesson" onclick="play(7,this)">Lecture 8</div>
+<div class="lesson" onclick="play(8,this)">Lecture 9</div>
 
 </div>
 
@@ -139,10 +139,12 @@ allowfullscreen>
 
 <script>
 
+/* PLAY VIDEO */
+
 function play(index,element){
 
 document.getElementById("player").src =
-"https://www.youtube.com/embed/videoseries?list=PLIpZuMTXXr7G8HBzpZYEnNhGrdqprqhwi&index="+index
+"https://www.youtube.com/embed/videoseries?list=PLIpZuMTXXr7G8HBzpZYEnNhGrdqprqhwi&index="+index+"&modestbranding=1&rel=0"
 
 let lessons=document.querySelectorAll(".lesson")
 
@@ -152,7 +154,19 @@ element.classList.add("active")
 
 }
 
+/* DISABLE RIGHT CLICK */
+
+document.addEventListener("contextmenu",function(e){
+
+e.preventDefault()
+
+})
+
 </script>
+
+
+<!-- FIREBASE SECURITY -->
+
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -180,8 +194,6 @@ const auth = getAuth(app);
 
 const db = getFirestore(app);
 
-/* SECURITY CHECK */
-
 onAuthStateChanged(auth, async (user)=>{
 
 if(!user){
@@ -198,7 +210,7 @@ const snap = await getDoc(ref);
 
 if(!snap.exists()){
 
-alert("You must purchase this course first");
+alert("Please purchase this course first");
 
 window.location.href="dashboard.html";
 
@@ -206,5 +218,7 @@ window.location.href="dashboard.html";
 
 });
 
-</script></body>
+</script>
+
+</body>
 </html>
