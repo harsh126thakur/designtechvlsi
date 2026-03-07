@@ -31,7 +31,6 @@ nav a{
 color:white;
 text-decoration:none;
 margin-left:20px;
-font-size:14px;
 }
 
 nav a:hover{
@@ -42,8 +41,10 @@ color:#38bdf8;
 padding:60px;
 }
 
-h1{
+#welcome{
+font-size:28px;
 margin-bottom:40px;
+color:#38bdf8;
 }
 
 .courses{
@@ -108,102 +109,61 @@ margin-top:60px;
 <h2>DesignTech VLSI</h2>
 
 <div>
-
 <a href="index.html">Home</a>
 <a href="#" id="logout">Logout</a>
-
 </div>
 
 </nav>
 
 <div class="container">
 
-<h1>My Courses</h1>
+<h1 id="welcome">Welcome</h1>
 
 <div class="courses">
 
 <div class="card">
-
 <div class="lock">LOCKED</div>
-
 <h3>Physical Design Layout</h3>
-
 <p>Complete RTL to GDSII flow.</p>
-
 <a href="payment.html?course=course1">
 <button>Unlock Course</button>
 </a>
-
 </div>
 
 <div class="card">
-
 <div class="lock">LOCKED</div>
-
 <h3>VLSI Lecture Series</h3>
-
 <p>Learn VLSI fundamentals.</p>
-
 <a href="payment.html?course=course2">
 <button>Unlock Course</button>
 </a>
-
 </div>
 
 <div class="card">
-
 <div class="lock">LOCKED</div>
-
 <h3>Cadence Analog Basics</h3>
-
 <p>Analog design using Cadence.</p>
-
 <a href="payment.html?course=course3">
 <button>Unlock Course</button>
 </a>
-
 </div>
 
 <div class="card">
-
 <div class="lock">LOCKED</div>
-
 <h3>Signals and Systems</h3>
-
 <p>Core signal processing concepts.</p>
-
 <a href="payment.html?course=course4">
 <button>Unlock Course</button>
 </a>
-
 </div>
 
 <div class="card">
-
 <div class="lock">LOCKED</div>
-
 <h3>Network Theory</h3>
-
 <p>Circuit analysis fundamentals.</p>
-
 <a href="payment.html?course=course5">
 <button>Unlock Course</button>
 </a>
-
-</div>
-
-<div class="card">
-
-<div class="lock">LOCKED</div>
-
-<h3>1-to-1 VLSI Mentorship</h3>
-
-<p>Personal semiconductor career guidance.</p>
-
-<a href="payment.html?course=mentorship">
-<button>Book Mentorship</button>
-</a>
-
 </div>
 
 </div>
@@ -211,15 +171,18 @@ margin-top:60px;
 </div>
 
 <footer>
-
 <p>© 2026 DesignTech VLSI</p>
-
 </footer>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+getAuth,
+onAuthStateChanged,
+signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
@@ -234,15 +197,25 @@ measurementId: "G-F5KGZK2JDK"
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+/* CHECK LOGIN + SHOW NAME */
+
 onAuthStateChanged(auth,(user)=>{
 
 if(!user){
 window.location.href="login.html";
+}else{
+
+const name=user.displayName || "Student";
+
+document.getElementById("welcome").innerText="Welcome, " + name;
+
 }
 
 });
 
-document.getElementById("logout").addEventListener("click",function(){
+/* LOGOUT */
+
+document.getElementById("logout").addEventListener("click",()=>{
 
 signOut(auth).then(()=>{
 
