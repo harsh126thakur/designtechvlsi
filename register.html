@@ -3,7 +3,7 @@
 
 <head>
 
-<title>Student Dashboard</title>
+<title>Register | DesignTech VLSI</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -15,36 +15,39 @@ body{
 font-family:Poppins;
 background:#020617;
 color:white;
-padding:40px;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
 
-.card{
+.box{
 background:#1e293b;
-padding:30px;
-margin:20px 0;
+padding:40px;
 border-radius:10px;
+width:320px;
+text-align:center;
 }
 
-.course{
-margin:10px 0;
+input{
+width:100%;
 padding:10px;
-background:#0f172a;
-border-radius:6px;
-}
-
-a{
-color:#38bdf8;
-text-decoration:none;
+margin:10px 0;
+border:none;
+border-radius:5px;
 }
 
 button{
-padding:10px 20px;
-background:#ef4444;
+padding:12px;
+width:100%;
+background:#38bdf8;
 border:none;
 border-radius:6px;
-color:white;
 cursor:pointer;
-margin-top:20px;
+}
+
+button:hover{
+background:#22c1f0;
 }
 
 </style>
@@ -53,26 +56,27 @@ margin-top:20px;
 
 <body>
 
-<h1>Student Dashboard</h1>
+<div class="box">
 
-<div class="card">
+<h2>Create Account</h2>
 
-<h3>My Courses</h3>
+<input id="email" placeholder="Email">
 
-<div id="course1" class="course">🔒 Physical Design Layout</div>
-<div id="course2" class="course">🔒 VLSI Lecture Series</div>
-<div id="course3" class="course">🔒 Cadence Analog Basics</div>
-<div id="course4" class="course">🔒 Signal and Systems</div>
-<div id="course5" class="course">🔒 Network Theory</div>
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="register()">Register</button>
+
+<p style="margin-top:15px">
+Already registered? <a href="login.html" style="color:#38bdf8">Login</a>
+</p>
 
 </div>
-
-<button onclick="logout()">Logout</button>
 
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
 
 <script>
 
@@ -82,65 +86,52 @@ authDomain: "designtechvlsi.firebaseapp.com",
 projectId: "designtechvlsi",
 storageBucket: "designtechvlsi.appspot.com",
 messagingSenderId: "268545364402",
-appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
-measurementId: "G-F5KGZK2JDK"
+appId: "1:268545364402:web:57a3d1d3fb8535998754ab"
 };
 
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
 
-firebase.auth().onAuthStateChanged(function(user){
 
-if(!user){
+function register(){
 
-window.location="login.html"
+let email=document.getElementById("email").value
+let password=document.getElementById("password").value
+
+if(email=="" || password==""){
+
+alert("Please enter email and password")
+return
 
 }
 
-else{
+firebase.auth().createUserWithEmailAndPassword(email,password)
 
-db.collection("users").doc(user.uid).get().then((doc)=>{
+.then(function(userCredential){
 
-let data = doc.data()
+let uid=userCredential.user.uid
 
-if(data.course1){
-document.getElementById("course1").innerHTML =
-"<a href='course1.html'>Physical Design Layout</a>"
-}
+db.collection("users").doc(uid).set({
 
-if(data.course2){
-document.getElementById("course2").innerHTML =
-"<a href='course2.html'>VLSI Lecture Series</a>"
-}
-
-if(data.course3){
-document.getElementById("course3").innerHTML =
-"<a href='course3.html'>Cadence Analog Basics</a>"
-}
-
-if(data.course4){
-document.getElementById("course4").innerHTML =
-"<a href='course4.html'>Signal and Systems</a>"
-}
-
-if(data.course5){
-document.getElementById("course5").innerHTML =
-"<a href='course5.html'>Network Theory</a>"
-}
+email:email,
+course1:false,
+course2:false,
+course3:false,
+course4:false,
+course5:false
 
 })
 
-}
+alert("Registration successful")
+
+window.location="login.html"
 
 })
 
+.catch(function(error){
 
-function logout(){
-
-firebase.auth().signOut().then(function(){
-
-window.location="login.html"
+alert(error.message)
 
 })
 
