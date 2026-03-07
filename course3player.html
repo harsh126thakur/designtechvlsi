@@ -17,60 +17,101 @@ margin:0;
 font-family:Poppins;
 background:#020617;
 color:white;
-text-align:center;
 }
 
-header{
-padding:25px;
+/* NAVBAR */
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 40px;
 background:#0f172a;
-font-size:28px;
-font-weight:600;
 }
 
-.container{
-max-width:1100px;
-margin:auto;
-padding:40px 20px;
+nav h2{
+margin:0;
+color:#38bdf8;
 }
 
-.player{
-background:#1e293b;
-padding:20px;
-border-radius:12px;
-box-shadow:0 0 20px #00000055;
+nav a{
+color:white;
+text-decoration:none;
 }
 
-iframe{
+/* MAIN LAYOUT */
+
+.course-container{
+display:flex;
+height:calc(100vh - 70px);
+}
+
+/* VIDEO AREA */
+
+.video-area{
+flex:3;
+padding:30px;
+}
+
+.video-area iframe{
 width:100%;
-height:600px;
+height:500px;
 border:none;
 border-radius:10px;
 }
 
-.info{
-margin-top:30px;
-background:#1e293b;
-padding:25px;
-border-radius:12px;
-text-align:left;
-}
-
-.info h3{
+.video-title{
+font-size:24px;
+margin-top:15px;
 color:#38bdf8;
 }
 
-.back{
-display:inline-block;
-margin-top:25px;
-padding:12px 20px;
-background:#38bdf8;
-border-radius:6px;
-text-decoration:none;
-color:white;
+/* PLAYLIST */
+
+.playlist{
+flex:1;
+background:#0f172a;
+overflow-y:auto;
+border-left:1px solid #1e293b;
 }
 
-.back:hover{
-background:#22c1f0;
+.playlist h3{
+padding:20px;
+margin:0;
+border-bottom:1px solid #1e293b;
+}
+
+.video-item{
+padding:15px 20px;
+cursor:pointer;
+border-bottom:1px solid #1e293b;
+}
+
+.video-item:hover{
+background:#1e293b;
+}
+
+.video-item.active{
+background:#1e293b;
+color:#38bdf8;
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+
+.course-container{
+flex-direction:column;
+}
+
+.video-area iframe{
+height:300px;
+}
+
+.playlist{
+height:300px;
+}
+
 }
 
 </style>
@@ -79,48 +120,79 @@ background:#22c1f0;
 
 <body>
 
-<header>
-Cadence Analog Basics
-</header>
+<nav>
 
-<div class="container">
+<h2>DesignTech VLSI</h2>
 
-<div class="player">
+<a href="dashboard.html">⬅ Dashboard</a>
 
-<iframe
-src="https://www.youtube.com/embed/videoseries?list=PLIpZuMTXXr7G8HBzpZYEnNhGrdqprqhwi"
+</nav>
+
+<div class="course-container">
+
+<!-- VIDEO PLAYER -->
+
+<div class="video-area">
+
+<iframe id="videoPlayer"
+src="https://www.youtube.com/embed/VIDEO_ID"
 allowfullscreen>
 </iframe>
 
-</div>
-
-<div class="info">
-
-<h3>Course Description</h3>
-
-<p>
-This course introduces analog circuit design using Cadence Virtuoso.
-You will learn schematic design, simulation, layout and verification used in semiconductor industry.
-</p>
-
-<h3>Topics Covered</h3>
-
-<ul>
-
-<li>Cadence Virtuoso Introduction</li>
-<li>Schematic Design</li>
-<li>DC / AC Analysis</li>
-<li>Transient Simulation</li>
-<li>Layout Basics</li>
-<li>DRC and LVS</li>
-
-</ul>
-
-<a class="back" href="dashboard.html">⬅ Back to Dashboard</a>
-
+<div id="videoTitle" class="video-title">
+Lesson 1
 </div>
 
 </div>
+
+<!-- PLAYLIST -->
+
+<div class="playlist">
+
+<h3>Course Lessons</h3>
+
+<div class="video-item active" onclick="playVideo('VIDEO_ID','Introduction')">
+1. Introduction
+</div>
+
+<div class="video-item" onclick="playVideo('VIDEO_ID2','Cadence Setup')">
+2. Cadence Setup
+</div>
+
+<div class="video-item" onclick="playVideo('VIDEO_ID3','Schematic Design')">
+3. Schematic Design
+</div>
+
+<div class="video-item" onclick="playVideo('VIDEO_ID4','Simulation')">
+4. Analog Simulation
+</div>
+
+<div class="video-item" onclick="playVideo('VIDEO_ID5','Layout Basics')">
+5. Layout Basics
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function playVideo(id,title){
+
+document.getElementById("videoPlayer").src=
+"https://www.youtube.com/embed/"+id
+
+document.getElementById("videoTitle").innerText=title
+
+let items=document.querySelectorAll(".video-item")
+
+items.forEach(i=>i.classList.remove("active"))
+
+event.target.classList.add("active")
+
+}
+
+</script>
 
 </body>
 </html>
