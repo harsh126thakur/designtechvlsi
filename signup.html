@@ -27,7 +27,7 @@ height:100vh;
 background:#1e293b;
 padding:40px;
 border-radius:12px;
-width:350px;
+width:360px;
 text-align:center;
 }
 
@@ -74,6 +74,8 @@ text-decoration:none;
 
 <h2>Create Account</h2>
 
+<input type="text" id="name" placeholder="Full Name">
+
 <input type="email" id="email" placeholder="Email">
 
 <input type="password" id="password" placeholder="Password">
@@ -82,7 +84,7 @@ text-decoration:none;
 
 <hr style="margin:25px 0; border:1px solid #334155;">
 
-<button id="googleLogin" class="google">Sign Up with Google</button>
+<button id="googleLogin" class="google">Continue with Google</button>
 
 <p style="margin-top:20px;">
 Already have an account? <a href="login.html">Login</a>
@@ -97,7 +99,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import {
 getAuth,
 createUserWithEmailAndPassword,
-sendEmailVerification,
+updateProfile,
 signInWithPopup,
 GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -119,6 +121,7 @@ const auth = getAuth(app);
 
 document.getElementById("signupBtn").addEventListener("click",()=>{
 
+const name=document.getElementById("name").value;
 const email=document.getElementById("email").value;
 const password=document.getElementById("password").value;
 
@@ -126,9 +129,13 @@ createUserWithEmailAndPassword(auth,email,password)
 
 .then((userCredential)=>{
 
-sendEmailVerification(userCredential.user);
+const user=userCredential.user;
 
-alert("Verification email sent. Please check your inbox.");
+updateProfile(user,{
+displayName:name
+});
+
+window.location.href="dashboard.html";
 
 })
 
@@ -140,7 +147,7 @@ alert(error.message);
 
 });
 
-/* GOOGLE SIGNUP */
+/* GOOGLE LOGIN */
 
 const provider=new GoogleAuthProvider();
 
@@ -165,5 +172,4 @@ alert(error.message);
 </script>
 
 </body>
-
 </html>
