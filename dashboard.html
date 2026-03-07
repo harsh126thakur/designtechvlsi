@@ -33,19 +33,25 @@ margin-bottom:40px;
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:30px;
-max-width:900px;
+max-width:1000px;
 margin:auto;
 }
 
 .card{
 background:#1e293b;
 padding:30px;
-border-radius:10px;
+border-radius:12px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 0 20px #38bdf8;
 }
 
 button{
 padding:10px 20px;
-background:#6366f1;
+background:#38bdf8;
 border:none;
 color:white;
 border-radius:6px;
@@ -54,13 +60,14 @@ margin-top:10px;
 }
 
 button:hover{
-background:#4f46e5;
+background:#22c1f0;
 }
 
 .logout{
 position:absolute;
 top:20px;
 right:20px;
+background:#ef4444;
 }
 
 </style>
@@ -71,7 +78,7 @@ right:20px;
 
 <button class="logout" onclick="logout()">Logout</button>
 
-<h1>Student Dashboard</h1>
+<h1>Welcome to DesignTech VLSI</h1>
 
 <div class="grid">
 
@@ -91,7 +98,7 @@ right:20px;
 </div>
 
 <div class="card">
-<h3>Signals & Systems</h3>
+<h3>Signal and Systems</h3>
 <div id="course4"></div>
 </div>
 
@@ -101,7 +108,7 @@ right:20px;
 </div>
 
 <div class="card">
-<h3>1-to-1 Mentorship</h3>
+<h3>1-to-1 VLSI Mentorship</h3>
 <div id="mentorship"></div>
 </div>
 
@@ -137,13 +144,13 @@ function showCourse(id,access,link){
 
 if(access){
 
-document.getElementById(id).innerHTML=
+document.getElementById(id).innerHTML =
 `<a href="${link}"><button>Open Course</button></a>`
 
 }else{
 
-document.getElementById(id).innerHTML=
-`<a href="payment.html?course=${id}"><button>Buy Course</button></a>`
+document.getElementById(id).innerHTML =
+`<a href="${link}"><button>View Details</button></a>`
 
 }
 
