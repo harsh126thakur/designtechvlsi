@@ -17,100 +17,68 @@ margin:0;
 font-family:Poppins;
 background:#020617;
 color:white;
-overflow-x:hidden;
 }
 
-#starfield{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:-4;
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 60px;
+background:#0f172a;
 }
 
-.grid{
-position:fixed;
-width:100%;
-height:100%;
-background-image:
-linear-gradient(#38bdf822 1px, transparent 1px),
-linear-gradient(90deg,#38bdf822 1px, transparent 1px);
-background-size:80px 80px;
-z-index:-3;
-animation:gridmove 20s linear infinite;
+nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
 }
 
-@keyframes gridmove{
-0%{transform:translateY(0)}
-100%{transform:translateY(80px)}
+nav a:hover{
+color:#38bdf8;
 }
 
 .container{
 max-width:1000px;
 margin:auto;
-padding:60px 20px;
+padding:80px 20px;
 }
 
-.hero{
-text-align:center;
-margin-bottom:40px;
-}
-
-.hero h1{
-font-size:42px;
-background:linear-gradient(90deg,#38bdf8,#6366f1);
--webkit-background-clip:text;
-color:transparent;
-}
-
-.video-box{
-background:#1e293b;
-padding:25px;
-border-radius:12px;
-text-align:center;
-margin-bottom:40px;
-}
-
-iframe{
-width:100%;
-height:450px;
-border-radius:10px;
-}
-
-.lecture{
-background:#1e293b;
-padding:16px;
-border-radius:10px;
-margin-bottom:10px;
-display:flex;
-justify-content:space-between;
-cursor:pointer;
-}
-
-.lock{
-color:#f87171;
-}
-
-.enroll{
-background:#111827;
-padding:40px;
-border-radius:12px;
-text-align:center;
-margin-top:50px;
-}
-
-.price{
-font-size:28px;
-color:#22c55e;
+h1{
+font-size:40px;
+color:#38bdf8;
 margin-bottom:20px;
 }
 
+h2{
+margin-top:40px;
+color:#6366f1;
+}
+
+ul{
+line-height:1.8;
+}
+
+.price{
+margin-top:30px;
+font-size:22px;
+}
+
+.price-old{
+text-decoration:line-through;
+color:#aaa;
+}
+
+.price-new{
+color:#22c55e;
+margin-left:10px;
+font-weight:bold;
+}
+
 button{
+margin-top:40px;
 padding:14px 28px;
-border:none;
 background:#38bdf8;
-color:black;
+border:none;
 border-radius:6px;
 font-size:16px;
 cursor:pointer;
@@ -122,9 +90,9 @@ background:#22c1f0;
 
 footer{
 text-align:center;
-padding:30px;
-margin-top:60px;
-background:#020617;
+padding:40px;
+background:#0f172a;
+margin-top:80px;
 }
 
 </style>
@@ -133,178 +101,89 @@ background:#020617;
 
 <body>
 
-<canvas id="starfield"></canvas>
-<div class="grid"></div>
+<nav>
+
+<h2>DesignTech VLSI</h2>
+
+<div>
+
+<a href="index.html">Home</a>
+<a href="login.html">Login</a>
+<a href="signup.html">Sign Up</a>
+
+</div>
+
+</nav>
 
 <div class="container">
 
-<div class="hero">
 <h1>VLSI Lecture Series</h1>
-<p>Complete VLSI fundamentals for ECE students and semiconductor careers</p>
+
+<p>
+This course provides a strong foundation in VLSI design concepts required for semiconductor careers and interviews.
+It covers digital design fundamentals, CMOS logic, semiconductor basics, and modern chip design flow.
+</p>
+
+<h2>Topics Covered</h2>
+
+<ul>
+
+<li>Introduction to VLSI Design</li>
+<li>Moore's Law and Semiconductor Industry</li>
+<li>CMOS Technology Basics</li>
+<li>Combinational Logic Design</li>
+<li>Sequential Circuits</li>
+<li>Timing Analysis</li>
+<li>Power Optimization</li>
+<li>RTL Design Concepts</li>
+<li>Introduction to Physical Design</li>
+<li>ASIC Design Flow</li>
+
+</ul>
+
+<h2>Course Benefits</h2>
+
+<ul>
+
+<li>Clear understanding of VLSI fundamentals</li>
+<li>Strong preparation for semiconductor interviews</li>
+<li>Industry oriented examples</li>
+<li>Concepts required for RTL and Physical Design</li>
+<li>Guidance for VLSI career path</li>
+
+</ul>
+
+<h2>Who Should Take This Course</h2>
+
+<ul>
+
+<li>ECE Students</li>
+<li>VLSI Beginners</li>
+<li>Students preparing for semiconductor jobs</li>
+<li>Engineers switching to VLSI domain</li>
+
+</ul>
+
+<div class="price">
+
+<span class="price-old">₹3999</span>
+<span class="price-new">₹1999</span>
+
 </div>
 
+<a href="login.html">
 
-<div class="video-box">
-
-<h2>Free Preview</h2>
-
-<iframe id="player"
-src="https://www.youtube.com/embed/qVqu8EHGK34"
-allowfullscreen>
-</iframe>
-
-</div>
-
-
-<h2>Course Lectures</h2>
-
-<div class="lecture" onclick="playVideo('qVqu8EHGK34',true)">
-<span>Lecture 1 – Introduction</span>
-<span>Free</span>
-</div>
-
-<div class="lecture" onclick="playVideo('VIDEO2',false)">
-<span>Lecture 2 – CMOS Basics</span>
-<span class="lock">🔒 Locked</span>
-</div>
-
-<div class="lecture" onclick="playVideo('VIDEO3',false)">
-<span>Lecture 3 – RTL Design</span>
-<span class="lock">🔒 Locked</span>
-</div>
-
-<div class="lecture" onclick="playVideo('VIDEO4',false)">
-<span>Lecture 4 – Timing Analysis</span>
-<span class="lock">🔒 Locked</span>
-</div>
-
-
-<div class="enroll" id="buyBox">
-
-<h2>Enroll in Full Course</h2>
-
-<p class="price">₹1999</p>
-
-<a href="payment.html?course=course2">
-
-<button>Buy Course</button>
+<button>Login to Enroll</button>
 
 </a>
 
 </div>
 
-</div>
-
 <footer>
+
 <p>© 2026 DesignTech VLSI</p>
+
 </footer>
-
-
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
-<script src="firebase-config.js"></script>
-
-<script>
-
-const db = firebase.firestore()
-
-let unlocked=false
-
-firebase.auth().onAuthStateChanged(function(user){
-
-if(!user){
-
-alert("Please login to access the course")
-
-window.location="login.html"
-
-}
-
-else{
-
-db.collection("users").doc(user.uid).get().then(doc=>{
-
-let data=doc.data()
-
-if(data.course2){
-
-unlocked=true
-
-document.getElementById("buyBox").style.display="none"
-
-}
-
-})
-
-}
-
-})
-
-
-function playVideo(video,free){
-
-if(free || unlocked){
-
-document.getElementById("player").src=
-"https://www.youtube.com/embed/"+video
-
-}
-
-else{
-
-alert("Please purchase the course to unlock this lecture")
-
-}
-
-}
-
-
-/* STAR BACKGROUND */
-
-const canvas=document.getElementById("starfield")
-const ctx=canvas.getContext("2d")
-
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
-
-let stars=[]
-
-for(let i=0;i<200;i++){
-
-stars.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2
-})
-
-}
-
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-stars.forEach(star=>{
-
-star.y+=0.2
-
-if(star.y>canvas.height){
-star.y=0
-}
-
-ctx.fillStyle="white"
-ctx.fillRect(star.x,star.y,star.size,star.size)
-
-})
-
-requestAnimationFrame(animate)
-
-}
-
-animate()
-
-</script>
 
 </body>
 
