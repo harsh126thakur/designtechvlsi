@@ -59,12 +59,6 @@ padding:30px;
 border-radius:12px;
 text-align:center;
 position:relative;
-transition:0.3s;
-}
-
-.card:hover{
-transform:translateY(-8px);
-box-shadow:0 0 20px #38bdf8;
 }
 
 .lock{
@@ -129,11 +123,7 @@ margin-top:60px;
 
 <h3>Physical Design Layout</h3>
 
-<p>Complete RTL to GDSII flow.</p>
-
-<button onclick="buyCourse('course1',1999)">
-Unlock Course
-</button>
+<button onclick="buyCourse('course1',1999)">Unlock Course</button>
 
 <button onclick="openCourse('course1')" id="open-course1" style="display:none">
 Open Course
@@ -145,14 +135,14 @@ Open Course
 
 <div class="card">
 
-<div class="lock">LOCKED</div>
+<div class="lock" id="lock-course2">LOCKED</div>
 
 <h3>VLSI Lecture Series</h3>
 
-<p>Learn VLSI fundamentals.</p>
+<button onclick="buyCourse('course2',1999)">Unlock Course</button>
 
-<button onclick="buyCourse('course2',1999)">
-Unlock Course
+<button onclick="openCourse('course2')" id="open-course2" style="display:none">
+Open Course
 </button>
 
 </div>
@@ -161,14 +151,14 @@ Unlock Course
 
 <div class="card">
 
-<div class="lock">LOCKED</div>
+<div class="lock" id="lock-course3">LOCKED</div>
 
 <h3>Cadence Analog Basics</h3>
 
-<p>Analog design using Cadence.</p>
+<button onclick="buyCourse('course3',1)">Unlock Course ₹1</button>
 
-<button onclick="buyCourse('course3',1999)">
-Unlock Course
+<button onclick="openCourse('course3')" id="open-course3" style="display:none">
+Open Course
 </button>
 
 </div>
@@ -177,14 +167,14 @@ Unlock Course
 
 <div class="card">
 
-<div class="lock">LOCKED</div>
+<div class="lock" id="lock-course4">LOCKED</div>
 
 <h3>Signals and Systems</h3>
 
-<p>Core signal processing concepts.</p>
+<button onclick="buyCourse('course4',299)">Unlock Course</button>
 
-<button onclick="buyCourse('course4',299)">
-Unlock Course
+<button onclick="openCourse('course4')" id="open-course4" style="display:none">
+Open Course
 </button>
 
 </div>
@@ -193,14 +183,14 @@ Unlock Course
 
 <div class="card">
 
-<div class="lock">LOCKED</div>
+<div class="lock" id="lock-course5">LOCKED</div>
 
 <h3>Network Theory</h3>
 
-<p>Circuit analysis fundamentals.</p>
+<button onclick="buyCourse('course5',299)">Unlock Course</button>
 
-<button onclick="buyCourse('course5',299)">
-Unlock Course
+<button onclick="openCourse('course5')" id="open-course5" style="display:none">
+Open Course
 </button>
 
 </div>
@@ -213,20 +203,14 @@ Unlock Course
 <p>© 2026 DesignTech VLSI</p>
 </footer>
 
-
-<!-- RAZORPAY -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import {
-getAuth,
-onAuthStateChanged,
-signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getAuth,onAuthStateChanged,signOut }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
@@ -240,8 +224,6 @@ measurementId: "G-F5KGZK2JDK"
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
-/* CHECK LOGIN */
 
 onAuthStateChanged(auth,(user)=>{
 
@@ -259,8 +241,6 @@ document.getElementById("welcome").innerText="Welcome, " + name;
 
 });
 
-/* LOGOUT */
-
 document.getElementById("logout").addEventListener("click",()=>{
 
 signOut(auth).then(()=>{
@@ -273,10 +253,7 @@ window.location.href="index.html";
 
 </script>
 
-
 <script>
-
-/* RAZORPAY PAYMENT */
 
 function buyCourse(course,price){
 
@@ -292,7 +269,7 @@ name: "DesignTech VLSI",
 
 description: course + " Access",
 
-handler: function (response){
+handler: function (){
 
 localStorage.setItem(course,"unlocked")
 
@@ -310,33 +287,33 @@ rzp.open();
 
 }
 
-
-/* CHECK COURSE ACCESS */
-
 function checkCourses(){
 
-if(localStorage.getItem("course1")=="unlocked"){
+let courses=["course1","course2","course3","course4","course5"]
 
-document.getElementById("lock-course1").innerText="UNLOCKED"
+courses.forEach(c=>{
 
-document.getElementById("open-course1").style.display="block"
+if(localStorage.getItem(c)=="unlocked"){
+
+document.getElementById("lock-"+c).innerText="UNLOCKED"
+
+document.getElementById("open-"+c).style.display="block"
 
 }
 
+})
+
 }
 
-checkCourses();
-
-
-/* OPEN COURSE */
+checkCourses()
 
 function openCourse(course){
 
-if(course=="course1"){
-
-window.location.href="course1player.html"
-
-}
+if(course=="course1") window.location.href="course1player.html"
+if(course=="course2") window.location.href="course2player.html"
+if(course=="course3") window.location.href="course3player.html"
+if(course=="course4") window.location.href="course4player.html"
+if(course=="course5") window.location.href="course5player.html"
 
 }
 
