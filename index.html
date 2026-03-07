@@ -261,14 +261,17 @@ background:#0f172a;
 <h2>DesignTech VLSI</h2>
 
 <div>
+
 <a href="#">Home</a>
 <a href="#courses">Courses</a>
 <a href="#founder">Founder</a>
 <a href="#contact">Contact</a>
+<a href="login.html">Login</a>
+<a href="dashboard.html">Dashboard</a>
+
 </div>
 
 </nav>
-
 <section class="hero">
 
 <h1>DesignTech VLSI</h1>
@@ -479,6 +482,20 @@ requestAnimationFrame(animate)
 animate()
 
 </script>
+  <script>
+
+firebase.auth().onAuthStateChanged(function(user){
+
+if(!user){
+
+window.location="login.html"
+
+}
+
+});
+
+</script>
 
 </body>
+  
 </html>
