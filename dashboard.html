@@ -25,10 +25,16 @@ margin:20px 0;
 border-radius:10px;
 }
 
+.course{
+margin:10px 0;
+padding:10px;
+background:#0f172a;
+border-radius:6px;
+}
+
 a{
 color:#38bdf8;
-display:block;
-margin:8px 0;
+text-decoration:none;
 }
 
 button{
@@ -38,6 +44,7 @@ border:none;
 border-radius:6px;
 color:white;
 cursor:pointer;
+margin-top:20px;
 }
 
 </style>
@@ -52,11 +59,11 @@ cursor:pointer;
 
 <h3>My Courses</h3>
 
-<a href="course1.html">Physical Design Layout</a>
-<a href="course2.html">VLSI Lecture Series</a>
-<a href="course3.html">Cadence Analog Basics</a>
-<a href="course4.html">Signal and Systems</a>
-<a href="course5.html">Network Theory</a>
+<div id="course1" class="course">🔒 Physical Design Layout</div>
+<div id="course2" class="course">🔒 VLSI Lecture Series</div>
+<div id="course3" class="course">🔒 Cadence Analog Basics</div>
+<div id="course4" class="course">🔒 Signal and Systems</div>
+<div id="course5" class="course">🔒 Network Theory</div>
 
 </div>
 
@@ -65,6 +72,7 @@ cursor:pointer;
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script>
 
@@ -72,7 +80,7 @@ const firebaseConfig = {
 apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
 authDomain: "designtechvlsi.firebaseapp.com",
 projectId: "designtechvlsi",
-storageBucket: "designtechvlsi.firebasestorage.app",
+storageBucket: "designtechvlsi.appspot.com",
 messagingSenderId: "268545364402",
 appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
 measurementId: "G-F5KGZK2JDK"
@@ -80,28 +88,7 @@ measurementId: "G-F5KGZK2JDK"
 
 firebase.initializeApp(firebaseConfig);
 
-firebase.auth().onAuthStateChanged(function(user){
-
-if(!user){
-window.location="login.html"
-}
-
-});
-
-function logout(){
-
-firebase.auth().signOut()
-
-.then(function(){
-
-window.location="login.html"
-
-})
-
-}
-
-</script>
-<script>
+const db = firebase.firestore();
 
 firebase.auth().onAuthStateChanged(function(user){
 
@@ -115,27 +102,31 @@ else{
 
 db.collection("users").doc(user.uid).get().then((doc)=>{
 
-let data=doc.data()
+let data = doc.data()
 
 if(data.course1){
-
-document.getElementById("course1").innerHTML=
+document.getElementById("course1").innerHTML =
 "<a href='course1.html'>Physical Design Layout</a>"
-
 }
 
 if(data.course2){
-
-document.getElementById("course2").innerHTML=
+document.getElementById("course2").innerHTML =
 "<a href='course2.html'>VLSI Lecture Series</a>"
-
 }
 
 if(data.course3){
-
-document.getElementById("course3").innerHTML=
+document.getElementById("course3").innerHTML =
 "<a href='course3.html'>Cadence Analog Basics</a>"
+}
 
+if(data.course4){
+document.getElementById("course4").innerHTML =
+"<a href='course4.html'>Signal and Systems</a>"
+}
+
+if(data.course5){
+document.getElementById("course5").innerHTML =
+"<a href='course5.html'>Network Theory</a>"
 }
 
 })
@@ -143,7 +134,19 @@ document.getElementById("course3").innerHTML=
 }
 
 })
+
+
+function logout(){
+
+firebase.auth().signOut().then(function(){
+
+window.location="login.html"
+
+})
+
+}
 
 </script>
+
 </body>
 </html>
