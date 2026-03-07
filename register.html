@@ -79,7 +79,7 @@ async function register(){
 
 let email=document.getElementById("email").value
 let password=document.getElementById("password").value
-let coupon=document.getElementById("coupon").value
+let coupon=document.getElementById("coupon").value.trim()
 
 try{
 
@@ -98,6 +98,8 @@ course5:false,
 mentorship:false
 
 })
+
+/* Coupon Check */
 
 if(coupon!=""){
 
@@ -178,5 +180,4 @@ alert(error.message)
 </script>
 
 </body>
-
 </html>
