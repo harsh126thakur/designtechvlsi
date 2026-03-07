@@ -42,7 +42,7 @@ display:flex;
 height:calc(100vh - 70px);
 }
 
-/* VIDEO AREA */
+/* VIDEO */
 
 .video-area{
 flex:3;
@@ -111,7 +111,7 @@ color:#38bdf8;
 <div class="video-area">
 
 <iframe id="videoPlayer"
-src="https://www.youtube.com/embed/VIDEO_ID1"
+src="https://www.youtube.com/embed/9Wq2R0C4yLE"
 allowfullscreen>
 </iframe>
 
@@ -125,39 +125,39 @@ Lesson 1
 
 <h3>Cadence Analog Basics</h3>
 
-<div class="video-item active" onclick="playVideo('VIDEO_ID1','NMOS Simulation')">
+<div class="video-item active" onclick="playVideo('9Wq2R0C4yLE','NMOS Simulation using Cadence')">
 1. NMOS Simulation using Cadence
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID2','Input Output Curve')">
+<div class="video-item" onclick="playVideo('KXAkxS9M9RU','NMOS Input Output Curve')">
 2. NMOS Input Output Curve
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID3','Transconductance gm')">
-3. Transconductance gm Analysis
+<div class="video-item" onclick="playVideo('pW7sEoG9n4Q','Transconductance gm Analysis')">
+3. Transconductance gm
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID4','Cadence Setup')">
+<div class="video-item" onclick="playVideo('a3n9S8T3LKo','Cadence Setup')">
 4. Cadence Setup
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID5','Schematic Design')">
+<div class="video-item" onclick="playVideo('dS9P2Q0K7sE','Schematic Design')">
 5. Schematic Design
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID6','DC Simulation')">
+<div class="video-item" onclick="playVideo('g3L9Z2R7Y2o','DC Simulation')">
 6. DC Simulation
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID7','AC Analysis')">
+<div class="video-item" onclick="playVideo('Y8R3X5E0sW8','AC Analysis')">
 7. AC Analysis
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID8','Transient Analysis')">
+<div class="video-item" onclick="playVideo('J3P8D5K4R0o','Transient Analysis')">
 8. Transient Analysis
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID9','Layout Basics')">
+<div class="video-item" onclick="playVideo('R4X2P7W6S0o','Layout Basics')">
 9. Layout Basics
 </div>
 
@@ -169,16 +169,18 @@ Lesson 1
 
 function playVideo(id,title){
 
-document.getElementById("videoPlayer").src=
+document.getElementById("videoPlayer").src =
 "https://www.youtube.com/embed/"+id
 
-document.getElementById("videoTitle").innerText=title
+document.getElementById("videoTitle").innerText = title
 
-let items=document.querySelectorAll(".video-item")
+var items = document.querySelectorAll(".video-item")
 
-items.forEach(i=>i.classList.remove("active"))
+items.forEach(function(i){
+i.classList.remove("active")
+})
 
-event.target.classList.add("active")
+event.currentTarget.classList.add("active")
 
 }
 
