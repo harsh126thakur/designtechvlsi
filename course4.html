@@ -20,8 +20,6 @@ color:white;
 overflow-x:hidden;
 }
 
-/* star background */
-
 #starfield{
 position:fixed;
 top:0;
@@ -30,8 +28,6 @@ width:100%;
 height:100%;
 z-index:-4;
 }
-
-/* grid */
 
 .grid{
 position:fixed;
@@ -68,16 +64,12 @@ background:linear-gradient(90deg,#38bdf8,#6366f1);
 color:transparent;
 }
 
-/* video */
-
 iframe{
 width:100%;
 height:450px;
 border-radius:10px;
 margin-bottom:30px;
 }
-
-/* lecture cards */
 
 .lecture{
 background:#1e293b;
@@ -92,8 +84,6 @@ cursor:pointer;
 .lock{
 color:#f87171;
 }
-
-/* enroll */
 
 .enroll{
 background:#111827;
@@ -136,64 +126,84 @@ background:#020617;
 
 <div class="hero">
 
-<h1 id="courseTitle"></h1>
+<h1>Signal and Systems</h1>
 
 <p>Fundamentals of signals, Fourier analysis and Laplace transform</p>
 
 </div>
 
-<iframe id="player"></iframe>
+<iframe id="player"
+src="https://www.youtube.com/embed/EEgGKQJSXb8"
+allowfullscreen>
+</iframe>
 
 <h2>Course Lectures</h2>
 
 <div id="lectureList"></div>
 
-<div class="enroll">
+<div class="enroll" id="buyBox">
 
 <h2>Unlock Full Course</h2>
 
 <p style="font-size:28px;color:#22c55e;">₹299</p>
 
-<a href="upi://pay?pa=7550233792@ybl&pn=DesignTechVLSI&am=299&cu=INR">
+<a href="payment.html?course=course4">
 
-<button>Pay with UPI</button>
+<button>Buy Course</button>
 
 </a>
-
-<p style="margin-top:15px">
-
-After payment send screenshot to  
-<b>harsh_rt@ece.iitr.ac.in</b>
-
-</p>
 
 </div>
 
 </div>
 
 <footer>
-
 <p>© 2026 DesignTech VLSI</p>
-
 </footer>
 
 
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<script src="firebase-config.js"></script>
+
 <script>
 
-/* COURSE SETTINGS */
-
-const courseTitle="Signal and Systems"
-
-const firstVideo="EEgGKQJSXb8"
-
-
-document.getElementById("courseTitle").innerText=courseTitle
-
-document.getElementById("player").src=
-"https://www.youtube.com/embed/"+firstVideo
-
+const db = firebase.firestore()
 
 let unlocked=false
+
+firebase.auth().onAuthStateChanged(function(user){
+
+if(!user){
+
+alert("Please login to access the course")
+
+window.location="login.html"
+
+}
+
+else{
+
+db.collection("users").doc(user.uid).get().then(doc=>{
+
+let data=doc.data()
+
+if(data.course4){
+
+unlocked=true
+
+document.getElementById("buyBox").style.display="none"
+
+}
+
+})
+
+}
+
+})
+
 
 function playVideo(video,free){
 
@@ -202,39 +212,28 @@ if(free || unlocked){
 document.getElementById("player").src=
 "https://www.youtube.com/embed/"+video
 
-}else{
-
-let pass=prompt("Enter Course Access Password")
-
-if(pass==="designtech"){
-
-unlocked=true
-
-document.getElementById("player").src=
-"https://www.youtube.com/embed/"+video
-
-}else{
-
-alert("Please enroll to access this lecture")
-
 }
+
+else{
+
+alert("Please purchase the course to unlock this lecture")
 
 }
 
 }
 
 
-/* lecture generation */
+/* Lecture List */
+
+const lectures=[
+{title:"Basic Signals",video:"EEgGKQJSXb8"},
+{title:"Fourier Transform",video:"EEgGKQJSXb8"},
+{title:"Laplace Transform",video:"EEgGKQJSXb8"}
+]
 
 const list=document.getElementById("lectureList")
 
-const lectures=[
-"Basic Signals",
-"Fourier Transform",
-"Laplace Transform"
-]
-
-lectures.forEach((title,index)=>{
+lectures.forEach((lec,index)=>{
 
 let div=document.createElement("div")
 
@@ -242,15 +241,17 @@ div.className="lecture"
 
 if(index===0){
 
-div.innerHTML="<span>Lecture 1 – "+title+"</span><span>Free</span>"
+div.innerHTML="<span>Lecture 1 – "+lec.title+"</span><span>Free</span>"
 
-div.onclick=()=>playVideo(firstVideo,true)
+div.onclick=()=>playVideo(lec.video,true)
 
-}else{
+}
 
-div.innerHTML="<span>Lecture "+(index+1)+" – "+title+"</span><span class='lock'>🔒 Locked</span>"
+else{
 
-div.onclick=()=>playVideo(firstVideo,false)
+div.innerHTML="<span>Lecture "+(index+1)+" – "+lec.title+"</span><span class='lock'>🔒 Locked</span>"
+
+div.onclick=()=>playVideo(lec.video,false)
 
 }
 
@@ -259,7 +260,7 @@ list.appendChild(div)
 })
 
 
-/* star animation */
+/* Star Animation */
 
 const canvas=document.getElementById("starfield")
 const ctx=canvas.getContext("2d")
@@ -303,35 +304,6 @@ requestAnimationFrame(animate)
 animate()
 
 </script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<script>
-
-const firebaseConfig = {
-apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
-authDomain: "designtechvlsi.firebaseapp.com",
-projectId: "designtechvlsi",
-storageBucket: "designtechvlsi.appspot.com",
-messagingSenderId: "268545364402",
-appId: "1:268545364402:web:57a3d1d3fb8535998754ab"
-};
-
-firebase.initializeApp(firebaseConfig);
-
-firebase.auth().onAuthStateChanged(function(user){
-
-if(!user){
-
-alert("Please login to access the course")
-
-window.location="login.html"
-
-}
-
-});
-
-</script>
 </body>
-
 </html>
