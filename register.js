@@ -1,72 +1,105 @@
 async function register(){
 
-let name = document.getElementById("name").value;
 let email = document.getElementById("email").value;
 let password = document.getElementById("password").value;
-let coupon = document.getElementById("coupon").value;
+let couponCode = document.getElementById("coupon").value;
 
-let courseAccess = false;
-let couponUsed = null;
+try{
 
-if(coupon !== ""){
-
-let couponDoc = await db.collection("coupons").doc(coupon).get();
-
-if(couponDoc.exists){
-
-let data = couponDoc.data();
-
-let today = new Date();
-let expiry = new Date(data.expiry);
-
-if(data.active && today <= expiry && data.usedCount < data.maxUses){
-
-courseAccess = true;
-couponUsed = coupon;
-
-await db.collection("coupons").doc(coupon).update({
-usedCount: firebase.firestore.FieldValue.increment(1)
-});
-
-}else{
-
-alert("Coupon expired or usage limit reached");
-return;
-
-}
-
-}else{
-
-alert("Invalid Coupon Code");
-return;
-
-}
-
-}
-
-firebase.auth().createUserWithEmailAndPassword(email,password)
-.then(async (userCredential)=>{
+let userCredential = await firebase.auth().createUserWithEmailAndPassword(email,password);
 
 let uid = userCredential.user.uid;
 
-await db.collection("students").doc(uid).set({
+await db.collection("users").doc(uid).set({
 
-name:name,
 email:email,
-courseAccess:courseAccess,
-couponUsed:couponUsed
+
+course1:false,
+course2:false,
+course3:false,
+course4:false,
+course5:false,
+mentorship:false
 
 });
+
+if(couponCode !== ""){
+
+await applyCoupon(couponCode,uid);
+
+}
 
 alert("Registration Successful");
 
 window.location="dashboard.html";
 
-})
-.catch((error)=>{
+}catch(error){
 
 alert(error.message);
 
+}
+
+}
+
+async function applyCoupon(code,uid){
+
+let couponDoc = await db.collection("coupons").doc(code).get();
+
+if(!couponDoc.exists){
+
+alert("Invalid Coupon");
+
+return;
+
+}
+
+let data = couponDoc.data();
+
+if(!data.active){
+
+alert("Coupon Disabled");
+
+return;
+
+}
+
+let today = new Date();
+
+let expiry = new Date(data.expiry);
+
+if(today > expiry){
+
+alert("Coupon Expired");
+
+return;
+
+}
+
+if(data.usedCount >= data.maxUses){
+
+alert("Coupon Limit Reached");
+
+return;
+
+}
+
+await db.collection("coupons").doc(code).update({
+
+usedCount: firebase.firestore.FieldValue.increment(1)
+
 });
+
+await db.collection("users").doc(uid).update({
+
+course1:true,
+course2:true,
+course3:true,
+course4:true,
+course5:true,
+mentorship:true
+
+});
+
+alert("Coupon Applied Successfully");
 
 }
