@@ -214,3 +214,92 @@ padding:40px;
 background:#0f172a;
 
 }
+.cards{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:40px;
+margin-top:40px;
+
+}
+
+.card{
+
+background:#1e293b;
+padding:20px;
+border-radius:12px;
+text-align:center;
+
+transition:0.4s;
+position:relative;
+overflow:hidden;
+
+}
+
+.card img{
+
+width:100%;
+border-radius:8px;
+transition:0.4s;
+
+}
+
+/* glow effect */
+
+.card::before{
+
+content:"";
+position:absolute;
+top:-50%;
+left:-50%;
+width:200%;
+height:200%;
+
+background:linear-gradient(
+45deg,
+transparent,
+#38bdf8,
+transparent
+);
+
+opacity:0;
+transition:0.5s;
+
+}
+
+/* hover animation */
+
+.card:hover{
+
+transform:translateY(-10px);
+box-shadow:0 0 25px #38bdf8;
+
+}
+
+.card:hover img{
+
+transform:scale(1.05);
+
+}
+
+.card:hover::before{
+
+opacity:0.2;
+animation:glowmove 3s linear infinite;
+
+}
+
+@keyframes glowmove{
+
+0%{transform:rotate(0deg)}
+100%{transform:rotate(360deg)}
+
+}
+
+.card p{
+
+margin-top:15px;
+font-size:15px;
+color:#cbd5f5;
+
+}
