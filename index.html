@@ -20,8 +20,6 @@ color:white;
 overflow-x:hidden;
 }
 
-/* STAR BACKGROUND */
-
 #starfield{
 position:fixed;
 top:0;
@@ -30,8 +28,6 @@ width:100%;
 height:100%;
 z-index:-4;
 }
-
-/* NEON GRID */
 
 .circuit{
 position:fixed;
@@ -50,8 +46,6 @@ animation:gridmove 20s linear infinite;
 100%{transform:translateY(80px)}
 }
 
-/* NAVBAR */
-
 nav{
 display:flex;
 justify-content:space-between;
@@ -69,8 +63,6 @@ nav a:hover{
 color:#38bdf8;
 }
 
-/* HERO */
-
 .hero{
 text-align:center;
 padding:120px 20px;
@@ -82,8 +74,6 @@ background:linear-gradient(90deg,#38bdf8,#6366f1);
 -webkit-background-clip:text;
 color:transparent;
 }
-
-/* CHIP */
 
 .chip3d{
 margin:auto;
@@ -100,8 +90,6 @@ box-shadow:0 0 30px #38bdf8;
 0%{transform:rotate(0deg)}
 100%{transform:rotate(360deg)}
 }
-
-/* INFO SECTION */
 
 .info-icons{
 display:grid;
@@ -124,8 +112,6 @@ transition:0.3s;
 transform:translateY(-10px);
 background:#334155;
 }
-
-/* COURSES */
 
 .courses{
 display:grid;
@@ -182,8 +168,6 @@ button:hover{
 background:#22c1f0;
 }
 
-/* FOUNDER */
-
 .founder{
 display:flex;
 flex-wrap:wrap;
@@ -197,8 +181,6 @@ width:240px;
 border-radius:50%;
 border:4px solid #38bdf8;
 }
-
-/* TESTIMONIALS */
 
 .testimonials{
 padding:80px 40px;
@@ -216,8 +198,6 @@ background:#1e293b;
 padding:30px;
 border-radius:12px;
 }
-
-/* CONTACT */
 
 .contact{
 text-align:center;
@@ -255,7 +235,7 @@ background:#0f172a;
 <a href="#founder">Founder</a>
 <a href="#contact">Contact</a>
 <a href="login.html">Login</a>
-<a href="register.html">Register</a>
+<a id="registerLink" href="register.html">Register</a>
 <a href="dashboard.html">Dashboard</a>
 
 </div>
@@ -424,6 +404,14 @@ requestAnimationFrame(animate)
 }
 
 animate()
+
+// AUTO COUPON SYSTEM
+const params=new URLSearchParams(window.location.search)
+const coupon=params.get("coupon")
+
+if(coupon){
+document.getElementById("registerLink").href="register.html?coupon="+coupon
+}
 
 </script>
 
