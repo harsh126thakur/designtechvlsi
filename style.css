@@ -334,3 +334,25 @@ transform:translateY(80px);
 }
 
 }
+.circuit-bg::after{
+
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+
+background-image:radial-gradient(#38bdf8 1px, transparent 1px);
+background-size:120px 120px;
+
+opacity:0.2;
+
+animation:circuits 30s linear infinite;
+
+}
+
+@keyframes circuits{
+
+0%{transform:translateX(0)}
+100%{transform:translateX(200px)}
+
+}
