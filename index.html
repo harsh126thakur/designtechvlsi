@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 
@@ -31,7 +32,7 @@ height:100%;
 z-index:-4;
 }
 
-/* GRID */
+/* NEON GRID */
 
 .grid{
 position:fixed;
@@ -50,7 +51,51 @@ animation:gridmove 20s linear infinite;
 100%{transform:translateY(80px)}
 }
 
-/* FLOATING CHIP ICON */
+/* ROTATING 3D CUBE */
+
+.cube-container{
+perspective:800px;
+display:flex;
+justify-content:center;
+margin-top:40px;
+}
+
+.cube{
+
+width:120px;
+height:120px;
+position:relative;
+transform-style:preserve-3d;
+animation:rotateCube 10s infinite linear;
+
+}
+
+.cube div{
+
+position:absolute;
+width:120px;
+height:120px;
+border:2px solid #38bdf8;
+background:rgba(56,189,248,0.1);
+
+}
+
+.front{transform:translateZ(60px);}
+.back{transform:rotateY(180deg) translateZ(60px);}
+.right{transform:rotateY(90deg) translateZ(60px);}
+.left{transform:rotateY(-90deg) translateZ(60px);}
+.top{transform:rotateX(90deg) translateZ(60px);}
+.bottom{transform:rotateX(-90deg) translateZ(60px);}
+
+@keyframes rotateCube{
+
+0%{transform:rotateX(0) rotateY(0)}
+
+100%{transform:rotateX(360deg) rotateY(360deg)}
+
+}
+
+/* FLOATING CHIPS */
 
 .chip{
 position:fixed;
@@ -62,30 +107,6 @@ z-index:-2;
 @keyframes floatChip{
 0%{transform:translateY(100vh) rotate(0deg)}
 100%{transform:translateY(-200px) rotate(360deg)}
-}
-
-/* FLOATING CUBES */
-
-.cube{
-position:fixed;
-width:40px;
-height:40px;
-border:2px solid #38bdf8;
-animation:floatCube 25s linear infinite;
-opacity:0.3;
-z-index:-2;
-}
-
-@keyframes floatCube{
-
-0%{
-transform:translateY(100vh) rotate(0deg)
-}
-
-100%{
-transform:translateY(-200px) rotate(360deg)
-}
-
 }
 
 /* NAVBAR */
@@ -107,7 +128,7 @@ text-decoration:none;
 
 .hero{
 text-align:center;
-padding:140px 20px;
+padding:120px 20px;
 }
 
 .hero h1{
@@ -149,71 +170,6 @@ font-size:20px;
 margin-left:8px;
 }
 
-/* ABOUT */
-
-.about{
-display:flex;
-gap:40px;
-padding:80px;
-align-items:center;
-}
-
-.about img{
-width:240px;
-border-radius:50%;
-}
-
-/* BENEFITS */
-
-.benefits{
-padding:60px;
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:30px;
-}
-
-.box{
-background:#0f172a;
-padding:30px;
-border-radius:10px;
-}
-
-/* TESTIMONIAL */
-
-.testimonials{
-padding:60px;
-text-align:center;
-}
-
-.test-card{
-background:#0f172a;
-padding:25px;
-border-radius:10px;
-margin:20px auto;
-max-width:600px;
-}
-
-/* FAQ */
-
-.faq{
-padding:60px;
-}
-
-.faq-item{
-background:#0f172a;
-padding:20px;
-margin-bottom:20px;
-border-radius:10px;
-}
-
-/* FOOTER */
-
-footer{
-text-align:center;
-padding:40px;
-background:#0f172a;
-}
-
 </style>
 
 </head>
@@ -224,41 +180,27 @@ background:#0f172a;
 
 <div class="grid"></div>
 
-<!-- floating cubes -->
-
-<div class="cube" style="left:10%"></div>
-<div class="cube" style="left:30%"></div>
-<div class="cube" style="left:50%"></div>
-<div class="cube" style="left:70%"></div>
-<div class="cube" style="left:90%"></div>
-
 <!-- floating chip icons -->
 
-<svg class="chip" style="left:20%" width="40" height="40" viewBox="0 0 24 24" fill="#38bdf8">
+<svg class="chip" style="left:25%" width="40" height="40" viewBox="0 0 24 24" fill="#38bdf8">
 <path d="M9 3v2H7v2H5v2H3v2h2v2H3v2h2v2h2v2h2v2h2v-2h2v2h2v-2h2v-2h2v-2h2v-2h-2v-2h2v-2h-2V7h-2V5h-2V3h-2v2h-2V3z"/>
 </svg>
 
-<svg class="chip" style="left:60%" width="40" height="40" viewBox="0 0 24 24" fill="#38bdf8">
+<svg class="chip" style="left:70%" width="40" height="40" viewBox="0 0 24 24" fill="#38bdf8">
 <path d="M9 3v2H7v2H5v2H3v2h2v2H3v2h2v2h2v2h2v2h2v-2h2v2h2v-2h2v-2h2v-2h2v-2h-2v-2h2v-2h-2V7h-2V5h-2V3h-2v2h-2V3z"/>
 </svg>
-
 
 <nav>
 
 <h2>DesignTech VLSI</h2>
 
 <div>
-
 <a href="#">Home</a>
 <a href="#courses">Courses</a>
-<a href="#about">About</a>
-<a href="#faq">FAQ</a>
 <a href="login.html">Login</a>
-
 </div>
 
 </nav>
-
 
 <section class="hero">
 
@@ -266,8 +208,22 @@ background:#0f172a;
 
 <p>RTL to GDS | Cadence Tools | Semiconductor Careers</p>
 
-</section>
+<div class="cube-container">
 
+<div class="cube">
+
+<div class="front"></div>
+<div class="back"></div>
+<div class="right"></div>
+<div class="left"></div>
+<div class="top"></div>
+<div class="bottom"></div>
+
+</div>
+
+</div>
+
+</section>
 
 <section id="courses" class="courses">
 
@@ -303,5 +259,54 @@ background:#0f172a;
 
 </section>
 
+<script>
+
+/* STAR PARTICLES */
+
+const canvas=document.getElementById("stars");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let stars=[];
+
+for(let i=0;i<350;i++){
+
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2
+})
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+stars.forEach(star=>{
+
+star.y+=0.3;
+
+if(star.y>canvas.height){
+star.y=0
+}
+
+ctx.fillStyle="white";
+ctx.fillRect(star.x,star.y,star.size,star.size)
+
+})
+
+requestAnimationFrame(animate)
+
+}
+
+animate()
+
+</script>
+
 </body>
+
 </html>
+```
