@@ -19,57 +19,50 @@ background:#020617;
 color:white;
 }
 
-.container{
-max-width:1000px;
-margin:auto;
-padding:60px 20px;
-}
-
-.hero{
-text-align:center;
-margin-bottom:40px;
-}
-
-.hero h1{
-font-size:42px;
-background:linear-gradient(90deg,#38bdf8,#6366f1);
--webkit-background-clip:text;
-color:transparent;
-}
-
-iframe{
-width:100%;
-height:450px;
-border-radius:10px;
-margin-bottom:30px;
-}
-
-.lecture{
-background:#1e293b;
-padding:15px;
-border-radius:10px;
-margin-bottom:10px;
+nav{
 display:flex;
 justify-content:space-between;
-cursor:pointer;
+padding:20px 60px;
+background:#0f172a;
 }
 
-.lock{
-color:#f87171;
+nav a{
+color:white;
+text-decoration:none;
+margin-left:20px;
 }
 
-.enroll{
-background:#111827;
-padding:40px;
-border-radius:12px;
-text-align:center;
-margin-top:50px;
+.course{
+max-width:900px;
+margin:auto;
+padding:80px 20px;
+}
+
+h1{
+color:#38bdf8;
+}
+
+.price{
+font-size:22px;
+margin-top:20px;
+}
+
+.price-old{
+text-decoration:line-through;
+color:#aaa;
+}
+
+.price-new{
+color:#22c55e;
+margin-left:10px;
+font-weight:bold;
 }
 
 button{
+margin-top:30px;
 padding:14px 28px;
-border:none;
 background:#38bdf8;
+border:none;
 border-radius:6px;
 font-size:16px;
 cursor:pointer;
@@ -85,204 +78,65 @@ background:#22c1f0;
 
 <body>
 
-<div class="container">
+<nav>
 
-<div class="hero">
+<h2>DesignTech VLSI</h2>
 
-<h1>Physical Design Layout</h1>
+<div>
 
-<p>Complete Physical Design Flow (Floorplan → GDSII)</p>
-
-</div>
-
-
-<iframe id="player"
-src="https://www.youtube.com/embed/videoseries?list=PLIpZuMTXXr7EKxwWAct3Js68EgI31HFzf"
-allowfullscreen></iframe>
-
-
-<h2>Course Lectures</h2>
-
-<div id="lectureList"></div>
-
-
-<div class="enroll" id="paymentBox">
-
-<h2>Unlock Full Course</h2>
-
-<p style="font-size:28px;color:#22c55e;">₹1999</p>
-
-<button id="payBtn">Pay ₹1999</button>
+<a href="index.html">Home</a>
+<a href="login.html">Login</a>
 
 </div>
 
-</div>
+</nav>
 
+<section class="course">
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<h1>Physical Design Layout Course</h1>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<p>
+This course teaches complete VLSI Physical Design workflow used in semiconductor companies.
+You will learn floorplanning, placement, routing, timing analysis and layout verification.
+</p>
 
-<script src="firebase-config.js"></script>
+<h2>What You Will Learn</h2>
 
+<ul>
 
-<script>
+<li>RTL to GDS Flow</li>
+<li>Floorplanning</li>
+<li>Placement</li>
+<li>Clock Tree Synthesis</li>
+<li>Routing</li>
+<li>DRC / LVS</li>
+<li>Timing Closure</li>
 
-let currentUser=null
-let unlocked=false
+</ul>
 
-firebase.auth().onAuthStateChanged(async function(user){
+<h2>Course Benefits</h2>
 
-if(!user){
+<ul>
 
-alert("Please login first")
+<li>Industry level VLSI training</li>
+<li>Cadence Innovus hands-on</li>
+<li>Project based learning</li>
+<li>Interview preparation</li>
 
-window.location="login.html"
+</ul>
 
-}
+<p class="price">
 
-else{
+<span class="price-old">₹3999</span>
+<span class="price-new">₹1999</span>
 
-currentUser=user
+</p>
 
-let doc=await db.collection("users").doc(user.uid).get()
+<a href="login.html">
+<button>Login to Enroll</button>
+</a>
 
-let data=doc.data()
-
-if(data.course1){
-
-unlocked=true
-
-document.getElementById("paymentBox").style.display="none"
-
-unlockLectures()
-
-}
-
-}
-
-})
-
-
-
-function playVideo(video,free){
-
-if(free || unlocked){
-
-document.getElementById("player").src="https://www.youtube.com/embed/"+video
-
-}
-
-else{
-
-alert("Please purchase the course to unlock")
-
-}
-
-}
-
-
-function unlockLectures(){
-
-document.querySelectorAll(".locked").forEach(el=>{
-el.innerHTML="Unlocked"
-el.classList.remove("lock")
-})
-
-}
-
-
-
-/* Example lecture list */
-
-const lectures=[
-
-{title:"Introduction",video:"CHaOflmuIQg",free:true},
-
-{title:"Floorplanning",video:"CHaOflmuIQg",free:false},
-
-{title:"Placement",video:"CHaOflmuIQg",free:false},
-
-{title:"Clock Tree Synthesis",video:"CHaOflmuIQg",free:false},
-
-{title:"Routing",video:"CHaOflmuIQg",free:false}
-
-]
-
-
-const list=document.getElementById("lectureList")
-
-lectures.forEach((lec,index)=>{
-
-let div=document.createElement("div")
-
-div.className="lecture"
-
-if(lec.free){
-
-div.innerHTML="<span>Lecture "+(index+1)+" – "+lec.title+"</span><span>Free</span>"
-
-div.onclick=()=>playVideo(lec.video,true)
-
-}
-
-else{
-
-div.innerHTML="<span>Lecture "+(index+1)+" – "+lec.title+"</span><span class='lock locked'>🔒 Locked</span>"
-
-div.onclick=()=>playVideo(lec.video,false)
-
-}
-
-list.appendChild(div)
-
-})
-
-
-
-/* PAYMENT */
-
-document.getElementById("payBtn").onclick=function(){
-
-var options={
-
-key:"rzp_live_SONJ2W1OZ1qVLZ",
-
-amount:199900,
-
-currency:"INR",
-
-name:"DesignTech VLSI",
-
-description:"Physical Design Layout Course",
-
-handler:function(response){
-
-alert("Payment Successful!")
-
-db.collection("users").doc(currentUser.uid).update({
-
-course1:true
-
-}).then(()=>{
-
-location.reload()
-
-})
-
-}
-
-}
-
-var rzp=new Razorpay(options)
-
-rzp.open()
-
-}
-
-</script>
+</section>
 
 </body>
 </html>
