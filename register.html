@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 
@@ -30,7 +31,7 @@ width:320px;
 text-align:center;
 }
 
-input{
+input,select{
 width:100%;
 padding:10px;
 margin:10px 0;
@@ -51,6 +52,11 @@ button:hover{
 background:#22c1f0;
 }
 
+a{
+color:#38bdf8;
+text-decoration:none;
+}
+
 </style>
 
 </head>
@@ -65,10 +71,21 @@ background:#22c1f0;
 
 <input id="password" type="password" placeholder="Password">
 
+<select id="course">
+
+<option value="">Select Course</option>
+<option value="course1">Physical Design Layout (₹1999)</option>
+<option value="course2">VLSI Lecture Series (₹1999)</option>
+<option value="course3">Cadence Analog Basics (₹1999)</option>
+<option value="course4">Signal and Systems (₹299)</option>
+<option value="course5">Network Theory (₹299)</option>
+
+</select>
+
 <button id="registerBtn">Register</button>
 
 <p style="margin-top:15px">
-Already registered? <a href="login.html" style="color:#38bdf8">Login</a>
+Already registered? <a href="login.html">Login</a>
 </p>
 
 </div>
@@ -81,6 +98,7 @@ import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
+
 apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
 authDomain: "designtechvlsi.firebaseapp.com",
 projectId: "designtechvlsi",
@@ -88,19 +106,24 @@ storageBucket: "designtechvlsi.firebasestorage.app",
 messagingSenderId: "268545364402",
 appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
 measurementId: "G-F5KGZK2JDK"
+
 };
 
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
+
 const db = getFirestore(app);
+
 
 document.getElementById("registerBtn").addEventListener("click", async () => {
 
 let email = document.getElementById("email").value;
 let password = document.getElementById("password").value;
+let course = document.getElementById("course").value;
 
-if(email=="" || password==""){
-alert("Please enter email and password");
+if(email=="" || password=="" || course==""){
+alert("Please fill all fields");
 return;
 }
 
@@ -113,11 +136,14 @@ const uid = userCredential.user.uid;
 await setDoc(doc(db,"users",uid),{
 
 email:email,
+
 course1:false,
 course2:false,
 course3:false,
 course4:false,
-course5:false
+course5:false,
+
+selectedCourse:course
 
 });
 
@@ -139,3 +165,4 @@ alert(error.message);
 
 </body>
 </html>
+```
