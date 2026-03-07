@@ -1,310 +1,161 @@
+```html
 <!DOCTYPE html>
 <html>
 
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>DesignTech VLSI</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 
-<style>
-
-body{
-margin:0;
-font-family:Poppins;
-background:#020617;
-color:white;
-overflow-x:hidden;
-}
-
-/* STAR BACKGROUND */
-
-#stars{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:-4;
-}
-
-/* NEON GRID */
-
-.grid{
-position:fixed;
-width:100%;
-height:100%;
-background-image:
-linear-gradient(#38bdf822 1px, transparent 1px),
-linear-gradient(90deg,#38bdf822 1px, transparent 1px);
-background-size:80px 80px;
-z-index:-3;
-animation:gridmove 20s linear infinite;
-}
-
-@keyframes gridmove{
-0%{transform:translateY(0)}
-100%{transform:translateY(80px)}
-}
-
-/* ROTATING 3D CUBE */
-
-.cube-container{
-perspective:800px;
-display:flex;
-justify-content:center;
-margin-top:40px;
-}
-
-.cube{
-
-width:120px;
-height:120px;
-position:relative;
-transform-style:preserve-3d;
-animation:rotateCube 10s infinite linear;
-
-}
-
-.cube div{
-
-position:absolute;
-width:120px;
-height:120px;
-border:2px solid #38bdf8;
-background:rgba(56,189,248,0.1);
-
-}
-
-.front{transform:translateZ(60px);}
-.back{transform:rotateY(180deg) translateZ(60px);}
-.right{transform:rotateY(90deg) translateZ(60px);}
-.left{transform:rotateY(-90deg) translateZ(60px);}
-.top{transform:rotateX(90deg) translateZ(60px);}
-.bottom{transform:rotateX(-90deg) translateZ(60px);}
-
-@keyframes rotateCube{
-
-0%{transform:rotateX(0) rotateY(0)}
-
-100%{transform:rotateX(360deg) rotateY(360deg)}
-
-}
-
-/* FLOATING CHIPS */
-
-.chip{
-position:fixed;
-opacity:0.5;
-animation:floatChip 20s linear infinite;
-z-index:-2;
-}
-
-@keyframes floatChip{
-0%{transform:translateY(100vh) rotate(0deg)}
-100%{transform:translateY(-200px) rotate(360deg)}
-}
-
-/* NAVBAR */
-
-nav{
-display:flex;
-justify-content:space-between;
-padding:20px 60px;
-background:#0f172a;
-}
-
-nav a{
-color:white;
-margin-left:20px;
-text-decoration:none;
-}
-
-/* HERO */
-
-.hero{
-text-align:center;
-padding:120px 20px;
-}
-
-.hero h1{
-font-size:60px;
-background:linear-gradient(90deg,#38bdf8,#8b5cf6);
--webkit-background-clip:text;
-color:transparent;
-}
-
-/* COURSES */
-
-.courses{
-padding:60px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:30px;
-}
-
-.card{
-background:#0f172a;
-padding:30px;
-border-radius:12px;
-text-align:center;
-transition:0.3s;
-}
-
-.card:hover{
-transform:translateY(-10px);
-}
-
-.price-old{
-text-decoration:line-through;
-color:#aaa;
-}
-
-.price-new{
-color:#22c55e;
-font-size:20px;
-margin-left:8px;
-}
-
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 </head>
 
 <body>
 
-<canvas id="stars"></canvas>
-
-<div class="grid"></div>
-
-<!-- floating chip icons -->
-
-<svg class="chip" style="left:25%" width="40" height="40" viewBox="0 0 24 24" fill="#38bdf8">
-<path d="M9 3v2H7v2H5v2H3v2h2v2H3v2h2v2h2v2h2v2h2v-2h2v2h2v-2h2v-2h2v-2h2v-2h-2v-2h2v-2h-2V7h-2V5h-2V3h-2v2h-2V3z"/>
-</svg>
-
-<svg class="chip" style="left:70%" width="40" height="40" viewBox="0 0 24 24" fill="#38bdf8">
-<path d="M9 3v2H7v2H5v2H3v2h2v2H3v2h2v2h2v2h2v2h2v-2h2v2h2v-2h2v-2h2v-2h2v-2h-2v-2h2v-2h-2V7h-2V5h-2V3h-2v2h-2V3z"/>
-</svg>
-
-<nav>
-
-<h2>DesignTech VLSI</h2>
-
-<div>
-<a href="#">Home</a>
-<a href="#courses">Courses</a>
-<a href="login.html">Login</a>
-</div>
-
-</nav>
-
-<section class="hero">
+<header>
 
 <h1>DesignTech VLSI</h1>
 
-<p>RTL to GDS | Cadence Tools | Semiconductor Careers</p>
+<nav>
 
-<div class="cube-container">
+<a href="#">Home</a>
+<a href="login.html">Login</a>
+<a href="dashboard.html">Dashboard</a>
 
-<div class="cube">
+</nav>
 
-<div class="front"></div>
-<div class="back"></div>
-<div class="right"></div>
-<div class="left"></div>
-<div class="top"></div>
-<div class="bottom"></div>
+</header>
 
-</div>
 
-</div>
+<section class="hero">
+
+<h2>Learn VLSI Design From Industry Experience</h2>
+
+<p>RTL to GDS | Cadence Tools | Physical Design</p>
 
 </section>
 
-<section id="courses" class="courses">
 
-<div class="card">
+<section class="icon-grid">
+
+<a href="whoami.html" class="icon-card">
+<h3>Who Am I</h3>
+</a>
+
+<a href="research.html" class="icon-card">
+<h3>My Research</h3>
+</a>
+
+<a href="coursebenefits.html" class="icon-card">
+<h3>What Courses Give</h3>
+</a>
+
+<a href="vlsiimportance.html" class="icon-card">
+<h3>Importance of VLSI</h3>
+</a>
+
+<a href="freecourses.html" class="icon-card">
+<h3>Free YouTube Courses</h3>
+</a>
+
+<a href="guarantee.html" class="icon-card">
+<h3>7 Day Guarantee</h3>
+</a>
+
+<a href="quiz.html" class="icon-card">
+<h3>Test Your VLSI Knowledge</h3>
+</a>
+
+<a href="faq.html" class="icon-card">
+<h3>FAQ</h3>
+</a>
+
+</section>
+
+
+<section class="courses">
+
+<h2>Our Courses</h2>
+
+<div class="course-grid">
+
+<div class="course-card">
+
 <h3>Physical Design Layout</h3>
-<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
+
+<p class="price">
+₹3999 <span>₹1999</span>
+</p>
+
 <a href="course1.html">View Course</a>
+
 </div>
 
-<div class="card">
+
+<div class="course-card">
+
 <h3>VLSI Lecture Series</h3>
-<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
+
+<p class="price">
+₹3999 <span>₹1999</span>
+</p>
+
 <a href="course2.html">View Course</a>
+
 </div>
 
-<div class="card">
+
+<div class="course-card">
+
 <h3>Cadence Analog Basics</h3>
-<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
+
+<p class="price">
+₹3999 <span>₹1999</span>
+</p>
+
 <a href="course3.html">View Course</a>
+
 </div>
 
-<div class="card">
+
+<div class="course-card">
+
 <h3>Signal and Systems</h3>
-<p><span class="price-old">₹499</span><span class="price-new">₹299</span></p>
+
+<p class="price">
+₹499 <span>₹299</span>
+</p>
+
 <a href="course4.html">View Course</a>
+
 </div>
 
-<div class="card">
+
+<div class="course-card">
+
 <h3>Network Theory</h3>
-<p><span class="price-old">₹499</span><span class="price-new">₹299</span></p>
+
+<p class="price">
+₹499 <span>₹299</span>
+</p>
+
 <a href="course5.html">View Course</a>
+
+</div>
+
 </div>
 
 </section>
 
-<script>
+<footer>
 
-/* STAR PARTICLES */
+<p>© 2026 DesignTech VLSI</p>
 
-const canvas=document.getElementById("stars");
-const ctx=canvas.getContext("2d");
-
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-let stars=[];
-
-for(let i=0;i<350;i++){
-
-stars.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2
-})
-
-}
-
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-stars.forEach(star=>{
-
-star.y+=0.3;
-
-if(star.y>canvas.height){
-star.y=0
-}
-
-ctx.fillStyle="white";
-ctx.fillRect(star.x,star.y,star.size,star.size)
-
-})
-
-requestAnimationFrame(animate)
-
-}
-
-animate()
-
-</script>
+</footer>
 
 </body>
 
 </html>
+```
