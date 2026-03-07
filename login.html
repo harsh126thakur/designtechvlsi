@@ -1,29 +1,115 @@
-```html
 <!DOCTYPE html>
-
 <html>
 
 <head>
 
-<title>Login</title>
+<title>Login | DesignTech VLSI</title>
 
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+font-family:Poppins;
+background:#020617;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.login-box{
+background:#1e293b;
+padding:40px;
+border-radius:10px;
+width:320px;
+text-align:center;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:none;
+border-radius:5px;
+}
+
+button{
+padding:12px;
+width:100%;
+background:#38bdf8;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+a{
+color:#38bdf8;
+}
+
+</style>
 
 </head>
 
 <body>
 
+<div class="login-box">
+
 <h2>Student Login</h2>
 
-<input placeholder="Email">
+<input id="email" placeholder="Email">
 
-<input placeholder="Password">
+<input id="password" type="password" placeholder="Password">
 
-<button>Login</button>
+<button onclick="login()">Login</button>
 
-<p>New user? Sign up</p>
+<p>No account? <a href="register.html">Register</a></p>
+
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
+authDomain: "designtechvlsi.firebaseapp.com",
+projectId: "designtechvlsi",
+storageBucket: "designtechvlsi.firebasestorage.app",
+messagingSenderId: "268545364402",
+appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
+measurementId: "G-F5KGZK2JDK"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+function login(){
+
+let email=document.getElementById("email").value
+let password=document.getElementById("password").value
+
+firebase.auth().signInWithEmailAndPassword(email,password)
+
+.then(function(){
+
+window.location="dashboard.html"
+
+})
+
+.catch(function(error){
+
+alert(error.message)
+
+})
+
+}
+
+</script>
 
 </body>
-
 </html>
-```
