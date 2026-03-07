@@ -19,8 +19,6 @@ background:#020617;
 color:white;
 }
 
-/* NAVBAR */
-
 nav{
 display:flex;
 justify-content:space-between;
@@ -38,8 +36,6 @@ nav a{
 color:white;
 text-decoration:none;
 }
-
-/* MAIN LAYOUT */
 
 .course-container{
 display:flex;
@@ -96,24 +92,6 @@ background:#1e293b;
 color:#38bdf8;
 }
 
-/* MOBILE */
-
-@media(max-width:900px){
-
-.course-container{
-flex-direction:column;
-}
-
-.video-area iframe{
-height:300px;
-}
-
-.playlist{
-height:300px;
-}
-
-}
-
 </style>
 
 </head>
@@ -130,12 +108,10 @@ height:300px;
 
 <div class="course-container">
 
-<!-- VIDEO PLAYER -->
-
 <div class="video-area">
 
 <iframe id="videoPlayer"
-src="https://www.youtube.com/embed/VIDEO_ID"
+src="https://www.youtube.com/embed/VIDEO_ID1"
 allowfullscreen>
 </iframe>
 
@@ -145,30 +121,44 @@ Lesson 1
 
 </div>
 
-<!-- PLAYLIST -->
-
 <div class="playlist">
 
-<h3>Course Lessons</h3>
+<h3>Cadence Analog Basics</h3>
 
-<div class="video-item active" onclick="playVideo('VIDEO_ID','Introduction')">
-1. Introduction
+<div class="video-item active" onclick="playVideo('VIDEO_ID1','NMOS Simulation')">
+1. NMOS Simulation using Cadence
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID2','Cadence Setup')">
-2. Cadence Setup
+<div class="video-item" onclick="playVideo('VIDEO_ID2','Input Output Curve')">
+2. NMOS Input Output Curve
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID3','Schematic Design')">
-3. Schematic Design
+<div class="video-item" onclick="playVideo('VIDEO_ID3','Transconductance gm')">
+3. Transconductance gm Analysis
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID4','Simulation')">
-4. Analog Simulation
+<div class="video-item" onclick="playVideo('VIDEO_ID4','Cadence Setup')">
+4. Cadence Setup
 </div>
 
-<div class="video-item" onclick="playVideo('VIDEO_ID5','Layout Basics')">
-5. Layout Basics
+<div class="video-item" onclick="playVideo('VIDEO_ID5','Schematic Design')">
+5. Schematic Design
+</div>
+
+<div class="video-item" onclick="playVideo('VIDEO_ID6','DC Simulation')">
+6. DC Simulation
+</div>
+
+<div class="video-item" onclick="playVideo('VIDEO_ID7','AC Analysis')">
+7. AC Analysis
+</div>
+
+<div class="video-item" onclick="playVideo('VIDEO_ID8','Transient Analysis')">
+8. Transient Analysis
+</div>
+
+<div class="video-item" onclick="playVideo('VIDEO_ID9','Layout Basics')">
+9. Layout Basics
 </div>
 
 </div>
