@@ -27,14 +27,14 @@ height:100vh;
 background:#1e293b;
 padding:40px;
 border-radius:12px;
-width:340px;
+width:350px;
 text-align:center;
 }
 
 input{
 width:100%;
 padding:12px;
-margin-top:15px;
+margin-top:12px;
 border:none;
 border-radius:6px;
 }
@@ -42,17 +42,21 @@ border-radius:6px;
 button{
 width:100%;
 padding:12px;
-margin-top:20px;
+margin-top:15px;
 background:#38bdf8;
 border:none;
 border-radius:6px;
 color:white;
-font-size:16px;
+font-size:15px;
 cursor:pointer;
 }
 
 button:hover{
 background:#22c1f0;
+}
+
+.google{
+background:#ea4335;
 }
 
 #recaptcha-container{
@@ -74,19 +78,29 @@ text-decoration:none;
 
 <h2>Create Account</h2>
 
-<input type="text" id="name" placeholder="Full Name">
-
 <input type="email" id="email" placeholder="Email">
 
-<input type="text" id="phone" placeholder="+91 Phone Number">
+<input type="password" id="password" placeholder="Password">
 
-<button onclick="sendOTP()">Send OTP</button>
+<button id="signupBtn">Sign Up</button>
+
+<hr style="margin:25px 0; border:1px solid #334155;">
+
+<h3>Phone OTP Verification</h3>
+
+<input type="tel" id="phone" placeholder="+91XXXXXXXXXX">
+
+<div id="recaptcha-container"></div>
+
+<button id="sendOtp">Send OTP</button>
 
 <input type="text" id="otp" placeholder="Enter OTP">
 
-<button onclick="verifyOTP()">Verify OTP</button>
+<button id="verifyOtp">Verify OTP</button>
 
-<div id="recaptcha-container"></div>
+<hr style="margin:25px 0; border:1px solid #334155;">
+
+<button id="googleLogin" class="google">Sign Up with Google</button>
 
 <p style="margin-top:20px;">
 Already have an account? <a href="login.html">Login</a>
@@ -97,8 +111,12 @@ Already have an account? <a href="login.html">Login</a>
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { 
+
+import {
 getAuth,
+createUserWithEmailAndPassword,
+signInWithPopup,
+GoogleAuthProvider,
 RecaptchaVerifier,
 signInWithPhoneNumber
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -116,22 +134,58 @@ measurementId: "G-F5KGZK2JDK"
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-window.recaptchaVerifier = new RecaptchaVerifier(
-"recaptcha-container",
-{
-size:"normal",
-callback:(response)=>{}
-},
-auth
-);
+/* EMAIL SIGNUP */
 
-window.sendOTP=function(){
+document.getElementById("signupBtn").addEventListener("click",()=>{
 
-const phone=document.getElementById("phone").value;
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
+
+createUserWithEmailAndPassword(auth,email,password)
+
+.then(()=>{
+alert("Account created successfully");
+window.location.href="dashboard.html";
+})
+
+.catch((error)=>{
+alert(error.message);
+})
+
+});
+
+/* GOOGLE SIGNUP */
+
+const provider=new GoogleAuthProvider();
+
+document.getElementById("googleLogin").addEventListener("click",()=>{
+
+signInWithPopup(auth,provider)
+
+.then(()=>{
+window.location.href="dashboard.html";
+})
+
+.catch((error)=>{
+alert(error.message);
+})
+
+});
+
+/* PHONE OTP */
+
+window.recaptchaVerifier = new RecaptchaVerifier(auth,'recaptcha-container',{
+'size':'normal',
+'callback':()=>{}
+});
 
 const appVerifier=window.recaptchaVerifier;
 
-signInWithPhoneNumber(auth,phone,appVerifier)
+document.getElementById("sendOtp").addEventListener("click",()=>{
+
+const phoneNumber=document.getElementById("phone").value;
+
+signInWithPhoneNumber(auth,phoneNumber,appVerifier)
 
 .then((confirmationResult)=>{
 
@@ -142,34 +196,27 @@ alert("OTP Sent");
 })
 
 .catch((error)=>{
-
 alert(error.message);
+})
 
 });
 
-}
-
-window.verifyOTP=function(){
+document.getElementById("verifyOtp").addEventListener("click",()=>{
 
 const code=document.getElementById("otp").value;
 
 confirmationResult.confirm(code)
 
-.then((result)=>{
-
-alert("Account Created Successfully");
-
+.then(()=>{
+alert("Phone verified");
 window.location.href="dashboard.html";
-
 })
 
-.catch((error)=>{
-
+.catch(()=>{
 alert("Invalid OTP");
+})
 
 });
-
-}
 
 </script>
 
