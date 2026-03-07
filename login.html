@@ -27,14 +27,14 @@ height:100vh;
 background:#1e293b;
 padding:40px;
 border-radius:12px;
-width:320px;
+width:360px;
 text-align:center;
 }
 
 input{
 width:100%;
 padding:12px;
-margin-top:15px;
+margin-top:12px;
 border:none;
 border-radius:6px;
 }
@@ -42,17 +42,21 @@ border-radius:6px;
 button{
 width:100%;
 padding:12px;
-margin-top:20px;
+margin-top:15px;
 background:#38bdf8;
 border:none;
 border-radius:6px;
 color:white;
-font-size:16px;
+font-size:15px;
 cursor:pointer;
 }
 
 button:hover{
 background:#22c1f0;
+}
+
+.google{
+background:#ea4335;
 }
 
 a{
@@ -76,6 +80,10 @@ text-decoration:none;
 
 <button id="loginBtn">Login</button>
 
+<hr style="margin:25px 0; border:1px solid #334155;">
+
+<button id="googleLogin" class="google">Continue with Google</button>
+
 <p style="margin-top:20px;">
 Don't have an account? <a href="signup.html">Sign Up</a>
 </p>
@@ -84,41 +92,72 @@ Don't have an account? <a href="signup.html">Sign Up</a>
 
 <script type="module">
 
-import { auth } from "./firebase-config.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
-signInWithEmailAndPassword
+getAuth,
+signInWithEmailAndPassword,
+signInWithPopup,
+GoogleAuthProvider
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-document.getElementById("loginBtn").addEventListener("click",function(){
+const firebaseConfig = {
+apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
+authDomain: "designtechvlsi.firebaseapp.com",
+projectId: "designtechvlsi",
+storageBucket: "designtechvlsi.firebasestorage.app",
+messagingSenderId: "268545364402",
+appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
+measurementId: "G-F5KGZK2JDK"
+};
 
-const email=document.getElementById("email").value
-const password=document.getElementById("password").value
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+/* EMAIL LOGIN */
+
+document.getElementById("loginBtn").addEventListener("click",()=>{
+
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
 
 signInWithEmailAndPassword(auth,email,password)
 
-.then((userCredential)=>{
+.then(()=>{
 
-const user = userCredential.user
-
-if(!user.emailVerified){
-
-alert("Please verify your email before login.")
-return
-
-}
-
-window.location.href="dashboard.html"
+window.location.href="dashboard.html";
 
 })
 
 .catch((error)=>{
 
-alert(error.message)
+alert(error.message);
 
 })
 
+});
+
+/* GOOGLE LOGIN */
+
+const provider=new GoogleAuthProvider();
+
+document.getElementById("googleLogin").addEventListener("click",()=>{
+
+signInWithPopup(auth,provider)
+
+.then(()=>{
+
+window.location.href="dashboard.html";
+
 })
+
+.catch((error)=>{
+
+alert(error.message);
+
+})
+
+});
 
 </script>
 
