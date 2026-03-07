@@ -303,3 +303,34 @@ font-size:15px;
 color:#cbd5f5;
 
 }
+.circuit-bg{
+
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+background-image:
+linear-gradient(#38bdf822 1px, transparent 1px),
+linear-gradient(90deg,#38bdf822 1px, transparent 1px);
+
+background-size:80px 80px;
+
+z-index:-4;
+
+animation:circuitMove 20s linear infinite;
+
+}
+
+@keyframes circuitMove{
+
+0%{
+transform:translateY(0);
+}
+
+100%{
+transform:translateY(80px);
+}
+
+}
