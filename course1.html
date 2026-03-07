@@ -20,7 +20,7 @@ color:white;
 overflow-x:hidden;
 }
 
-/* star background */
+/* STAR BACKGROUND */
 
 #starfield{
 position:fixed;
@@ -31,7 +31,7 @@ height:100%;
 z-index:-4;
 }
 
-/* grid */
+/* GRID */
 
 .grid{
 position:fixed;
@@ -50,33 +50,29 @@ animation:gridmove 20s linear infinite;
 100%{transform:translateY(80px)}
 }
 
-/* container */
-
 .container{
-max-width:1100px;
+max-width:1000px;
 margin:auto;
 padding:60px 20px;
 }
 
-/* header */
-
 .hero{
 text-align:center;
-margin-bottom:50px;
+margin-bottom:40px;
 }
 
 .hero h1{
-font-size:48px;
+font-size:42px;
 background:linear-gradient(90deg,#38bdf8,#6366f1);
 -webkit-background-clip:text;
 color:transparent;
 }
 
-/* preview */
+/* video */
 
-.preview{
+.video-box{
 background:#1e293b;
-padding:30px;
+padding:25px;
 border-radius:12px;
 text-align:center;
 margin-bottom:40px;
@@ -84,36 +80,27 @@ margin-bottom:40px;
 
 iframe{
 width:100%;
-max-width:900px;
 height:450px;
 border-radius:10px;
 }
 
-/* curriculum */
-
-.curriculum{
-margin-top:40px;
-}
-
-.curriculum h2{
-color:#38bdf8;
-margin-bottom:20px;
-}
+/* lectures */
 
 .lecture{
 background:#1e293b;
-padding:18px;
+padding:16px;
 border-radius:10px;
 margin-bottom:10px;
 display:flex;
 justify-content:space-between;
+cursor:pointer;
 }
 
 .lock{
 color:#f87171;
 }
 
-/* payment */
+/* enroll */
 
 .enroll{
 background:#111827;
@@ -143,8 +130,6 @@ button:hover{
 background:#22c1f0;
 }
 
-/* footer */
-
 footer{
 text-align:center;
 padding:30px;
@@ -164,22 +149,17 @@ background:#020617;
 <div class="container">
 
 <div class="hero">
-
 <h1>Physical Design Layout</h1>
-
-<p>Learn Floorplanning, Placement, Routing and Industry Physical Design Flow</p>
-
+<p>Learn Floorplanning, Placement and Routing</p>
 </div>
 
 
-<div class="preview">
+<div class="video-box">
 
-<h2>Free Preview</h2>
+<h2>Course Video</h2>
 
-<iframe
-
+<iframe id="player"
 src="https://www.youtube.com/embed/CHaOflmuIQg"
-
 allowfullscreen>
 
 </iframe>
@@ -187,48 +167,32 @@ allowfullscreen>
 </div>
 
 
-<div class="curriculum">
+<h2>Course Lectures</h2>
 
-<h2>Course Curriculum</h2>
-
-<div class="lecture">
-
+<div class="lecture" onclick="playVideo('CHaOflmuIQg', true)">
 <span>Lecture 1 – Introduction</span>
-
 <span>Free</span>
-
 </div>
 
-<div class="lecture">
-
+<div class="lecture" onclick="playVideo('VIDEO2', false)">
 <span>Lecture 2 – Floorplanning</span>
-
 <span class="lock">🔒 Locked</span>
-
 </div>
 
-<div class="lecture">
-
+<div class="lecture" onclick="playVideo('VIDEO3', false)">
 <span>Lecture 3 – Placement</span>
-
 <span class="lock">🔒 Locked</span>
-
 </div>
 
-<div class="lecture">
-
+<div class="lecture" onclick="playVideo('VIDEO4', false)">
 <span>Lecture 4 – Routing</span>
-
 <span class="lock">🔒 Locked</span>
-
-</div>
-
 </div>
 
 
 <div class="enroll">
 
-<h2>Enroll in Full Course</h2>
+<h2>Unlock Full Course</h2>
 
 <p class="price">₹1999</p>
 
@@ -245,10 +209,15 @@ After payment send screenshot to
 
 </p>
 
-</div>
+<p style="margin-top:10px">
+
+You will receive the **course access password**.
+
+</p>
 
 </div>
 
+</div>
 
 <footer>
 
@@ -259,44 +228,80 @@ After payment send screenshot to
 
 <script>
 
-const canvas=document.getElementById("starfield");
-const ctx=canvas.getContext("2d");
+/* video unlock system */
 
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+let unlocked=false
 
-let stars=[];
+function playVideo(video, free){
+
+if(free || unlocked){
+
+document.getElementById("player").src=
+"https://www.youtube.com/embed/"+video
+
+}else{
+
+let pass=prompt("Enter Course Access Password")
+
+if(pass==="designtech"){
+
+unlocked=true
+
+document.getElementById("player").src=
+"https://www.youtube.com/embed/"+video
+
+}else{
+
+alert("Please enroll to access full course")
+
+}
+
+}
+
+}
+
+/* star animation */
+
+const canvas=document.getElementById("starfield")
+const ctx=canvas.getContext("2d")
+
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
+
+let stars=[]
 
 for(let i=0;i<200;i++){
+
 stars.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
 size:Math.random()*2
-});
+})
+
 }
 
 function animate(){
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.clearRect(0,0,canvas.width,canvas.height)
 
 stars.forEach(star=>{
 
-star.y+=0.2;
+star.y+=0.2
 
 if(star.y>canvas.height){
-star.y=0;
+star.y=0
 }
 
-ctx.fillStyle="white";
-ctx.fillRect(star.x,star.y,star.size,star.size);
+ctx.fillStyle="white"
+ctx.fillRect(star.x,star.y,star.size,star.size)
 
-});
+})
 
-requestAnimationFrame(animate);
+requestAnimationFrame(animate)
 
 }
 
-animate();
+animate()
 
 </script>
 
