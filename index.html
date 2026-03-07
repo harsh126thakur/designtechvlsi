@@ -1,412 +1,203 @@
 <!DOCTYPE html>
 <html>
-<head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
 
 <title>DesignTech VLSI</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 
-<style>
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-body{
-margin:0;
-font-family:Poppins;
-background:black;
-color:white;
-overflow-x:hidden;
-}
-
-/* star background */
-
-#starfield{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:-3;
-}
-
-/* neon grid */
-
-.circuit{
-position:fixed;
-width:100%;
-height:100%;
-background-image:
-linear-gradient(#38bdf822 1px, transparent 1px),
-linear-gradient(90deg,#38bdf822 1px, transparent 1px);
-background-size:80px 80px;
-z-index:-2;
-animation:gridmove 20s linear infinite;
-}
-
-@keyframes gridmove{
-0%{transform:translateY(0)}
-100%{transform:translateY(80px)}
-}
-
-/* navbar */
-
-nav{
-display:flex;
-justify-content:space-between;
-padding:20px 60px;
-background:rgba(0,0,0,0.6);
-}
-
-nav a{
-color:white;
-margin-left:20px;
-text-decoration:none;
-}
-
-/* hero */
-
-.hero{
-text-align:center;
-padding:140px 20px;
-}
-
-.hero h1{
-font-size:60px;
-background:linear-gradient(90deg,#38bdf8,#6366f1);
--webkit-background-clip:text;
-color:transparent;
-}
-
-/* rotating chip */
-
-.chip3d{
-margin:auto;
-margin-top:40px;
-width:120px;
-height:120px;
-background:#38bdf8;
-animation:spin 10s linear infinite;
-clip-path:polygon(20% 0,80% 0,100% 20%,100% 80%,80% 100%,20% 100%,0 80%,0 20%);
-}
-
-@keyframes spin{
-0%{transform:rotate(0deg)}
-100%{transform:rotate(360deg)}
-}
-
-/* courses */
-
-.courses{
-padding:60px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:30px;
-}
-
-.card{
-background:#1e293b;
-padding:30px;
-border-radius:12px;
-position:relative;
-transition:0.3s;
-}
-
-.card:hover{
-transform:translateY(-10px);
-}
-
-.discount{
-position:absolute;
-top:10px;
-right:10px;
-background:red;
-padding:5px 10px;
-border-radius:5px;
-font-size:12px;
-}
-
-.price-old{
-text-decoration:line-through;
-color:#aaa;
-}
-
-.price-new{
-color:#38bdf8;
-font-size:20px;
-margin-left:8px;
-}
-
-/* founder */
-
-.founder{
-display:flex;
-flex-wrap:wrap;
-gap:50px;
-padding:80px;
-background:#020617;
-}
-
-.founder img{
-width:240px;
-border-radius:50%;
-border:4px solid #38bdf8;
-}
-
-/* testimonials */
-
-.testimonials{
-padding:80px;
-text-align:center;
-}
-
-.testimonial-card{
-background:#1e293b;
-padding:30px;
-margin:20px auto;
-max-width:600px;
-border-radius:12px;
-}
-
-/* payment */
-
-.payment{
-text-align:center;
-padding:80px;
-background:#111827;
-}
-
-button{
-padding:14px 26px;
-background:#38bdf8;
-border:none;
-border-radius:6px;
-font-size:16px;
-cursor:pointer;
-}
-
-/* contact */
-
-.contact{
-text-align:center;
-padding:80px;
-background:#020617;
-line-height:2;
-}
-
-.contact a{
-color:#38bdf8;
-text-decoration:none;
-}
-
-footer{
-text-align:center;
-padding:20px;
-background:#020617;
-}
-
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 </head>
 
 <body>
 
-<canvas id="starfield"></canvas>
-
-<div class="circuit"></div>
-
-<nav>
-
-<h2>DesignTech VLSI</h2>
-
-<div>
-<a href="#">Home</a>
-<a href="#courses">Courses</a>
-<a href="#founder">Founder</a>
-<a href="#guidance">Guidance</a>
-<a href="#contact">Contact</a>
-</div>
-
-</nav>
-
-<section class="hero">
+<header>
 
 <h1>DesignTech VLSI</h1>
 
-<p>VLSI Tutorials • ECE Interview Preparation • Semiconductor Careers</p>
+<nav>
 
-<div class="chip3d"></div>
+<a href="#">Home</a>
+<a href="#courses">Courses</a>
+<a href="#about">About</a>
+<a href="#faq">FAQ</a>
+<a href="login.html">Login</a>
 
-</section>
+</nav>
 
-<section id="courses" class="courses">
+</header>
 
-<div class="card">
-<div class="discount">50% OFF</div>
-<h3>Physical Design Layout</h3>
-<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
-<a href="course1.html"><button>View Course</button></a>
-</div>
 
-<div class="card">
-<div class="discount">50% OFF</div>
-<h3>VLSI Lecture Series</h3>
-<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
-<a href="course2.html"><button>View Course</button></a>
-</div>
+<section class="hero">
 
-<div class="card">
-<div class="discount">50% OFF</div>
-<h3>Cadence Analog Basics</h3>
-<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
-<a href="course3.html"><button>View Course</button></a>
-</div>
+<h2>Learn VLSI Design From Industry Experience</h2>
 
-<div class="card">
-<div class="discount">40% OFF</div>
-<h3>Signal and System</h3>
-<p><span class="price-old">₹499</span><span class="price-new">₹299</span></p>
-<a href="course4.html"><button>View Course</button></a>
-</div>
+<p>RTL to GDS | Cadence Tools | Physical Design | Career Guidance</p>
 
-<div class="card">
-<div class="discount">40% OFF</div>
-<h3>Network Theory</h3>
-<p><span class="price-old">₹499</span><span class="price-new">₹299</span></p>
-<a href="course5.html"><button>View Course</button></a>
-</div>
+<a class="btn" href="#courses">Explore Courses</a>
 
 </section>
 
-<section id="founder" class="founder">
 
-<img src="founder.jpg">
+<section id="about">
+
+<h2>Who Am I</h2>
+
+<div class="about-box">
+
+<img src="images/founder.jpg">
 
 <div>
 
-<h2>Harsh Raj Thakur</h2>
+<h3>Harsh Raj Thakur</h3>
 
 <p>
 
-Harsh Raj Thakur is the founder of DesignTech VLSI and a mentor dedicated to semiconductor education.
+GATE Qualified 6 Times
 
-He has qualified GATE six times and completed two master's degrees: High Voltage Engineering from NIT Calicut and VLSI from NIT Meghalaya.
+M.Tech VLSI – NIT Meghalaya  
+M.Tech High Voltage Engineering – NIT Calicut  
 
-He served as Placement Coordinator at NIT Meghalaya and has mentored more than 5000 students.
+Industrial Experience – Maven Silicon
+
+Mentored 5000+ students in VLSI and electronics.
+CO-Founder NITIANS DEEP LEARNING NETWORK (Assam Rifles DGAR)
 
 </p>
 
 </div>
 
-</section>
-
-<section class="testimonials">
-
-<h2>Student Testimonials</h2>
-
-<div class="testimonial-card">
-<p>"DesignTech VLSI helped me understand physical design concepts clearly."</p>
-</div>
-
-<div class="testimonial-card">
-<p>"Great mentorship and practical explanation of VLSI design flows."</p>
 </div>
 
 </section>
 
-<section id="guidance" class="payment">
 
-<h2>Personal VLSI Guidance</h2>
+<section id="courses">
 
-<p>One-to-one mentorship for VLSI career preparation.</p>
+<h2>Courses</h2>
 
-<h3>₹1999</h3>
+<div class="course-grid">
 
-<p>Scan QR to Pay</p>
 
-<img src="upi_qr.png" width="220">
+<div class="course">
 
-<br><br>
+<h3>Physical Design Layout</h3>
 
-<a href="upi://pay?pa=7550233792@ybl&pn=DesignTechVLSI&am=1999&cu=INR">
-<button>Pay ₹1999 via UPI</button>
-</a>
+<p class="price">
+₹3999 <span>₹1999</span>
+</p>
 
-<p>After payment send screenshot to:</p>
+<a href="course1.html">View Course</a>
 
-<a href="mailto:harsh_rt@ece.iitr.ac.in">harsh_rt@ece.iitr.ac.in</a>
+</div>
+
+
+<div class="course">
+
+<h3>VLSI Lecture Series</h3>
+
+<p class="price">
+₹3999 <span>₹1999</span>
+</p>
+
+<a href="course2.html">View Course</a>
+
+</div>
+
+
+<div class="course">
+
+<h3>Cadence Analog Basics</h3>
+
+<p class="price">
+₹3999 <span>₹1999</span>
+</p>
+
+<a href="course3.html">View Course</a>
+
+</div>
+
+
+<div class="course">
+
+<h3>Signal and System</h3>
+
+<p class="price">
+₹499 <span>₹299</span>
+</p>
+
+<a href="course4.html">View Course</a>
+
+</div>
+
+
+<div class="course">
+
+<h3>Network Theory</h3>
+
+<p class="price">
+₹499 <span>₹299</span>
+</p>
+
+<a href="course5.html">View Course</a>
+
+</div>
+
+
+</div>
 
 </section>
 
-<section id="contact" class="contact">
 
-<h2>Connect</h2>
 
-<p>Email</p>
+<section id="faq">
 
-<a href="mailto:harsh_rt@ece.iitr.ac.in">harsh_rt@ece.iitr.ac.in</a>
+<h2>FAQ</h2>
 
-<br><br>
+<div class="faq">
 
-<p>YouTube Channel</p>
+<h3>Do I need prior VLSI knowledge?</h3>
+<p>No, courses start from basics.</p>
 
-<a href="https://youtube.com/@designtechvlsi?si=PdQo9iTpoDj21nzN" target="_blank">DesignTech VLSI</a>
+<h3>Will I learn Cadence tools?</h3>
+<p>Yes practical tool based training is provided.</p>
 
-<br><br>
+<h3>Will it help for semiconductor jobs?</h3>
+<p>Yes course content is industry focused.</p>
 
-<p>LinkedIn</p>
-
-<a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/" target="_blank">Harsh Raj Thakur</a>
+</div>
 
 </section>
+
 
 <footer>
 
 <p>© 2026 DesignTech VLSI</p>
 
+<div class="social">
+
+<a href="https://youtube.com/@designtechvlsi">
+<i class="fa-brands fa-youtube"></i>
+</a>
+
+<a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/">
+<i class="fa-brands fa-linkedin"></i>
+</a>
+
+<a href="mailto:harsh_rt@ece.iitr.ac.in">
+<i class="fa-solid fa-envelope"></i>
+</a>
+
+</div>
+
 </footer>
 
-<script>
-
-const canvas=document.getElementById("starfield");
-const ctx=canvas.getContext("2d");
-
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-let stars=[];
-
-for(let i=0;i<300;i++){
-stars.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2
-});
-}
-
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-stars.forEach(star=>{
-star.y+=0.3;
-
-if(star.y>canvas.height){
-star.y=0;
-}
-
-ctx.fillStyle="white";
-ctx.fillRect(star.x,star.y,star.size,star.size);
-
-});
-
-requestAnimationFrame(animate);
-
-}
-
-animate();
-
-</script>
-
 </body>
+
 </html>
+```
