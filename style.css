@@ -1,11 +1,23 @@
 body{
-
 margin:0;
 font-family:Poppins;
 background:#020617;
 color:white;
-
+overflow-x:hidden;
 }
+
+/* STAR BACKGROUND */
+
+#starfield{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-4;
+}
+
+/* NEON GRID */
 
 .grid{
 
@@ -32,12 +44,16 @@ animation:gridmove 20s linear infinite;
 
 }
 
+/* HERO */
+
 .hero{
 
 text-align:center;
-padding:120px;
+padding:120px 20px;
 
 }
+
+/* 3D CUBE */
 
 .cube-container{
 
@@ -83,10 +99,12 @@ background:rgba(56,189,248,0.1);
 
 }
 
+/* COURSE GRID */
+
 .course-grid{
 
 display:grid;
-grid-template-columns:repeat(3,1fr);
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:30px;
 padding:60px;
 
@@ -98,6 +116,13 @@ background:#0f172a;
 padding:25px;
 border-radius:10px;
 text-align:center;
+transition:0.3s;
+
+}
+
+.course-card:hover{
+
+transform:translateY(-10px);
 
 }
 
@@ -115,10 +140,12 @@ margin-left:10px;
 
 }
 
+/* BENEFITS */
+
 .benefit-grid{
 
 display:grid;
-grid-template-columns:repeat(3,1fr);
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:30px;
 padding:60px;
 
@@ -132,13 +159,8 @@ border-radius:10px;
 
 }
 
-footer{
+/* INFO ICON NAVIGATION */
 
-text-align:center;
-padding:40px;
-background:#0f172a;
-
-}
 .info-icons{
 
 display:grid;
@@ -167,6 +189,9 @@ transform:translateY(-10px);
 background:#334155;
 
 }
+
+/* PUBLICATIONS */
+
 .publications{
 
 line-height:1.8;
@@ -180,4 +205,12 @@ margin-bottom:18px;
 
 }
 
+/* FOOTER */
 
+footer{
+
+text-align:center;
+padding:40px;
+background:#0f172a;
+
+}
