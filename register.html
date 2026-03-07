@@ -78,6 +78,7 @@ text-decoration:none;
 <option value="course3">Cadence Analog Basics (₹1999)</option>
 <option value="course4">Signal and Systems (₹299)</option>
 <option value="course5">Network Theory (₹299)</option>
+<option value="mentorship">1-to-1 Mentorship (₹1999)</option>
 
 </select>
 
@@ -109,9 +110,7 @@ measurementId: "G-F5KGZK2JDK"
 };
 
 const app = initializeApp(firebaseConfig);
-
 const auth = getAuth(app);
-
 const db = getFirestore(app);
 
 
@@ -141,6 +140,7 @@ course2:false,
 course3:false,
 course4:false,
 course5:false,
+mentorship:false,
 
 selectedCourse:course
 
@@ -148,25 +148,9 @@ selectedCourse:course
 
 alert("Registration successful");
 
-if(course==="course1"){
-window.location="course1.html";
-}
+/* Redirect to payment page */
 
-if(course==="course2"){
-window.location="course2.html";
-}
-
-if(course==="course3"){
-window.location="course3.html";
-}
-
-if(course==="course4"){
-window.location="course4.html";
-}
-
-if(course==="course5"){
-window.location="course5.html";
-}
+window.location="payment.html?course="+course;
 
 }
 
