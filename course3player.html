@@ -17,45 +17,25 @@ margin:0;
 font-family:Poppins;
 background:#020617;
 color:white;
+text-align:center;
 }
 
-nav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 60px;
+header{
+padding:25px;
 background:#0f172a;
-}
-
-nav h2{
-margin:0;
-}
-
-nav a{
-color:white;
-text-decoration:none;
-margin-left:20px;
-}
-
-nav a:hover{
-color:#38bdf8;
+font-size:28px;
+font-weight:600;
 }
 
 .container{
-max-width:1200px;
+max-width:1100px;
 margin:auto;
 padding:40px 20px;
 }
 
-.title{
-font-size:34px;
-color:#38bdf8;
-margin-bottom:20px;
-}
-
 .player{
 background:#1e293b;
-padding:25px;
+padding:20px;
 border-radius:12px;
 box-shadow:0 0 20px #00000055;
 }
@@ -67,41 +47,30 @@ border:none;
 border-radius:10px;
 }
 
-.course-info{
-margin-top:25px;
+.info{
+margin-top:30px;
 background:#1e293b;
 padding:25px;
 border-radius:12px;
+text-align:left;
 }
 
-.course-info h3{
+.info h3{
 color:#38bdf8;
-margin-top:0;
 }
 
-.course-info ul{
-line-height:1.8;
-}
-
-.back-btn{
+.back{
 display:inline-block;
 margin-top:25px;
-padding:12px 22px;
+padding:12px 20px;
 background:#38bdf8;
 border-radius:6px;
 text-decoration:none;
 color:white;
 }
 
-.back-btn:hover{
+.back:hover{
 background:#22c1f0;
-}
-
-footer{
-margin-top:60px;
-text-align:center;
-padding:30px;
-background:#0f172a;
 }
 
 </style>
@@ -110,21 +79,11 @@ background:#0f172a;
 
 <body>
 
-<nav>
-
-<h2>DesignTech VLSI</h2>
-
-<div>
-<a href="dashboard.html">Dashboard</a>
-</div>
-
-</nav>
+<header>
+Cadence Analog Basics
+</header>
 
 <div class="container">
-
-<div class="title">
-Cadence Analog Basics
-</div>
 
 <div class="player">
 
@@ -135,42 +94,33 @@ allowfullscreen>
 
 </div>
 
-<div class="course-info">
+<div class="info">
 
-<h3>Course Overview</h3>
+<h3>Course Description</h3>
 
 <p>
-This course teaches the fundamentals of analog IC design using Cadence Virtuoso.
-You will learn schematic design, simulation, layout design, and verification using
-industry-standard tools used in semiconductor companies.
+This course introduces analog circuit design using Cadence Virtuoso.
+You will learn schematic design, simulation, layout and verification used in semiconductor industry.
 </p>
 
 <h3>Topics Covered</h3>
 
 <ul>
 
-<li>Cadence Virtuoso Environment</li>
+<li>Cadence Virtuoso Introduction</li>
 <li>Schematic Design</li>
-<li>Analog Circuit Simulation</li>
-<li>DC / AC / Transient Analysis</li>
-<li>Layout Design Basics</li>
-<li>DRC and LVS Verification</li>
+<li>DC / AC Analysis</li>
+<li>Transient Simulation</li>
+<li>Layout Basics</li>
+<li>DRC and LVS</li>
 
 </ul>
 
-<a class="back-btn" href="dashboard.html">
-⬅ Back to Dashboard
-</a>
+<a class="back" href="dashboard.html">⬅ Back to Dashboard</a>
 
 </div>
 
 </div>
-
-<footer>
-
-© 2026 DesignTech VLSI
-
-</footer>
 
 </body>
 </html>
