@@ -3,15 +3,17 @@
 
 <head>
 
-<title>Login | DesignTech VLSI</title>
-
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Login | DesignTech VLSI</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
 
 body{
+margin:0;
 font-family:Poppins;
 background:#020617;
 color:white;
@@ -19,31 +21,33 @@ display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-margin:0;
 }
 
 .login-box{
 background:#1e293b;
 padding:40px;
-border-radius:10px;
+border-radius:12px;
 width:320px;
 text-align:center;
 }
 
 input{
 width:100%;
-padding:10px;
-margin:10px 0;
+padding:12px;
+margin-top:15px;
 border:none;
-border-radius:5px;
+border-radius:6px;
 }
 
 button{
-padding:12px;
 width:100%;
+padding:12px;
+margin-top:20px;
 background:#38bdf8;
 border:none;
 border-radius:6px;
+color:white;
+font-size:16px;
 cursor:pointer;
 }
 
@@ -64,90 +68,48 @@ text-decoration:none;
 
 <div class="login-box">
 
-<h2>Student Login</h2>
+<h2>Login</h2>
 
-<input id="email" placeholder="Email">
+<input type="email" id="email" placeholder="Email">
 
-<input id="password" type="password" placeholder="Password">
+<input type="password" id="password" placeholder="Password">
 
-<button onclick="login()">Login</button>
+<button id="loginBtn">Login</button>
 
-<p>No account? <a href="register.html">Register</a></p>
+<p style="margin-top:20px;">
+Don't have an account? <a href="signup.html">Sign Up</a>
+</p>
 
 </div>
 
+<script type="module">
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+import { auth } from "./firebase-config.js";
 
-<script>
+import {
+signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const firebaseConfig = {
+document.getElementById("loginBtn").addEventListener("click",function(){
 
-apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
-authDomain: "designtechvlsi.firebaseapp.com",
-projectId: "designtechvlsi",
-storageBucket: "designtechvlsi.firebasestorage.app",
-messagingSenderId: "268545364402",
-appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
-measurementId: "G-F5KGZK2JDK"
+const email=document.getElementById("email").value
+const password=document.getElementById("password").value
 
-};
+signInWithEmailAndPassword(auth,email,password)
 
-firebase.initializeApp(firebaseConfig);
+.then((userCredential)=>{
 
-const db = firebase.firestore();
-
-
-function login(){
-
-let email=document.getElementById("email").value
-let password=document.getElementById("password").value
-
-firebase.auth().signInWithEmailAndPassword(email,password)
-
-.then(function(userCredential){
-
-let uid=userCredential.user.uid
-
-db.collection("users").doc(uid).get().then((doc)=>{
-
-let data = doc.data()
-
-/* CHECK IF COURSE PURCHASED */
-
-if(
-data.course1 ||
-data.course2 ||
-data.course3 ||
-data.course4 ||
-data.course5 ||
-data.mentorship
-){
-
-window.location="dashboard.html"
-
-}
-else{
-
-/* REDIRECT TO PAYMENT */
-
-window.location="payment.html?course="+data.selectedCourse
-
-}
+window.location.href="dashboard.html"
 
 })
 
-})
-
-.catch(function(error){
+.catch((error)=>{
 
 alert(error.message)
 
 })
 
-}
+})
 
 </script>
 
