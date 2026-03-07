@@ -1,4 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Course Payment | DesignTech VLSI</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+<style>
+
+body{
+background:#020617;
+color:white;
+font-family:Poppins;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.card{
+background:#1e293b;
+padding:40px;
+border-radius:12px;
+text-align:center;
+width:350px;
+}
+
+button{
+padding:12px 25px;
+background:#38bdf8;
+border:none;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+margin-top:20px;
+}
+
+button:hover{
+background:#22c1f0;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2 id="courseTitle"></h2>
+
+<p id="price"></p>
+
+<button id="payBtn">Pay Now</button>
+
+</div>
+
+
 <script>
+
+/* FIREBASE CONFIG */
 
 const firebaseConfig = {
 apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
@@ -18,11 +88,17 @@ let currentUser = null;
 firebase.auth().onAuthStateChanged(function(user){
 
 if(!user){
+
 alert("Please login first");
+
 window.location="login.html";
+
 }
+
 else{
+
 currentUser = user;
+
 }
 
 });
@@ -31,10 +107,11 @@ currentUser = user;
 /* GET COURSE FROM URL */
 
 const params = new URLSearchParams(window.location.search);
+
 const course = params.get("course");
 
 
-/* COURSE MAP */
+/* COURSE DATA */
 
 const courseData = {
 
@@ -74,7 +151,8 @@ price:1999
 const selected = courseData[course];
 
 document.getElementById("courseTitle").innerText = selected.title;
-document.getElementById("price").innerText = "₹" + selected.price;
+
+document.getElementById("price").innerText = "Price: ₹" + selected.price;
 
 
 /* RAZORPAY PAYMENT */
@@ -98,11 +176,15 @@ handler: function (response) {
 alert("Payment Successful!");
 
 let update = {};
+
 update[course] = true;
 
 db.collection("users").doc(currentUser.uid).update(update)
+
 .then(()=>{
+
 window.location="dashboard.html";
+
 });
 
 }
@@ -110,8 +192,13 @@ window.location="dashboard.html";
 };
 
 var rzp = new Razorpay(options);
+
 rzp.open();
 
 }
 
 </script>
+
+</body>
+
+</html>
