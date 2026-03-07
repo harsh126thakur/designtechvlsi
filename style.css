@@ -20,68 +20,52 @@ z-index:-4;
 /* NEON GRID */
 
 .grid{
-
 position:fixed;
 width:100%;
 height:100%;
 background-image:
 linear-gradient(#38bdf822 1px, transparent 1px),
 linear-gradient(90deg,#38bdf822 1px, transparent 1px);
-
 background-size:80px 80px;
-
 z-index:-3;
-
 animation:gridmove 20s linear infinite;
-
 }
 
 @keyframes gridmove{
-
 0%{transform:translateY(0)}
-
 100%{transform:translateY(80px)}
-
 }
 
 /* HERO */
 
 .hero{
-
 text-align:center;
 padding:120px 20px;
-
 }
 
-/* 3D CUBE */
+/* 3D CHIP CUBE */
 
 .cube-container{
-
 perspective:800px;
 display:flex;
 justify-content:center;
 margin-top:40px;
-
 }
 
 .cube{
-
 width:120px;
 height:120px;
 position:relative;
 transform-style:preserve-3d;
 animation:rotateCube 12s infinite linear;
-
 }
 
 .cube div{
-
 position:absolute;
 width:120px;
 height:120px;
 border:2px solid #38bdf8;
 background:rgba(56,189,248,0.1);
-
 }
 
 .front{transform:translateZ(60px);}
@@ -92,145 +76,101 @@ background:rgba(56,189,248,0.1);
 .bottom{transform:rotateX(-90deg) translateZ(60px);}
 
 @keyframes rotateCube{
-
 0%{transform:rotateX(0) rotateY(0)}
-
 100%{transform:rotateX(360deg) rotateY(360deg)}
+}
 
+/* SECTION TITLE */
+
+.section-title{
+text-align:center;
+font-size:40px;
+margin-bottom:40px;
+color:#38bdf8;
 }
 
 /* COURSE GRID */
 
 .course-grid{
-
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:30px;
-padding:60px;
-
-}
-
-.course-card{
-
-background:#0f172a;
-padding:25px;
-border-radius:10px;
-text-align:center;
-transition:0.3s;
-
-}
-
-.course-card:hover{
-
-transform:translateY(-10px);
-
-}
-
-.price-old{
-
-text-decoration:line-through;
-color:#aaa;
-
-}
-.section-title{
-
-text-align:center;
-font-size:40px;
-margin-bottom:50px;
-color:#38bdf8;
-
-}
-
-.course-grid{
-
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
 gap:35px;
-padding:20px;
-
+padding:60px;
 }
 
-.course-card{
+/* COURSE CARD */
 
+.course-card{
 background:#1e293b;
 padding:30px;
 border-radius:14px;
 transition:0.3s;
 position:relative;
-
+text-align:center;
 }
 
 .course-card:hover{
-
 transform:translateY(-10px);
 box-shadow:0 0 25px #38bdf8;
-
 }
 
-.course-desc{
+/* COURSE DESCRIPTION */
 
+.course-desc{
 font-size:14px;
 color:#cbd5e1;
 margin:15px 0;
-
 }
 
-.course-meta{
+/* COURSE META */
 
+.course-meta{
 display:flex;
 justify-content:space-between;
 font-size:13px;
 margin-bottom:15px;
 color:#94a3b8;
-
 }
 
-.price{
+/* PRICE */
 
-margin-bottom:15px;
-
+.price-old{
+text-decoration:line-through;
+color:#aaa;
 }
 
 .price-new{
-
 color:#22c55e;
 margin-left:10px;
-
+font-weight:bold;
 }
 
-/* BENEFITS */
+/* COURSE BUTTON */
 
-.benefit-grid{
-
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:30px;
-padding:60px;
-
+button{
+padding:12px 22px;
+background:#38bdf8;
+border:none;
+border-radius:6px;
+font-size:14px;
+cursor:pointer;
+margin-top:10px;
 }
 
-.benefit{
-
-background:#0f172a;
-padding:25px;
-border-radius:10px;
-
+button:hover{
+background:#22c1f0;
 }
 
 /* INFO ICON NAVIGATION */
 
 .info-icons{
-
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
 gap:30px;
 padding:60px;
-background:#020617;
-
 }
 
 .info-card{
-
 background:#1e293b;
 padding:30px;
 border-radius:12px;
@@ -238,233 +178,116 @@ text-align:center;
 text-decoration:none;
 color:white;
 transition:0.3s;
-
 }
 
 .info-card:hover{
-
 transform:translateY(-10px);
 background:#334155;
-
 }
 
-/* PUBLICATIONS */
+/* IMAGE CARDS */
 
-.publications{
-
-line-height:1.8;
-margin-top:20px;
-
-}
-
-.publications li{
-
-margin-bottom:18px;
-
-}
-
-/* FOOTER */
-
-footer{
-
-text-align:center;
-padding:40px;
-background:#0f172a;
-
-}
 .cards{
-
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
 gap:40px;
 margin-top:40px;
-
 }
 
 .card{
-
 background:#1e293b;
 padding:20px;
 border-radius:12px;
 text-align:center;
-
 transition:0.4s;
 position:relative;
 overflow:hidden;
-
 }
 
 .card img{
-
 width:100%;
 border-radius:8px;
 transition:0.4s;
-
 }
 
-/* glow effect */
+.card:hover{
+transform:translateY(-10px);
+box-shadow:0 0 25px #38bdf8;
+}
+
+.card:hover img{
+transform:scale(1.05);
+}
+
+/* GLOW EFFECT */
 
 .card::before{
-
 content:"";
 position:absolute;
 top:-50%;
 left:-50%;
 width:200%;
 height:200%;
-
-background:linear-gradient(
-45deg,
-transparent,
-#38bdf8,
-transparent
-);
-
+background:linear-gradient(45deg,transparent,#38bdf8,transparent);
 opacity:0;
 transition:0.5s;
-
-}
-
-/* hover animation */
-
-.card:hover{
-
-transform:translateY(-10px);
-box-shadow:0 0 25px #38bdf8;
-
-}
-
-.card:hover img{
-
-transform:scale(1.05);
-
 }
 
 .card:hover::before{
-
 opacity:0.2;
 animation:glowmove 3s linear infinite;
-
 }
 
 @keyframes glowmove{
-
 0%{transform:rotate(0deg)}
 100%{transform:rotate(360deg)}
-
 }
 
-.card p{
-
-margin-top:15px;
-font-size:15px;
-color:#cbd5f5;
-
-}
-.circuit-bg{
-
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-
-background-image:
-linear-gradient(#38bdf822 1px, transparent 1px),
-linear-gradient(90deg,#38bdf822 1px, transparent 1px);
-
-background-size:80px 80px;
-
-z-index:-4;
-
-animation:circuitMove 20s linear infinite;
-
-}
-
-@keyframes circuitMove{
-
-0%{
-transform:translateY(0);
-}
-
-100%{
-transform:translateY(80px);
-}
-
-}
-.circuit-bg::after{
-
-content:"";
-position:absolute;
-width:100%;
-height:100%;
-
-background-image:radial-gradient(#38bdf8 1px, transparent 1px);
-background-size:120px 120px;
-
-opacity:0.2;
-
-animation:circuits 30s linear infinite;
-
-}
-
-@keyframes circuits{
-
-0%{transform:translateX(0)}
-100%{transform:translateX(200px)}
-
-}
-/* testimonials */
+/* TESTIMONIALS */
 
 .testimonials{
-
 padding:80px 40px;
 text-align:center;
-
 }
 
 .testimonials h2{
-
 font-size:36px;
 color:#38bdf8;
 margin-bottom:50px;
-
 }
 
 .testimonial-container{
-
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
 gap:30px;
-
 }
 
 .testimonial-card{
-
 background:#1e293b;
 padding:30px;
 border-radius:12px;
 transition:0.3s;
-
 }
 
 .testimonial-card:hover{
-
 transform:translateY(-10px);
 box-shadow:0 0 20px #38bdf8;
-
 }
 
 .testimonial-card p{
-
 font-style:italic;
 line-height:1.6;
-
 }
 
 .testimonial-card h4{
-
 margin-top:20px;
 color:#38bdf8;
+}
 
+/* FOOTER */
+
+footer{
+text-align:center;
+padding:40px;
+background:#0f172a;
 }
