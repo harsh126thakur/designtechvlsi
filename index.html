@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 
@@ -5,91 +6,170 @@
 
 <title>DesignTech VLSI</title>
 
-<link rel="stylesheet" href="style.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins;
+background:#020617;
+color:white;
+overflow-x:hidden;
+}
+
+/* NAVBAR */
+
+nav{
+display:flex;
+justify-content:space-between;
+padding:20px 60px;
+background:#0f172a;
+}
+
+nav a{
+color:white;
+margin-left:20px;
+text-decoration:none;
+}
+
+/* HERO */
+
+.hero{
+text-align:center;
+padding:120px 20px;
+}
+
+.hero h1{
+font-size:60px;
+background:linear-gradient(90deg,#38bdf8,#8b5cf6);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+/* COURSE GRID */
+
+.courses{
+padding:60px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:30px;
+}
+
+.course-card{
+background:#0f172a;
+padding:30px;
+border-radius:12px;
+transition:0.3s;
+text-align:center;
+}
+
+.course-card:hover{
+transform:translateY(-10px);
+}
+
+.price-old{
+text-decoration:line-through;
+color:#aaa;
+}
+
+.price-new{
+color:#22c55e;
+font-size:20px;
+margin-left:8px;
+}
+
+/* ABOUT */
+
+.about{
+padding:80px;
+display:flex;
+gap:40px;
+align-items:center;
+}
+
+.about img{
+width:220px;
+border-radius:50%;
+}
+
+/* BENEFITS */
+
+.benefits{
+padding:60px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:30px;
+}
+
+.box{
+background:#0f172a;
+padding:30px;
+border-radius:10px;
+}
+
+/* FAQ */
+
+.faq{
+padding:60px;
+}
+
+.faq-item{
+background:#0f172a;
+margin-bottom:20px;
+padding:20px;
+border-radius:10px;
+}
+
+/* FOOTER */
+
+footer{
+text-align:center;
+padding:40px;
+background:#0f172a;
+}
+
+</style>
 
 </head>
 
 <body>
 
-<header>
-
-<h1>DesignTech VLSI</h1>
-
 <nav>
 
+<h2>DesignTech VLSI</h2>
+
+<div>
 <a href="#">Home</a>
 <a href="#courses">Courses</a>
 <a href="#about">About</a>
 <a href="#faq">FAQ</a>
 <a href="login.html">Login</a>
+</div>
 
 </nav>
-
-</header>
 
 
 <section class="hero">
 
-<h2>Learn VLSI Design From Industry Experience</h2>
+<h1>DesignTech VLSI</h1>
 
-<p>RTL to GDS | Cadence Tools | Physical Design | Career Guidance</p>
-
-<a class="btn" href="#courses">Explore Courses</a>
+<p>Learn VLSI Design | Cadence Tools | RTL to GDS Flow</p>
 
 </section>
 
 
-<section id="about">
+<section id="courses" class="courses">
 
-<h2>Who Am I</h2>
-
-<div class="about-box">
-
-<img src="images/founder.jpg">
-
-<div>
-
-<h3>Harsh Raj Thakur</h3>
-
-<p>
-
-GATE Qualified 6 Times
-
-M.Tech VLSI – NIT Meghalaya  
-M.Tech High Voltage Engineering – NIT Calicut  
-
-Industrial Experience – Maven Silicon
-
-Mentored 5000+ students in VLSI and electronics.
-CO-Founder NITIANS DEEP LEARNING NETWORK (Assam Rifles DGAR)
-
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-
-<section id="courses">
-
-<h2>Courses</h2>
-
-<div class="course-grid">
-
-
-<div class="course">
+<div class="course-card">
 
 <h3>Physical Design Layout</h3>
 
-<p class="price">
-₹3999 <span>₹1999</span>
+<p>
+<span class="price-old">₹3999</span>
+<span class="price-new">₹1999</span>
 </p>
 
 <a href="course1.html">View Course</a>
@@ -97,12 +177,13 @@ CO-Founder NITIANS DEEP LEARNING NETWORK (Assam Rifles DGAR)
 </div>
 
 
-<div class="course">
+<div class="course-card">
 
 <h3>VLSI Lecture Series</h3>
 
-<p class="price">
-₹3999 <span>₹1999</span>
+<p>
+<span class="price-old">₹3999</span>
+<span class="price-new">₹1999</span>
 </p>
 
 <a href="course2.html">View Course</a>
@@ -110,12 +191,13 @@ CO-Founder NITIANS DEEP LEARNING NETWORK (Assam Rifles DGAR)
 </div>
 
 
-<div class="course">
+<div class="course-card">
 
 <h3>Cadence Analog Basics</h3>
 
-<p class="price">
-₹3999 <span>₹1999</span>
+<p>
+<span class="price-old">₹3999</span>
+<span class="price-new">₹1999</span>
 </p>
 
 <a href="course3.html">View Course</a>
@@ -123,12 +205,13 @@ CO-Founder NITIANS DEEP LEARNING NETWORK (Assam Rifles DGAR)
 </div>
 
 
-<div class="course">
+<div class="course-card">
 
-<h3>Signal and System</h3>
+<h3>Signal and Systems</h3>
 
-<p class="price">
-₹499 <span>₹299</span>
+<p>
+<span class="price-old">₹499</span>
+<span class="price-new">₹299</span>
 </p>
 
 <a href="course4.html">View Course</a>
@@ -136,39 +219,86 @@ CO-Founder NITIANS DEEP LEARNING NETWORK (Assam Rifles DGAR)
 </div>
 
 
-<div class="course">
+<div class="course-card">
 
 <h3>Network Theory</h3>
 
-<p class="price">
-₹499 <span>₹299</span>
+<p>
+<span class="price-old">₹499</span>
+<span class="price-new">₹299</span>
 </p>
 
 <a href="course5.html">View Course</a>
 
 </div>
 
+</section>
+
+
+<section id="about" class="about">
+
+<img src="images/founder.jpg">
+
+<div>
+
+<h2>Who Am I</h2>
+
+<p>
+
+Harsh Raj Thakur  
+GATE Qualified 6 Times  
+
+M.Tech VLSI – NIT Meghalaya  
+M.Tech High Voltage Engineering – NIT Calicut  
+
+Industrial Experience – Maven Silicon
+
+Mentored 5000+ students.
+
+</p>
 
 </div>
 
 </section>
 
 
+<section class="benefits">
 
-<section id="faq">
+<div class="box">
+<h3>Industry Level Knowledge</h3>
+<p>Learn real semiconductor design flow.</p>
+</div>
+
+<div class="box">
+<h3>Hands-on Tools</h3>
+<p>Cadence, layout design and RTL synthesis.</p>
+</div>
+
+<div class="box">
+<h3>Career Guidance</h3>
+<p>Preparation for semiconductor jobs.</p>
+</div>
+
+</section>
+
+
+<section id="faq" class="faq">
 
 <h2>FAQ</h2>
 
-<div class="faq">
+<div class="faq-item">
 
 <h3>Do I need prior VLSI knowledge?</h3>
+
 <p>No, courses start from basics.</p>
 
-<h3>Will I learn Cadence tools?</h3>
-<p>Yes practical tool based training is provided.</p>
+</div>
 
-<h3>Will it help for semiconductor jobs?</h3>
-<p>Yes course content is industry focused.</p>
+<div class="faq-item">
+
+<h3>Will I learn industry tools?</h3>
+
+<p>Yes practical tool training is provided.</p>
 
 </div>
 
@@ -178,22 +308,6 @@ CO-Founder NITIANS DEEP LEARNING NETWORK (Assam Rifles DGAR)
 <footer>
 
 <p>© 2026 DesignTech VLSI</p>
-
-<div class="social">
-
-<a href="https://youtube.com/@designtechvlsi">
-<i class="fa-brands fa-youtube"></i>
-</a>
-
-<a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/">
-<i class="fa-brands fa-linkedin"></i>
-</a>
-
-<a href="mailto:harsh_rt@ece.iitr.ac.in">
-<i class="fa-solid fa-envelope"></i>
-</a>
-
-</div>
 
 </footer>
 
