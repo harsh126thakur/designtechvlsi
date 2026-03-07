@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>My Research | DesignTech VLSI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins;
+background:#020617;
+color:#e2e8f0;
+overflow-x:hidden;
+}
+
+/* STAR BACKGROUND */
+
+#starfield{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-4;
+}
+
+/* GRID BACKGROUND */
+
+.grid{
+
+position:fixed;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(#38bdf822 1px, transparent 1px),
+linear-gradient(90deg,#38bdf822 1px, transparent 1px);
+
+background-size:80px 80px;
+
+z-index:-3;
+
+animation:gridmove 20s linear infinite;
+
+}
+
+@keyframes gridmove{
+
+0%{transform:translateY(0)}
+100%{transform:translateY(80px)}
+
+}
+
+/* HEADER */
+
+header{
+text-align:center;
+padding:60px;
+}
+
+header h1{
+font-size:48px;
+background:linear-gradient(90deg,#38bdf8,#6366f1);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+/* CONTAINER */
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:40px;
+}
+
+/* SECTION */
+
+.section{
+margin-top:60px;
+}
+
+.section h2{
+color:#38bdf8;
+margin-bottom:20px;
+}
+
+/* CARDS */
+
+.cards{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
+
+}
+
+.card{
+
+background:#1e293b;
+padding:25px;
+border-radius:10px;
+transition:0.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-8px);
+
+}
+
+/* PUBLICATIONS */
+
+.publications li{
+margin-bottom:20px;
+}
+
+/* LINKS */
+
+.links a{
+
+display:inline-block;
+margin:10px 10px 0 0;
+padding:10px 20px;
+background:#38bdf8;
+color:black;
+text-decoration:none;
+border-radius:6px;
+font-weight:500;
+
+}
+
+/* FOOTER */
+
+footer{
+text-align:center;
+padding:30px;
+margin-top:80px;
+background:#020617;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="grid"></div>
+
+<header>
+
+<h1>My Research</h1>
+<p>VLSI Architectures • AI Hardware • Semiconductor Systems</p>
+
+</header>
+
+<div class="container">
+
+<div class="section">
+
+<h2>Research Focus</h2>
+
+<div class="cards">
+
+<div class="card">
+
+<b>Digital Arithmetic Circuits</b><br><br>
+
+Design and optimization of high-performance arithmetic circuits for digital signal processing and hardware acceleration.
+
+</div>
+
+<div class="card">
+
+<b>Posit Number System Algorithms</b><br><br>
+
+Exploring efficient hardware architectures for posit arithmetic including posit multipliers and arithmetic units.
+
+</div>
+
+<div class="card">
+
+<b>CNN Hardware Accelerators</b><br><br>
+
+Development of hardware architectures for convolutional neural networks targeting high efficiency and low power consumption.
+
+</div>
+
+<div class="card">
+
+<b>VLSI Architectures for AI</b><br><br>
+
+Design of specialized hardware accelerators for machine learning and deep learning applications.
+
+</div>
+
+<div class="card">
+
+<b>Efficient DSP Hardware</b><br><br>
+
+Development of optimized hardware implementations for signal processing algorithms.
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>Research Publications</h2>
+
+<ul class="publications">
+
+<li>
+
+<b>A Transistor-level Implementation of Radix-2 and Radix-4 FFT Using Logical Effort</b><br>
+International Conference on VLSI Design (VLSID), 2026
+
+</li>
+
+<li>
+
+<b>VLSI Implementation of Edge Detection Chip: A Prospective Design</b><br>
+IEEE International Symposium on Smart Electronic Systems (iSES), 2024
+
+</li>
+
+<li>
+
+<b>Power-efficient VLSI Realization of Decimal Convolution Algorithms</b><br>
+Microsystem Technologies Journal, 2024
+
+</li>
+
+</ul>
+
+<div class="links">
+
+<a href="https://scholar.google.com/citations?user=MxuEzlcAAAAJ&hl=en" target="_blank">
+Google Scholar
+</a>
+
+<a href="https://www.researchgate.net/profile/Harsh-Thakur-12" target="_blank">
+ResearchGate
+</a>
+
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>Research Vision</h2>
+
+<div class="cards">
+
+<div class="card">
+Develop efficient hardware architectures for next-generation AI systems.
+</div>
+
+<div class="card">
+Improve numerical computing performance using posit number systems.
+</div>
+
+<div class="card">
+Bridge academic research with real semiconductor industry design flows.
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+<p>© 2026 DesignTech VLSI</p>
+
+</footer>
+
+
+<script>
+
+const canvas=document.getElementById("starfield");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let stars=[];
+
+for(let i=0;i<200;i++){
+
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2
+});
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+stars.forEach(star=>{
+
+star.y+=0.2;
+
+if(star.y>canvas.height){
+star.y=0;
+}
+
+ctx.fillStyle="white";
+ctx.fillRect(star.x,star.y,star.size,star.size);
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
+
+</body>
+
+</html>
