@@ -1,30 +1,297 @@
+```html id="7xt3r8"
 <!DOCTYPE html>
 <html>
 
 <head>
 
-<title>FAQ</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="style.css">
+<title>FAQ | DesignTech VLSI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins;
+background:#020617;
+color:#e2e8f0;
+overflow-x:hidden;
+}
+
+/* star background */
+
+#starfield{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-4;
+}
+
+/* grid */
+
+.grid{
+position:fixed;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(#38bdf822 1px, transparent 1px),
+linear-gradient(90deg,#38bdf822 1px, transparent 1px);
+
+background-size:80px 80px;
+z-index:-3;
+animation:gridmove 20s linear infinite;
+}
+
+@keyframes gridmove{
+0%{transform:translateY(0)}
+100%{transform:translateY(80px)}
+}
+
+/* header */
+
+header{
+text-align:center;
+padding:60px;
+}
+
+header h1{
+font-size:48px;
+background:linear-gradient(90deg,#38bdf8,#6366f1);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+/* container */
+
+.container{
+max-width:900px;
+margin:auto;
+padding:40px;
+}
+
+/* FAQ */
+
+.faq{
+
+margin-top:20px;
+
+}
+
+.faq-item{
+
+background:#1e293b;
+margin-bottom:15px;
+border-radius:8px;
+overflow:hidden;
+
+}
+
+.faq-question{
+
+padding:20px;
+cursor:pointer;
+font-weight:600;
+
+}
+
+.faq-question:hover{
+
+background:#334155;
+
+}
+
+.faq-answer{
+
+padding:20px;
+display:none;
+border-top:1px solid #334155;
+
+}
+
+/* footer */
+
+footer{
+text-align:center;
+padding:30px;
+margin-top:80px;
+background:#020617;
+}
+
+</style>
 
 </head>
 
 <body>
 
+<canvas id="starfield"></canvas>
+<div class="grid"></div>
+
+<header>
+
 <h1>Frequently Asked Questions</h1>
+<p>Everything you need to know about DesignTech VLSI courses</p>
 
-<h3>Do I need prior VLSI knowledge?</h3>
+</header>
 
-<p>No. Courses start from basics.</p>
+<div class="container">
 
-<h3>Will these courses help in semiconductor jobs?</h3>
+<div class="faq">
 
-<p>Yes. Content is industry oriented.</p>
+<div class="faq-item">
 
-<h3>Do you provide mentorship?</h3>
+<div class="faq-question">Do I need prior VLSI knowledge to take these courses?</div>
 
-<p>Yes. Personal mentorship sessions are available.</p>
+<div class="faq-answer">
+
+No. The courses start from fundamental concepts and gradually move towards advanced semiconductor design topics.
+
+</div>
+
+</div>
+
+
+<div class="faq-item">
+
+<div class="faq-question">Are industry tools covered in the courses?</div>
+
+<div class="faq-answer">
+
+Yes. The courses introduce important Electronic Design Automation (EDA) tools used in the semiconductor industry.
+
+</div>
+
+</div>
+
+
+<div class="faq-item">
+
+<div class="faq-question">Will these courses help me prepare for semiconductor jobs?</div>
+
+<div class="faq-answer">
+
+Yes. The training focuses on practical understanding of VLSI design flows, which are essential for semiconductor industry roles.
+
+</div>
+
+</div>
+
+
+<div class="faq-item">
+
+<div class="faq-question">Do you provide mentorship or guidance?</div>
+
+<div class="faq-answer">
+
+Yes. Personal mentorship sessions are available where students can receive guidance on VLSI careers and research.
+
+</div>
+
+</div>
+
+
+<div class="faq-item">
+
+<div class="faq-question">Who should take these courses?</div>
+
+<div class="faq-answer">
+
+These courses are ideal for ECE students, researchers, and professionals who want to build a career in semiconductor design.
+
+</div>
+
+</div>
+
+
+<div class="faq-item">
+
+<div class="faq-question">Is there a refund policy?</div>
+
+<div class="faq-answer">
+
+Yes. We provide a 7-day money back guarantee if you are not satisfied with the course.
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+<footer>
+
+<p>© 2026 DesignTech VLSI</p>
+
+</footer>
+
+<script>
+
+/* FAQ toggle */
+
+const questions=document.querySelectorAll(".faq-question");
+
+questions.forEach(q=>{
+q.addEventListener("click",()=>{
+
+const answer=q.nextElementSibling;
+
+answer.style.display =
+answer.style.display==="block" ? "none" : "block";
+
+});
+});
+
+
+/* star animation */
+
+const canvas=document.getElementById("starfield");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let stars=[];
+
+for(let i=0;i<200;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2
+});
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+stars.forEach(star=>{
+
+star.y+=0.2;
+
+if(star.y>canvas.height){
+star.y=0;
+}
+
+ctx.fillStyle="white";
+ctx.fillRect(star.x,star.y,star.size,star.size);
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
 
 </body>
 
 </html>
+```
