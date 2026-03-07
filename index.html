@@ -15,12 +15,12 @@
 body{
 margin:0;
 font-family:Poppins;
-background:black;
+background:#020617;
 color:white;
 overflow-x:hidden;
 }
 
-/* star background */
+/* STAR BACKGROUND */
 
 #starfield{
 position:fixed;
@@ -28,10 +28,10 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-z-index:-3;
+z-index:-4;
 }
 
-/* neon grid */
+/* NEON GRID */
 
 .circuit{
 position:fixed;
@@ -41,7 +41,7 @@ background-image:
 linear-gradient(#38bdf822 1px, transparent 1px),
 linear-gradient(90deg,#38bdf822 1px, transparent 1px);
 background-size:80px 80px;
-z-index:-2;
+z-index:-3;
 animation:gridmove 20s linear infinite;
 }
 
@@ -50,7 +50,7 @@ animation:gridmove 20s linear infinite;
 100%{transform:translateY(80px)}
 }
 
-/* navbar */
+/* NAVBAR */
 
 nav{
 display:flex;
@@ -65,11 +65,15 @@ margin-left:20px;
 text-decoration:none;
 }
 
-/* hero */
+nav a:hover{
+color:#38bdf8;
+}
+
+/* HERO */
 
 .hero{
 text-align:center;
-padding:140px 20px;
+padding:120px 20px;
 }
 
 .hero h1{
@@ -79,7 +83,7 @@ background:linear-gradient(90deg,#38bdf8,#6366f1);
 color:transparent;
 }
 
-/* rotating chip */
+/* CHIP */
 
 .chip3d{
 margin:auto;
@@ -97,27 +101,51 @@ box-shadow:0 0 30px #38bdf8;
 100%{transform:rotate(360deg)}
 }
 
-/* courses */
+/* DASHBOARD */
+
+.info-icons{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:30px;
+padding:60px;
+}
+
+.info-card{
+background:#1e293b;
+padding:30px;
+border-radius:12px;
+text-align:center;
+text-decoration:none;
+color:white;
+transition:0.3s;
+}
+
+.info-card:hover{
+transform:translateY(-10px);
+background:#334155;
+}
+
+/* COURSES */
 
 .courses{
-padding:60px;
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:30px;
+padding:60px;
 }
 
 .card{
 background:#1e293b;
 padding:30px;
-border-radius:12px;
+border-radius:14px;
 position:relative;
-transition:0.3s;
 text-align:center;
+transition:0.3s;
 }
 
 .card:hover{
 transform:translateY(-10px);
-box-shadow:0 0 20px #38bdf8;
+box-shadow:0 0 25px #38bdf8;
 }
 
 .discount{
@@ -136,12 +164,25 @@ color:#aaa;
 }
 
 .price-new{
-color:#38bdf8;
-font-size:20px;
-margin-left:8px;
+color:#22c55e;
+margin-left:10px;
+font-weight:bold;
 }
 
-/* founder */
+button{
+padding:12px 22px;
+background:#38bdf8;
+border:none;
+border-radius:6px;
+font-size:14px;
+cursor:pointer;
+}
+
+button:hover{
+background:#22c1f0;
+}
+
+/* FOUNDER */
 
 .founder{
 display:flex;
@@ -158,17 +199,11 @@ border-radius:50%;
 border:4px solid #38bdf8;
 }
 
-/* testimonials */
+/* TESTIMONIALS */
 
 .testimonials{
 padding:80px 40px;
 text-align:center;
-}
-
-.testimonials h2{
-font-size:36px;
-color:#38bdf8;
-margin-bottom:50px;
 }
 
 .testimonial-container{
@@ -181,15 +216,9 @@ gap:30px;
 background:#1e293b;
 padding:30px;
 border-radius:12px;
-transition:0.3s;
 }
 
-.testimonial-card:hover{
-transform:translateY(-10px);
-box-shadow:0 0 20px #38bdf8;
-}
-
-/* payment */
+/* PAYMENT */
 
 .payment{
 text-align:center;
@@ -197,26 +226,12 @@ padding:80px;
 background:#111827;
 }
 
-button{
-padding:14px 26px;
-background:#38bdf8;
-border:none;
-border-radius:6px;
-font-size:16px;
-cursor:pointer;
-}
-
-button:hover{
-background:#22c1f0;
-}
-
-/* contact */
+/* CONTACT */
 
 .contact{
 text-align:center;
 padding:80px;
 background:#020617;
-line-height:2;
 }
 
 .contact a{
@@ -224,12 +239,12 @@ color:#38bdf8;
 text-decoration:none;
 }
 
-/* footer */
+/* FOOTER */
 
 footer{
 text-align:center;
-padding:20px;
-background:#020617;
+padding:40px;
+background:#0f172a;
 }
 
 </style>
@@ -249,62 +264,43 @@ background:#020617;
 <a href="#">Home</a>
 <a href="#courses">Courses</a>
 <a href="#founder">Founder</a>
-<a href="#guidance">Guidance</a>
 <a href="#contact">Contact</a>
 </div>
 
 </nav>
 
 <section class="hero">
-<section class="info-icons">
 
-<a href="whoami.html" class="info-card">
-<h3>Who Am I</h3>
-<p>Learn about the founder and academic background.</p>
-</a>
-
-<a href="research.html" class="info-card">
-<h3>My Research</h3>
-<p>Research work in VLSI, Posit Arithmetic and AI hardware.</p>
-</a>
-
-<a href="coursebenefits.html" class="info-card">
-<h3>Course Benefits</h3>
-<p>What you will gain from these VLSI courses.</p>
-</a>
-
-<a href="vlsiimportance.html" class="info-card">
-<h3>Importance of VLSI</h3>
-<p>Why semiconductor engineers are critical for India.</p>
-</a>
-
-<a href="freecourses.html" class="info-card">
-<h3>Free Courses</h3>
-<p>Watch free tutorials available on YouTube.</p>
-</a>
-
-<a href="faq.html" class="info-card">
-<h3>FAQ</h3>
-<p>Frequently asked questions about courses.</p>
-</a>
-
-<a href="quiz.html" class="info-card">
-<h3>Test Your Knowledge</h3>
-<p>Check your VLSI understanding with quick quizzes.</p>
-</a>
-
-<a href="guarantee.html" class="info-card">
-<h3>7-Day Guarantee</h3>
-<p>Full refund policy for paid courses.</p>
-</a>
-
-</section>
 <h1>DesignTech VLSI</h1>
 <p>VLSI Tutorials • ECE Interview Preparation • Semiconductor Careers</p>
 
 <div class="chip3d"></div>
 
 </section>
+
+<!-- DASHBOARD SECTION -->
+
+<section class="info-icons">
+
+<a href="whoami.html" class="info-card">Who Am I</a>
+
+<a href="research.html" class="info-card">My Research</a>
+
+<a href="coursebenefits.html" class="info-card">Course Benefits</a>
+
+<a href="vlsiimportance.html" class="info-card">Importance of VLSI</a>
+
+<a href="freecourses.html" class="info-card">Free Courses</a>
+
+<a href="faq.html" class="info-card">FAQ</a>
+
+<a href="quiz.html" class="info-card">Test Your Knowledge</a>
+
+<a href="guarantee.html" class="info-card">7-Day Guarantee</a>
+
+</section>
+
+<!-- COURSES -->
 
 <section id="courses" class="courses">
 
@@ -331,7 +327,7 @@ background:#020617;
 
 <div class="card">
 <div class="discount">40% OFF</div>
-<h3>Signal and System</h3>
+<h3>Signal and Systems</h3>
 <p><span class="price-old">₹499</span><span class="price-new">₹299</span></p>
 <a href="course4.html"><button>View Course</button></a>
 </div>
@@ -345,6 +341,8 @@ background:#020617;
 
 </section>
 
+<!-- FOUNDER -->
+
 <section id="founder" class="founder">
 
 <img src="founder.jpg">
@@ -354,40 +352,30 @@ background:#020617;
 <h2>Harsh Raj Thakur</h2>
 
 <p>
-Harsh Raj Thakur is a <b>Research Scholar at IIT Roorkee</b> working in semiconductor design and VLSI systems.
+
+Research Scholar at <b>IIT Roorkee</b> working on VLSI architectures and semiconductor systems.
+
+Founder of <b>DesignTech VLSI</b> mentoring students in RTL design, physical design and semiconductor careers.
+
 </p>
 
 <p>
-Founder of <b>DesignTech VLSI</b>, mentoring students in semiconductor design, Cadence tools and RTL-to-GDS flow.
-</p>
 
-<p>
 ✔ GATE Qualified 6 Times  
 <br>
 ✔ M.Tech High Voltage Engineering — NIT Calicut  
 <br>
-✔ M.Tech VLSI Design — NIT Meghalaya
-</p>
+✔ M.Tech VLSI Design — NIT Meghalaya  
+<br>
+✔ Mentored 5000+ students
 
-<p>
-Research Interests:
-<br>
-Digital Arithmetic Circuits  
-<br>
-Posit Number Systems  
-<br>
-CNN Hardware Accelerators  
-<br>
-AI for Chip Design
-</p>
-
-<p>
-Mentored <b>5000+ students</b> in VLSI design and semiconductor careers.
 </p>
 
 </div>
 
 </section>
+
+<!-- TESTIMONIALS -->
 
 <section class="testimonials">
 
@@ -396,28 +384,26 @@ Mentored <b>5000+ students</b> in VLSI design and semiconductor careers.
 <div class="testimonial-container">
 
 <div class="testimonial-card">
-<p>"The VLSI tutorials are very clear and practical."</p>
-<h4>— ECE Student</h4>
+<p>The tutorials helped me understand VLSI design concepts clearly.</p>
 </div>
 
 <div class="testimonial-card">
-<p>"Great explanation of semiconductor design flows."</p>
-<h4>— M.Tech Student</h4>
+<p>Great explanation of semiconductor workflows.</p>
 </div>
 
 <div class="testimonial-card">
-<p>"Mentorship guidance helped me prepare for VLSI roles."</p>
-<h4>— Research Scholar</h4>
+<p>The mentorship helped me plan my semiconductor career.</p>
 </div>
 
 </div>
 
 </section>
 
-<section id="guidance" class="payment">
+<!-- PAYMENT -->
+
+<section class="payment">
 
 <h2>Personal VLSI Guidance</h2>
-<p>One-to-one mentorship for VLSI career preparation.</p>
 
 <h3>₹1999</h3>
 
@@ -426,10 +412,12 @@ Mentored <b>5000+ students</b> in VLSI design and semiconductor careers.
 <br><br>
 
 <a href="upi://pay?pa=7550233792@ybl&pn=DesignTechVLSI&am=1999&cu=INR">
-<button>Pay ₹1999 via UPI</button>
+<button>Pay with UPI</button>
 </a>
 
 </section>
+
+<!-- CONTACT -->
 
 <section id="contact" class="contact">
 
@@ -439,57 +427,56 @@ Mentored <b>5000+ students</b> in VLSI design and semiconductor careers.
 
 <br><br>
 
-<a href="https://youtube.com/@designtechvlsi" target="_blank">YouTube</a>
+<a href="https://youtube.com/@designtechvlsi">YouTube</a>
 
 <br><br>
 
-<a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/" target="_blank">LinkedIn</a>
+<a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/">LinkedIn</a>
 
 </section>
 
 <footer>
+
 <p>© 2026 DesignTech VLSI</p>
+
 </footer>
 
 <script>
 
-const canvas=document.getElementById("starfield");
-const ctx=canvas.getContext("2d");
+const canvas=document.getElementById("starfield")
+const ctx=canvas.getContext("2d")
 
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
 
-let stars=[];
+let stars=[]
 
 for(let i=0;i<200;i++){
 stars.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
 size:Math.random()*2
-});
+})
 }
 
 function animate(){
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.clearRect(0,0,canvas.width,canvas.height)
 
 stars.forEach(star=>{
-star.y+=0.3;
+star.y+=0.3
+if(star.y>canvas.height) star.y=0
 
-if(star.y>canvas.height){
-star.y=0;
-}
+ctx.fillStyle="white"
+ctx.fillRect(star.x,star.y,star.size,star.size)
 
-ctx.fillStyle="white";
-ctx.fillRect(star.x,star.y,star.size,star.size);
+})
 
-});
-
-requestAnimationFrame(animate);
+requestAnimationFrame(animate)
 
 }
 
-animate();
+animate()
 
 </script>
 
