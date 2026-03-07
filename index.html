@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -139,6 +140,7 @@ transition:0.3s;
 
 .card:hover{
 transform:translateY(-10px);
+box-shadow:0 0 20px #38bdf8;
 }
 
 .discount{
@@ -170,6 +172,7 @@ flex-wrap:wrap;
 gap:50px;
 padding:80px;
 background:#020617;
+align-items:center;
 }
 
 .founder img{
@@ -181,16 +184,42 @@ border:4px solid #38bdf8;
 /* testimonials */
 
 .testimonials{
-padding:80px;
+padding:80px 40px;
 text-align:center;
+}
+
+.testimonials h2{
+font-size:36px;
+color:#38bdf8;
+margin-bottom:50px;
+}
+
+.testimonial-container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:30px;
 }
 
 .testimonial-card{
 background:#1e293b;
 padding:30px;
-margin:20px auto;
-max-width:600px;
 border-radius:12px;
+transition:0.3s;
+}
+
+.testimonial-card:hover{
+transform:translateY(-10px);
+box-shadow:0 0 20px #38bdf8;
+}
+
+.testimonial-card p{
+font-style:italic;
+line-height:1.6;
+}
+
+.testimonial-card h4{
+margin-top:20px;
+color:#38bdf8;
 }
 
 /* payment */
@@ -210,6 +239,10 @@ font-size:16px;
 cursor:pointer;
 }
 
+button:hover{
+background:#22c1f0;
+}
+
 /* contact */
 
 .contact{
@@ -224,6 +257,8 @@ color:#38bdf8;
 text-decoration:none;
 }
 
+/* footer */
+
 footer{
 text-align:center;
 padding:20px;
@@ -237,7 +272,6 @@ background:#020617;
 <body>
 
 <canvas id="starfield"></canvas>
-
 <div class="circuit"></div>
 
 <nav>
@@ -257,13 +291,11 @@ background:#020617;
 <section class="hero">
 
 <h1>DesignTech VLSI</h1>
-
 <p>VLSI Tutorials • ECE Interview Preparation • Semiconductor Careers</p>
 
 <div class="chip3d"></div>
 
 </section>
-
 
 <section class="info-icons">
 
@@ -277,7 +309,6 @@ background:#020617;
 <a href="guarantee.html" class="info-card">7-Day Guarantee</a>
 
 </section>
-
 
 <section id="courses" class="courses">
 
@@ -318,7 +349,6 @@ background:#020617;
 
 </section>
 
-
 <section id="founder" class="founder">
 
 <img src="founder.jpg">
@@ -328,26 +358,45 @@ background:#020617;
 <h2>Harsh Raj Thakur</h2>
 
 <p>
-
 Founder of DesignTech VLSI.  
 GATE qualified 6 times.  
-
 M.Tech High Voltage Engineering — NIT Calicut.  
 M.Tech VLSI — NIT Meghalaya.  
-
 Mentored more than 5000 students.
-
 </p>
 
 </div>
 
 </section>
 
+<section class="testimonials">
+
+<h2>What Students Say</h2>
+
+<div class="testimonial-container">
+
+<div class="testimonial-card">
+<p>"The VLSI tutorials are very clear and practical."</p>
+<h4>— ECE Student</h4>
+</div>
+
+<div class="testimonial-card">
+<p>"Great explanation of semiconductor design flows and Cadence tools."</p>
+<h4>— M.Tech Student</h4>
+</div>
+
+<div class="testimonial-card">
+<p>"Mentorship guidance helped me understand semiconductor industry roles."</p>
+<h4>— Research Scholar</h4>
+</div>
+
+</div>
+
+</section>
 
 <section id="guidance" class="payment">
 
 <h2>Personal VLSI Guidance</h2>
-
 <p>One-to-one mentorship for VLSI career preparation.</p>
 
 <h3>₹1999</h3>
@@ -361,7 +410,6 @@ Mentored more than 5000 students.
 </a>
 
 </section>
-
 
 <section id="contact" class="contact">
 
@@ -378,41 +426,10 @@ Mentored more than 5000 students.
 <a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/" target="_blank">LinkedIn</a>
 
 </section>
-<section class="testimonials">
 
-<h2>What Students Say</h2>
-
-<div class="testimonial-container">
-
-<div class="testimonial-card">
-<p>
-"The VLSI tutorials are very clear and practical. It helped me understand physical design concepts easily."
-</p>
-<h4>— ECE Student</h4>
-</div>
-
-<div class="testimonial-card">
-<p>
-"Great explanation of semiconductor design flows and Cadence tools. Highly recommended for beginners."
-</p>
-<h4>— M.Tech Student</h4>
-</div>
-
-<div class="testimonial-card">
-<p>
-"The mentorship guidance helped me understand how to prepare for semiconductor industry roles."
-</p>
-<h4>— Research Scholar</h4>
-</div>
-
-</div>
-
-</section><footer>
-
+<footer>
 <p>© 2026 DesignTech VLSI</p>
-
 </footer>
-
 
 <script>
 
@@ -458,3 +475,4 @@ animate();
 
 </body>
 </html>
+```
