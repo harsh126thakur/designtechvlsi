@@ -51,10 +51,6 @@ button:hover{
 background:#22c1f0;
 }
 
-a{
-color:#38bdf8;
-}
-
 </style>
 
 </head>
@@ -69,36 +65,36 @@ color:#38bdf8;
 
 <input id="password" type="password" placeholder="Password">
 
-<button onclick="register()">Register</button>
+<button id="registerBtn">Register</button>
 
 <p style="margin-top:15px">
-Already registered? <a href="login.html">Login</a>
+Already registered? <a href="login.html" style="color:#38bdf8">Login</a>
 </p>
 
 </div>
 
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script type="module">
 
-<script>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
 authDomain: "designtechvlsi.firebaseapp.com",
 projectId: "designtechvlsi",
-storageBucket: "designtechvlsi.appspot.com",
+storageBucket: "designtechvlsi.firebasestorage.app",
 messagingSenderId: "268545364402",
-appId: "1:268545364402:web:57a3d1d3fb8535998754ab"
+appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
+measurementId: "G-F5KGZK2JDK"
 };
 
-firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-const db = firebase.firestore();
-
-
-function register(){
+document.getElementById("registerBtn").addEventListener("click", async () => {
 
 let email = document.getElementById("email").value;
 let password = document.getElementById("password").value;
@@ -108,39 +104,36 @@ alert("Please enter email and password");
 return;
 }
 
-firebase.auth().createUserWithEmailAndPassword(email,password)
+try{
 
-.then(function(userCredential){
+const userCredential = await createUserWithEmailAndPassword(auth,email,password);
 
-let uid = userCredential.user.uid;
+const uid = userCredential.user.uid;
 
-db.collection("users").doc(uid).set({
+await setDoc(doc(db,"users",uid),{
 
-email: email,
-course1: false,
-course2: false,
-course3: false,
-course4: false,
-course5: false
+email:email,
+course1:false,
+course2:false,
+course3:false,
+course4:false,
+course5:false
 
-})
-
-.then(function(){
+});
 
 alert("Registration successful");
-window.location = "login.html";
 
-})
+window.location="login.html";
 
-})
+}
 
-.catch(function(error){
+catch(error){
 
 alert(error.message);
 
-})
-
 }
+
+});
 
 </script>
 
