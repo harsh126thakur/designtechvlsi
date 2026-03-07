@@ -1,4 +1,3 @@
-```css
 body{
 
 margin:0;
@@ -7,7 +6,6 @@ background:#020617;
 color:white;
 
 }
-
 
 header{
 
@@ -18,7 +16,6 @@ background:#0f172a;
 
 }
 
-
 nav a{
 
 margin-left:20px;
@@ -27,7 +24,6 @@ text-decoration:none;
 
 }
 
-
 .hero{
 
 text-align:center;
@@ -35,34 +31,33 @@ padding:100px 20px;
 
 }
 
+.icon-grid{
 
-.btn{
-
-background:#7c3aed;
-padding:12px 25px;
-border-radius:8px;
-color:white;
-text-decoration:none;
-
-}
-
-
-.about-box{
-
-display:flex;
-gap:40px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:30px;
 padding:60px;
 
 }
 
+.icon-card{
 
-.about-box img{
-
-width:200px;
-border-radius:100px;
+background:#0f172a;
+padding:30px;
+border-radius:12px;
+text-align:center;
+text-decoration:none;
+color:white;
+transition:0.3s;
 
 }
 
+.icon-card:hover{
+
+transform:translateY(-8px);
+background:#1e293b;
+
+}
 
 .course-grid{
 
@@ -73,8 +68,7 @@ padding:60px;
 
 }
 
-
-.course{
+.course-card{
 
 background:#0f172a;
 padding:25px;
@@ -83,13 +77,11 @@ text-align:center;
 
 }
 
-
 .price{
 
 font-size:20px;
 
 }
-
 
 .price span{
 
@@ -98,14 +90,6 @@ margin-left:10px;
 
 }
 
-
-.faq{
-
-padding:60px;
-
-}
-
-
 footer{
 
 text-align:center;
@@ -113,12 +97,3 @@ padding:40px;
 background:#0f172a;
 
 }
-
-
-.social i{
-
-margin:10px;
-font-size:20px;
-
-}
-```
