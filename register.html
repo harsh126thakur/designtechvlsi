@@ -19,6 +19,7 @@ display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
+margin:0;
 }
 
 .box{
@@ -50,6 +51,10 @@ button:hover{
 background:#22c1f0;
 }
 
+a{
+color:#38bdf8;
+}
+
 </style>
 
 </head>
@@ -60,14 +65,14 @@ background:#22c1f0;
 
 <h2>Create Account</h2>
 
-<input id="email" placeholder="Email">
+<input id="email" type="email" placeholder="Email">
 
 <input id="password" type="password" placeholder="Password">
 
 <button onclick="register()">Register</button>
 
 <p style="margin-top:15px">
-Already registered? <a href="login.html" style="color:#38bdf8">Login</a>
+Already registered? <a href="login.html">Login</a>
 </p>
 
 </div>
@@ -76,7 +81,6 @@ Already registered? <a href="login.html" style="color:#38bdf8">Login</a>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
 
 <script>
 
@@ -96,42 +100,43 @@ const db = firebase.firestore();
 
 function register(){
 
-let email=document.getElementById("email").value
-let password=document.getElementById("password").value
+let email = document.getElementById("email").value;
+let password = document.getElementById("password").value;
 
 if(email=="" || password==""){
-
-alert("Please enter email and password")
-return
-
+alert("Please enter email and password");
+return;
 }
 
 firebase.auth().createUserWithEmailAndPassword(email,password)
 
 .then(function(userCredential){
 
-let uid=userCredential.user.uid
+let uid = userCredential.user.uid;
 
 db.collection("users").doc(uid).set({
 
-email:email,
-course1:false,
-course2:false,
-course3:false,
-course4:false,
-course5:false
+email: email,
+course1: false,
+course2: false,
+course3: false,
+course4: false,
+course5: false
 
 })
 
-alert("Registration successful")
+.then(function(){
 
-window.location="login.html"
+alert("Registration successful");
+window.location = "login.html";
+
+})
 
 })
 
 .catch(function(error){
 
-alert(error.message)
+alert(error.message);
 
 })
 
