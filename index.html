@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 
@@ -24,9 +25,11 @@ overflow-x:hidden;
 
 #stars{
 position:fixed;
+top:0;
+left:0;
 width:100%;
 height:100%;
-z-index:-3;
+z-index:-4;
 }
 
 /* GRID */
@@ -39,13 +42,51 @@ background-image:
 linear-gradient(#38bdf822 1px, transparent 1px),
 linear-gradient(90deg,#38bdf822 1px, transparent 1px);
 background-size:80px 80px;
-z-index:-2;
+z-index:-3;
 animation:gridmove 20s linear infinite;
 }
 
 @keyframes gridmove{
 0%{transform:translateY(0)}
 100%{transform:translateY(80px)}
+}
+
+/* FLOATING CHIP ICON */
+
+.chip{
+position:fixed;
+opacity:0.5;
+animation:floatChip 20s linear infinite;
+z-index:-2;
+}
+
+@keyframes floatChip{
+0%{transform:translateY(100vh) rotate(0deg)}
+100%{transform:translateY(-200px) rotate(360deg)}
+}
+
+/* FLOATING CUBES */
+
+.cube{
+position:fixed;
+width:40px;
+height:40px;
+border:2px solid #38bdf8;
+animation:floatCube 25s linear infinite;
+opacity:0.3;
+z-index:-2;
+}
+
+@keyframes floatCube{
+
+0%{
+transform:translateY(100vh) rotate(0deg)
+}
+
+100%{
+transform:translateY(-200px) rotate(360deg)
+}
+
 }
 
 /* NAVBAR */
@@ -184,25 +225,47 @@ background:#0f172a;
 
 <div class="grid"></div>
 
+<!-- floating cubes -->
+
+<div class="cube" style="left:10%"></div>
+<div class="cube" style="left:30%"></div>
+<div class="cube" style="left:50%"></div>
+<div class="cube" style="left:70%"></div>
+<div class="cube" style="left:90%"></div>
+
+<!-- floating chip icons -->
+
+<svg class="chip" style="left:20%" width="40" height="40" viewBox="0 0 24 24" fill="#38bdf8">
+<path d="M9 3v2H7v2H5v2H3v2h2v2H3v2h2v2h2v2h2v2h2v-2h2v2h2v-2h2v-2h2v-2h2v-2h-2v-2h2v-2h-2V7h-2V5h-2V3h-2v2h-2V3z"/>
+</svg>
+
+<svg class="chip" style="left:60%" width="40" height="40" viewBox="0 0 24 24" fill="#38bdf8">
+<path d="M9 3v2H7v2H5v2H3v2h2v2H3v2h2v2h2v2h2v2h2v-2h2v2h2v-2h2v-2h2v-2h2v-2h-2v-2h2v-2h-2V7h-2V5h-2V3h-2v2h-2V3z"/>
+</svg>
+
+
 <nav>
 
 <h2>DesignTech VLSI</h2>
 
 <div>
+
 <a href="#">Home</a>
 <a href="#courses">Courses</a>
 <a href="#about">About</a>
 <a href="#faq">FAQ</a>
 <a href="login.html">Login</a>
+
 </div>
 
 </nav>
+
 
 <section class="hero">
 
 <h1>DesignTech VLSI</h1>
 
-<p>Learn RTL to GDS | Cadence Tools | Semiconductor Careers</p>
+<p>RTL to GDS | Cadence Tools | Semiconductor Careers</p>
 
 </section>
 
@@ -241,163 +304,6 @@ background:#0f172a;
 
 </section>
 
-
-<section id="about" class="about">
-
-<img src="images/founder.jpg">
-
-<div>
-
-<h2>Who Am I</h2>
-
-<p>
-
-Harsh Raj Thakur
-
-GATE Qualified 6 Times  
-M.Tech VLSI – NIT Meghalaya  
-M.Tech High Voltage Engineering – NIT Calicut  
-
-Industrial Experience – Maven Silicon  
-
-Mentored more than 5000 students.
-
-</p>
-
-</div>
-
-</section>
-
-
-<section class="benefits">
-
-<div class="box">
-<h3>Industry Level Knowledge</h3>
-<p>Learn semiconductor design flow.</p>
-</div>
-
-<div class="box">
-<h3>Hands-on Tools</h3>
-<p>Cadence Innovus, Virtuoso and RTL synthesis.</p>
-</div>
-
-<div class="box">
-<h3>Career Guidance</h3>
-<p>Preparation for semiconductor companies.</p>
-</div>
-
-</section>
-
-
-<section class="testimonials">
-
-<h2>Student Testimonials</h2>
-
-<div class="test-card">
-
-<p>
-
-"DesignTech VLSI helped me understand physical design concepts clearly."
-
-</p>
-
-</div>
-
-<div class="test-card">
-
-<p>
-
-"Best mentorship for VLSI beginners."
-
-</p>
-
-</div>
-
-</section>
-
-
-<section id="faq" class="faq">
-
-<h2>FAQ</h2>
-
-<div class="faq-item">
-
-<h3>Do I need prior VLSI knowledge?</h3>
-
-<p>No courses start from basics.</p>
-
-</div>
-
-<div class="faq-item">
-
-<h3>Will I learn industry tools?</h3>
-
-<p>Yes practical training is included.</p>
-
-</div>
-
-</section>
-
-
-<footer>
-
-<p>© 2026 DesignTech VLSI</p>
-
-<p>
-
-YouTube | LinkedIn | Email
-
-</p>
-
-</footer>
-
-
-<script>
-
-const canvas=document.getElementById("stars");
-const ctx=canvas.getContext("2d");
-
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-let stars=[];
-
-for(let i=0;i<300;i++){
-
-stars.push({
-
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2
-
-});
-
-}
-
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-stars.forEach(star=>{
-
-star.y+=0.3;
-
-if(star.y>canvas.height){
-star.y=0;
-}
-
-ctx.fillStyle="white";
-ctx.fillRect(star.x,star.y,star.size,star.size);
-
-});
-
-requestAnimationFrame(animate);
-
-}
-
-animate();
-
-</script>
-
 </body>
 </html>
+```
