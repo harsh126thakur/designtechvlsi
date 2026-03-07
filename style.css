@@ -89,17 +89,19 @@ margin-bottom:40px;
 color:#38bdf8;
 }
 
-/* COURSE GRID */
+/* COURSE GRID (WORKS FOR BOTH HTML STRUCTURES) */
 
+.courses,
 .course-grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:35px;
 padding:60px;
 }
 
 /* COURSE CARD */
 
+.card,
 .course-card{
 background:#1e293b;
 padding:30px;
@@ -109,6 +111,7 @@ position:relative;
 text-align:center;
 }
 
+.card:hover,
 .course-card:hover{
 transform:translateY(-10px);
 box-shadow:0 0 25px #38bdf8;
@@ -161,6 +164,18 @@ button:hover{
 background:#22c1f0;
 }
 
+/* DISCOUNT BADGE */
+
+.discount{
+position:absolute;
+top:10px;
+right:10px;
+background:red;
+padding:5px 10px;
+border-radius:5px;
+font-size:12px;
+}
+
 /* INFO ICON NAVIGATION */
 
 .info-icons{
@@ -194,25 +209,10 @@ gap:40px;
 margin-top:40px;
 }
 
-.card{
-background:#1e293b;
-padding:20px;
-border-radius:12px;
-text-align:center;
-transition:0.4s;
-position:relative;
-overflow:hidden;
-}
-
 .card img{
 width:100%;
 border-radius:8px;
 transition:0.4s;
-}
-
-.card:hover{
-transform:translateY(-10px);
-box-shadow:0 0 25px #38bdf8;
 }
 
 .card:hover img{
