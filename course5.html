@@ -304,7 +304,35 @@ requestAnimationFrame(animate)
 animate()
 
 </script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
+<script>
+
+const firebaseConfig = {
+apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
+authDomain: "designtechvlsi.firebaseapp.com",
+projectId: "designtechvlsi",
+storageBucket: "designtechvlsi.appspot.com",
+messagingSenderId: "268545364402",
+appId: "1:268545364402:web:57a3d1d3fb8535998754ab"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+firebase.auth().onAuthStateChanged(function(user){
+
+if(!user){
+
+alert("Please login to access the course")
+
+window.location="login.html"
+
+}
+
+});
+
+</script>
 </body>
 
 </html>
