@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>What You Will Get | DesignTech VLSI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins;
+background:#020617;
+color:#e2e8f0;
+overflow-x:hidden;
+}
+
+/* STAR BACKGROUND */
+
+#starfield{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-4;
+}
+
+/* GRID BACKGROUND */
+
+.grid{
+position:fixed;
+width:100%;
+height:100%;
+background-image:
+linear-gradient(#38bdf822 1px, transparent 1px),
+linear-gradient(90deg,#38bdf822 1px, transparent 1px);
+background-size:80px 80px;
+z-index:-3;
+animation:gridmove 20s linear infinite;
+}
+
+@keyframes gridmove{
+0%{transform:translateY(0)}
+100%{transform:translateY(80px)}
+}
+
+/* HEADER */
+
+header{
+text-align:center;
+padding:60px;
+}
+
+header h1{
+font-size:48px;
+background:linear-gradient(90deg,#38bdf8,#6366f1);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+/* CONTAINER */
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:40px;
+}
+
+/* SECTION */
+
+.section{
+margin-top:60px;
+}
+
+.section h2{
+color:#38bdf8;
+margin-bottom:20px;
+}
+
+/* CARD GRID */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
+}
+
+/* CARD */
+
+.card{
+background:#1e293b;
+padding:25px;
+border-radius:10px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+/* ROADMAP */
+
+.roadmap{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-top:20px;
+}
+
+.step{
+background:#0f172a;
+padding:20px;
+border-radius:10px;
+}
+
+/* FOOTER */
+
+footer{
+text-align:center;
+padding:30px;
+margin-top:80px;
+background:#020617;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="grid"></div>
+
+<header>
+
+<h1>What You Will Get From These Courses</h1>
+<p>Industry Skills • Semiconductor Knowledge • Career Preparation</p>
+
+</header>
+
+<div class="container">
+
+<div class="section">
+
+<h2>Skills You Will Learn</h2>
+
+<div class="cards">
+
+<div class="card">
+<b>RTL to GDS Flow</b><br><br>
+Complete understanding of digital chip design from RTL coding to final layout.
+</div>
+
+<div class="card">
+<b>Cadence Tool Training</b><br><br>
+Hands-on exposure to industry tools used in semiconductor companies.
+</div>
+
+<div class="card">
+<b>Physical Design Concepts</b><br><br>
+Floorplanning, placement, routing and timing optimization techniques.
+</div>
+
+<div class="card">
+<b>Semiconductor Fundamentals</b><br><br>
+Understanding how modern integrated circuits are designed and fabricated.
+</div>
+
+<div class="card">
+<b>VLSI Interview Preparation</b><br><br>
+Preparation for semiconductor industry interviews and core electronics roles.
+</div>
+
+<div class="card">
+<b>Project-Based Learning</b><br><br>
+Work on real design problems and build practical implementation skills.
+</div>
+
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>Learning Roadmap</h2>
+
+<div class="roadmap">
+
+<div class="step">
+<b>Step 1</b><br><br>
+Strong foundation in digital electronics and semiconductor basics.
+</div>
+
+<div class="step">
+<b>Step 2</b><br><br>
+Understanding VLSI design flow and system architecture.
+</div>
+
+<div class="step">
+<b>Step 3</b><br><br>
+Hands-on implementation using professional EDA tools.
+</div>
+
+<div class="step">
+<b>Step 4</b><br><br>
+Industry-oriented design practices and optimization techniques.
+</div>
+
+<div class="step">
+<b>Step 5</b><br><br>
+Interview preparation and semiconductor career guidance.
+</div>
+
+</div>
+
+</div>
+
+
+<div class="section">
+
+<h2>Who Should Take These Courses?</h2>
+
+<div class="cards">
+
+<div class="card">
+ECE students interested in semiconductor and VLSI careers.
+</div>
+
+<div class="card">
+Engineers preparing for semiconductor industry interviews.
+</div>
+
+<div class="card">
+Researchers exploring hardware design and chip architectures.
+</div>
+
+<div class="card">
+Professionals transitioning into VLSI design roles.
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+<p>© 2026 DesignTech VLSI</p>
+
+</footer>
+
+
+<script>
+
+const canvas=document.getElementById("starfield");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let stars=[];
+
+for(let i=0;i<200;i++){
+stars.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2
+});
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+stars.forEach(star=>{
+
+star.y+=0.2;
+
+if(star.y>canvas.height){
+star.y=0;
+}
+
+ctx.fillStyle="white";
+ctx.fillRect(star.x,star.y,star.size,star.size);
+
+});
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+</script>
+
+</body>
+
+</html>
