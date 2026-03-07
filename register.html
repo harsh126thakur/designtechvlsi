@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <title>Register | DesignTech VLSI</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<script src="firebase-config.js"></script>
 
 <style>
 
@@ -19,41 +22,31 @@ display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-margin:0;
 }
 
 .box{
-background:#1e293b;
+background:#0f172a;
 padding:40px;
 border-radius:10px;
-width:320px;
-text-align:center;
+width:350px;
 }
 
-input,select{
+input{
 width:100%;
-padding:10px;
+padding:12px;
 margin:10px 0;
 border:none;
 border-radius:5px;
 }
 
 button{
-padding:12px;
 width:100%;
-background:#38bdf8;
+padding:12px;
+background:#6366f1;
+color:white;
 border:none;
-border-radius:6px;
+border-radius:5px;
 cursor:pointer;
-}
-
-button:hover{
-background:#22c1f0;
-}
-
-a{
-color:#38bdf8;
-text-decoration:none;
 }
 
 </style>
@@ -64,105 +57,21 @@ text-decoration:none;
 
 <div class="box">
 
-<h2>Create Account</h2>
+<h2>Student Registration</h2>
 
-<input id="email" type="email" placeholder="Email">
+<input type="text" id="name" placeholder="Full Name">
 
-<input id="password" type="password" placeholder="Password">
+<input type="email" id="email" placeholder="Email">
 
-<select id="course">
+<input type="password" id="password" placeholder="Password">
 
-<option value="">Select Course</option>
-<option value="course1">Physical Design Layout (₹1999)</option>
-<option value="course2">VLSI Lecture Series (₹1999)</option>
-<option value="course3">Cadence Analog Basics (₹1999)</option>
-<option value="course4">Signal and Systems (₹299)</option>
-<option value="course5">Network Theory (₹299)</option>
-<option value="mentorship">1-to-1 Mentorship (₹1999)</option>
+<input type="text" id="coupon" placeholder="Coupon Code (Optional)">
 
-</select>
-
-<button id="registerBtn">Register</button>
-
-<p style="margin-top:15px">
-Already registered? <a href="login.html">Login</a>
-</p>
+<button onclick="register()">Register</button>
 
 </div>
 
-
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-
-apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
-authDomain: "designtechvlsi.firebaseapp.com",
-projectId: "designtechvlsi",
-storageBucket: "designtechvlsi.firebasestorage.app",
-messagingSenderId: "268545364402",
-appId: "1:268545364402:web:57a3d1d3fb8535998754ab",
-measurementId: "G-F5KGZK2JDK"
-
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-
-document.getElementById("registerBtn").addEventListener("click", async () => {
-
-let email = document.getElementById("email").value;
-let password = document.getElementById("password").value;
-let course = document.getElementById("course").value;
-
-if(email=="" || password=="" || course==""){
-alert("Please fill all fields");
-return;
-}
-
-try{
-
-const userCredential = await createUserWithEmailAndPassword(auth,email,password);
-
-const uid = userCredential.user.uid;
-
-await setDoc(doc(db,"users",uid),{
-
-email:email,
-
-course1:false,
-course2:false,
-course3:false,
-course4:false,
-course5:false,
-mentorship:false,
-
-selectedCourse:course
-
-});
-
-alert("Registration successful");
-
-/* Redirect to payment page */
-
-window.location="payment.html?course="+course;
-
-}
-
-catch(error){
-
-alert(error.message);
-
-}
-
-});
-
-</script>
+<script src="register.js"></script>
 
 </body>
 </html>
