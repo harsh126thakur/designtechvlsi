@@ -72,3 +72,67 @@ requestAnimationFrame(drawWave);
 }
 
 drawWave();
+const canvasWave = document.getElementById("threePhaseWave");
+const ctxWave = canvasWave.getContext("2d");
+
+canvasWave.width = 600;
+canvasWave.height = 220;
+
+let phase = 0;
+
+function drawThreePhase(){
+
+ctxWave.clearRect(0,0,canvasWave.width,canvasWave.height);
+
+let amplitude = 50;
+let frequency = 0.02;
+let center = canvasWave.height/2;
+
+/* R phase (Red) */
+
+ctxWave.beginPath();
+for(let x=0; x<canvasWave.width; x++){
+
+let y = center + amplitude * Math.sin((x*frequency)+phase);
+ctxWave.lineTo(x,y);
+
+}
+ctxWave.strokeStyle="red";
+ctxWave.lineWidth=3;
+ctxWave.stroke();
+
+
+/* Y phase (Yellow) */
+
+ctxWave.beginPath();
+for(let x=0; x<canvasWave.width; x++){
+
+let y = center + amplitude * Math.sin((x*frequency)+phase + (2*Math.PI/3));
+ctxWave.lineTo(x,y);
+
+}
+ctxWave.strokeStyle="yellow";
+ctxWave.lineWidth=3;
+ctxWave.stroke();
+
+
+/* B phase (Blue) */
+
+ctxWave.beginPath();
+for(let x=0; x<canvasWave.width; x++){
+
+let y = center + amplitude * Math.sin((x*frequency)+phase + (4*Math.PI/3));
+ctxWave.lineTo(x,y);
+
+}
+ctxWave.strokeStyle="#38bdf8";
+ctxWave.lineWidth=3;
+ctxWave.stroke();
+
+phase += 0.05;
+
+requestAnimationFrame(drawThreePhase);
+
+}
+
+drawThreePhase();
