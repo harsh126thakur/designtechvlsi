@@ -337,17 +337,22 @@ transform:translateY(-10px) scale(1.05);
 box-shadow:0 0 25px #38bdf8;
 }
 
-/* HERO CHIP ANIMATION */
+.hero-animations{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:60px;
+margin-top:40px;
+flex-wrap:wrap;
+}
+
+#wave3d,
+#wafer3d{
+width:200px;
+height:200px;
+}
 
 .chip-hero{
 width:260px;
 height:260px;
-margin:auto;
-margin-top:40px;
-}
-
-#chipAnimation{
-width:260px;
-height:260px;
-background:transparent;
 }
