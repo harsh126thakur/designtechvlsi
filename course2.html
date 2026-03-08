@@ -10,96 +10,14 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
-<style>
-
-body{
-margin:0;
-font-family:Poppins;
-background:#020617;
-color:white;
-}
-
-nav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 60px;
-background:#0f172a;
-}
-
-nav a{
-color:white;
-text-decoration:none;
-margin-left:20px;
-}
-
-nav a:hover{
-color:#38bdf8;
-}
-
-.container{
-max-width:1000px;
-margin:auto;
-padding:80px 20px;
-}
-
-h1{
-font-size:40px;
-color:#38bdf8;
-margin-bottom:20px;
-}
-
-h2{
-margin-top:40px;
-color:#6366f1;
-}
-
-ul{
-line-height:1.8;
-}
-
-.price{
-margin-top:30px;
-font-size:22px;
-}
-
-.price-old{
-text-decoration:line-through;
-color:#aaa;
-}
-
-.price-new{
-color:#22c55e;
-margin-left:10px;
-font-weight:bold;
-}
-
-button{
-margin-top:40px;
-padding:14px 28px;
-background:#38bdf8;
-border:none;
-border-radius:6px;
-font-size:16px;
-cursor:pointer;
-}
-
-button:hover{
-background:#22c1f0;
-}
-
-footer{
-text-align:center;
-padding:40px;
-background:#0f172a;
-margin-top:80px;
-}
-
-</style>
+<link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
+
+<canvas id="starfield"></canvas>
+<div class="grid"></div>
 
 <nav>
 
@@ -115,14 +33,43 @@ margin-top:80px;
 
 </nav>
 
-<div class="container">
+
+<section class="course">
 
 <h1>VLSI Lecture Series</h1>
 
+
+<!-- 3D ROTATING CUBE -->
+
+<div class="cube-container">
+
+<div class="cube">
+
+<div class="front"></div>
+<div class="back"></div>
+
+<div class="right"></div>
+<div class="left"></div>
+
+<div class="top"></div>
+<div class="bottom"></div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
 <p>
-This course provides a strong foundation in VLSI design concepts required for semiconductor careers and interviews.
+This course provides a strong foundation in <b>VLSI design concepts required for semiconductor careers and interviews</b>.
 It covers digital design fundamentals, CMOS logic, semiconductor basics, and modern chip design flow.
 </p>
+
+</div>
+
+
+<div class="card">
 
 <h2>Topics Covered</h2>
 
@@ -141,6 +88,11 @@ It covers digital design fundamentals, CMOS logic, semiconductor basics, and mod
 
 </ul>
 
+</div>
+
+
+<div class="card">
+
 <h2>Course Benefits</h2>
 
 <ul>
@@ -153,6 +105,11 @@ It covers digital design fundamentals, CMOS logic, semiconductor basics, and mod
 
 </ul>
 
+</div>
+
+
+<div class="card">
+
 <h2>Who Should Take This Course</h2>
 
 <ul>
@@ -164,12 +121,17 @@ It covers digital design fundamentals, CMOS logic, semiconductor basics, and mod
 
 </ul>
 
-<div class="price">
+</div>
+
+
+<div class="card">
+
+<p class="price">
 
 <span class="price-old">₹3999</span>
 <span class="price-new">₹1999</span>
 
-</div>
+</p>
 
 <a href="login.html">
 
@@ -179,12 +141,17 @@ It covers digital design fundamentals, CMOS logic, semiconductor basics, and mod
 
 </div>
 
+</section>
+
+
 <footer>
 
 <p>© 2026 DesignTech VLSI</p>
 
 </footer>
 
-</body>
 
+<script src="stars.js"></script>
+
+</body>
 </html>
