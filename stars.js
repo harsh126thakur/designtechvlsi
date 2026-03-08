@@ -42,3 +42,33 @@ requestAnimationFrame(animate);
 }
 
 animate();
+const waveCanvas = document.getElementById("sineWave");
+const waveCtx = waveCanvas.getContext("2d");
+
+let t = 0;
+
+function drawWave(){
+
+waveCtx.clearRect(0,0,waveCanvas.width,waveCanvas.height);
+
+waveCtx.beginPath();
+
+for(let x=0; x<waveCanvas.width; x++){
+
+let y = 100 + 40 * Math.sin((x * 0.02) + t);
+
+waveCtx.lineTo(x,y);
+
+}
+
+waveCtx.strokeStyle = "#38bdf8";
+waveCtx.lineWidth = 3;
+waveCtx.stroke();
+
+t += 0.05;
+
+requestAnimationFrame(drawWave);
+
+}
+
+drawWave();
