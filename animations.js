@@ -44,39 +44,40 @@ animateStars();
 
 }
 /* =====================================
-   HORIZONTAL CONVOLUTION FLOW
+   signal flow
 ===================================== */
 
-const convCanvas = document.getElementById("convCanvas");
+const canvas = document.getElementById("signalFlow");
 
-if(convCanvas){
+if(canvas){
 
-const ctx = convCanvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 
-convCanvas.width = 1000;
-convCanvas.height = 260;
+canvas.width = 1000;
+canvas.height = 260;
 
 let shift = 0;
 
 function draw(){
 
-ctx.clearRect(0,0,convCanvas.width,convCanvas.height);
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
-let center = convCanvas.height/2;
+let center = canvas.height/2;
 
-/* AXIS */
+/* axis */
 
 ctx.beginPath();
 ctx.moveTo(0,center);
-ctx.lineTo(convCanvas.width,center);
+ctx.lineTo(canvas.width,center);
 ctx.strokeStyle="#555";
 ctx.stroke();
 
-/* ---------- SIN SIGNAL (LEFT) ---------- */
+
+/* SIN SIGNAL */
 
 ctx.beginPath();
 
-for(let x=0;x<250;x++){
+for(let x=0;x<200;x++){
 
 let y = center - Math.sin((x+shift)/25)*30;
 
@@ -89,41 +90,37 @@ ctx.lineWidth=2;
 ctx.stroke();
 
 
+/* ARROW */
 
-/* ---------- CONVOLUTION SYMBOL ---------- */
-
-ctx.font="40px Poppins";
+ctx.font="30px Arial";
 ctx.fillStyle="white";
-ctx.fillText("*",320,center+10);
+ctx.fillText("→",270,center+10);
 
 
+/* SAMPLED SIGNAL */
 
-/* ---------- IMPULSE TRAIN ---------- */
+for(let x=0;x<200;x+=20){
 
-for(let n=360;n<520;n+=30){
+let y = center - Math.sin((x+shift)/25)*30;
 
 ctx.beginPath();
-ctx.moveTo(n,center);
-ctx.lineTo(n,center-60);
-ctx.strokeStyle="yellow";
-ctx.lineWidth=2;
-ctx.stroke();
+ctx.arc(x+320,y,4,0,2*Math.PI);
+ctx.fillStyle="yellow";
+ctx.fill();
 
 }
 
 
+/* ARROW */
 
-/* ---------- EQUAL SYMBOL ---------- */
-
-ctx.fillText("=",560,center+10);
-
+ctx.fillText("→",540,center+10);
 
 
-/* ---------- RESULT SIGNAL ---------- */
+/* RECONSTRUCTED SIGNAL */
 
 ctx.beginPath();
 
-for(let x=0;x<250;x++){
+for(let x=0;x<200;x++){
 
 let y = center - Math.sin((x+shift)/25)*30;
 
@@ -136,7 +133,6 @@ ctx.lineWidth=3;
 ctx.stroke();
 
 
-
 shift += 1;
 
 requestAnimationFrame(draw);
@@ -146,5 +142,4 @@ requestAnimationFrame(draw);
 draw();
 
 }
-
 }
