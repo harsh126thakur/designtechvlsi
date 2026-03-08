@@ -194,10 +194,9 @@ drawThreePhase();
 
 }
 
-
-/* =================================================
-   CONVOLUTION ANIMATION
-================================================= */
+/* ======================================
+   HORIZONTAL CONVOLUTION (DIFFERENT SIGNALS)
+====================================== */
 
 const convCanvas = document.getElementById("convCanvas");
 
@@ -206,61 +205,41 @@ if(convCanvas){
 const ctx = convCanvas.getContext("2d");
 
 convCanvas.width = 900;
-convCanvas.height = 350;
+convCanvas.height = 260;
 
 let shift = -200;
 
+/* SIGNAL 1 : RECTANGULAR */
+
 function rect(x){
-return (Math.abs(x) < 40) ? 1 : 0;
+return Math.abs(x) < 40 ? 1 : 0;
+}
+
+/* SIGNAL 2 : TRIANGULAR */
+
+function triangle(x){
+
+if(Math.abs(x) > 60) return 0;
+
+return 1 - Math.abs(x)/60;
+
 }
 
 function drawConv(){
 
 ctx.clearRect(0,0,convCanvas.width,convCanvas.height);
 
-let centerY = convCanvas.height/2;
+let center = convCanvas.height/2;
 
-/* axis */
-
-ctx.beginPath();
-ctx.moveTo(0,centerY);
-ctx.lineTo(convCanvas.width,centerY);
-ctx.strokeStyle="#888";
-ctx.stroke();
-
-/* f(t) */
+/* AXIS */
 
 ctx.beginPath();
-
-for(let x=0;x<convCanvas.width;x++){
-
-let t = x-200;
-let y = rect(t)*60;
-
-ctx.lineTo(x,centerY-y);
-
-}
-
-ctx.strokeStyle="red";
+ctx.moveTo(0,center);
+ctx.lineTo(convCanvas.width,center);
+ctx.strokeStyle="#444";
 ctx.stroke();
 
-/* g(t-τ) */
-
-ctx.beginPath();
-
-for(let x=0;x<convCanvas.width;x++){
-
-let t = x-shift;
-let y = rect(t)*60;
-
-ctx.lineTo(x,centerY+120-y);
-
-}
-
-ctx.strokeStyle="yellow";
-ctx.stroke();
-
-/* convolution */
+/* CONVOLUTION RESULT */
 
 ctx.beginPath();
 
@@ -268,11 +247,15 @@ for(let x=0;x<convCanvas.width;x++){
 
 let sum = 0;
 
-for(let k=-50;k<50;k++){
-sum += rect(k)*rect(x-k-shift);
+for(let k=-80;k<80;k++){
+
+sum += rect(k) * triangle(x-k-shift);
+
 }
 
-ctx.lineTo(x,centerY+200 - sum*1.5);
+let y = center - sum*1.5;
+
+ctx.lineTo(x,y);
 
 }
 
