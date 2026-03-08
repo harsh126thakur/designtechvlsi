@@ -386,7 +386,7 @@ background:#0f172a;
 
 <img src="founder.jpg">
   <section id="founder" class="founder">
-<canvas id="threePhaseWave"></canvas>
+<canvas id="sincWave"></canvas>
 </section>
 <div>
 <h2>Harsh Raj Thakur</h2>
@@ -630,6 +630,73 @@ requestAnimationFrame(drawThreePhase);
 drawThreePhase();
 
 }
+/* SINC Function/
+const sincCanvas = document.getElementById("sincWave");
+const sincCtx = sincCanvas.getContext("2d");
+
+sincCanvas.width = 800;
+sincCanvas.height = 300;
+
+let shift = 0;
+
+function drawSinc(){
+
+sincCtx.clearRect(0,0,sincCanvas.width,sincCanvas.height);
+
+let centerX = sincCanvas.width/2;
+let centerY = sincCanvas.height/2;
+let scale = 40;
+
+/* AXES */
+
+sincCtx.beginPath();
+sincCtx.moveTo(0,centerY);
+sincCtx.lineTo(sincCanvas.width,centerY);
+sincCtx.strokeStyle="#888";
+sincCtx.lineWidth=1;
+sincCtx.stroke();
+
+sincCtx.beginPath();
+sincCtx.moveTo(centerX,0);
+sincCtx.lineTo(centerX,sincCanvas.height);
+sincCtx.stroke();
+
+/* SINC CURVE */
+
+sincCtx.beginPath();
+
+for(let x=-centerX; x<centerX; x++){
+
+let t = (x/scale)+shift;
+
+let y;
+
+if(t===0){
+y=1;
+}else{
+y=Math.sin(t)/t;
+}
+
+let px = centerX + x;
+let py = centerY - y*100;
+
+sincCtx.lineTo(px,py);
+
+}
+
+sincCtx.strokeStyle="#38bdf8";
+sincCtx.lineWidth=3;
+sincCtx.stroke();
+
+shift += 0.02;
+
+requestAnimationFrame(drawSinc);
+
+}
+
+drawSinc();
+
+  
 
 </script>
 </body>
