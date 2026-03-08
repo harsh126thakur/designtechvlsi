@@ -20,6 +20,8 @@ color:white;
 overflow-x:hidden;
 }
 
+/* STAR BACKGROUND */
+
 #starfield{
 position:fixed;
 top:0;
@@ -28,6 +30,8 @@ width:100%;
 height:100%;
 z-index:-4;
 }
+
+/* GRID BACKGROUND */
 
 .circuit{
 position:fixed;
@@ -46,6 +50,8 @@ animation:gridmove 20s linear infinite;
 100%{transform:translateY(80px)}
 }
 
+/* NAVBAR */
+
 nav{
 display:flex;
 justify-content:space-between;
@@ -63,6 +69,8 @@ nav a:hover{
 color:#38bdf8;
 }
 
+/* HERO */
+
 .hero{
 text-align:center;
 padding:120px 20px;
@@ -74,6 +82,8 @@ background:linear-gradient(90deg,#38bdf8,#6366f1);
 -webkit-background-clip:text;
 color:transparent;
 }
+
+/* ROTATING CHIP */
 
 .chip3d{
 margin:auto;
@@ -90,6 +100,8 @@ box-shadow:0 0 30px #38bdf8;
 0%{transform:rotate(0deg)}
 100%{transform:rotate(360deg)}
 }
+
+/* INFO CARDS */
 
 .info-icons{
 display:grid;
@@ -112,6 +124,8 @@ transition:0.3s;
 transform:translateY(-10px);
 background:#334155;
 }
+
+/* COURSE GRID */
 
 .courses{
 display:grid;
@@ -168,6 +182,8 @@ button:hover{
 background:#22c1f0;
 }
 
+/* FOUNDER */
+
 .founder{
 display:flex;
 flex-wrap:wrap;
@@ -181,6 +197,8 @@ width:240px;
 border-radius:50%;
 border:4px solid #38bdf8;
 }
+
+/* TESTIMONIALS */
 
 .testimonials{
 padding:80px 40px;
@@ -199,6 +217,8 @@ padding:30px;
 border-radius:12px;
 }
 
+/* CONTACT */
+
 .contact{
 text-align:center;
 padding:80px;
@@ -208,6 +228,56 @@ padding:80px;
 color:#38bdf8;
 text-decoration:none;
 }
+
+/* BIG CONTACT ICONS */
+
+.floating-contact-section{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:60px;
+padding:60px 20px;
+flex-wrap:wrap;
+}
+
+.big-contact{
+width:120px;
+height:120px;
+border-radius:50%;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-decoration:none;
+font-size:40px;
+color:white;
+transition:0.3s;
+box-shadow:0 0 20px rgba(0,0,0,0.4);
+}
+
+.big-contact p{
+font-size:13px;
+margin-top:8px;
+}
+
+.whatsapp-big{
+background:#25D366;
+}
+
+.call-big{
+background:#38bdf8;
+}
+
+.channel-big{
+background:#16a34a;
+}
+
+.big-contact:hover{
+transform:translateY(-10px) scale(1.05);
+box-shadow:0 0 25px #38bdf8;
+}
+
+/* FOOTER */
 
 footer{
 text-align:center;
@@ -236,7 +306,7 @@ background:#0f172a;
 <a href="#contact">Contact</a>
 <a href="login.html">Login</a>
 <a href="signup.html">Sign Up</a>
-  
+
 </div>
 
 </nav>
@@ -250,140 +320,42 @@ background:#0f172a;
 
 </section>
 
-<section class="info-icons">
-
-<a href="whoami.html" class="info-card">Who Am I</a>
-<a href="research.html" class="info-card">My Research</a>
-<a href="coursebenefits.html" class="info-card">Course Benefits</a>
-<a href="vlsiimportance.html" class="info-card">Importance of VLSI</a>
-<a href="freecourses.html" class="info-card">Free Courses</a>
-<a href="faq.html" class="info-card">FAQ</a>
-<a href="quiz.html" class="info-card">Test Your Knowledge</a>
-<a href="guarantee.html" class="info-card">7-Day Guarantee</a>
-
-</section>
-
-<section id="courses" class="courses">
-
-<div class="card">
-<div class="discount">50% OFF</div>
-<h3>Physical Design Layout</h3>
-<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
-<a href="course1.html"><button>View Course</button></a>
-</div>
-
-<div class="card">
-<div class="discount">50% OFF</div>
-<h3>VLSI Lecture Series</h3>
-<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
-<a href="course2.html"><button>View Course</button></a>
-</div>
-
-<div class="card">
-<div class="discount">50% OFF</div>
-<h3>Cadence Analog Basics</h3>
-<p><span class="price-old">₹3999</span><span class="price-new">₹1999</span></p>
-<a href="course3.html"><button>View Course</button></a>
-</div>
-
-<div class="card">
-<div class="discount">40% OFF</div>
-<h3>Signal and Systems</h3>
-<p><span class="price-old">₹499</span><span class="price-new">₹299</span></p>
-<a href="course4.html"><button>View Course</button></a>
-</div>
-
-<div class="card">
-<div class="discount">40% OFF</div>
-<h3>Network Theory</h3>
-<p><span class="price-old">₹499</span><span class="price-new">₹299</span></p>
-<a href="course5.html"><button>View Course</button></a>
-</div>
-
-<div class="card">
-<div class="discount">MENTORSHIP</div>
-<h3>1-to-1 VLSI Mentorship</h3>
-<p><span class="price-new">₹1999</span></p>
-<p>Personal career guidance, resume review, and VLSI learning roadmap.</p>
-<a href="mentorship.html"><button>View Details</button></a>
-</div>
-
-</section>
-
-<section id="founder" class="founder">
-
-<img src="founder.jpg">
-
-<div>
-
-<h2>Harsh Raj Thakur</h2>
-
-<p>
-Research Scholar at <b>IIT Roorkee</b> working on VLSI architectures and semiconductor systems.
-Founder of <b>DesignTech VLSI</b> mentoring students in RTL design and semiconductor careers.
-</p>
-
-</div>
-
-</section>
-
-<section class="testimonials">
-
-<h2>What Students Say</h2>
-
-<div class="testimonial-container">
-
-<div class="testimonial-card">
-<p>The tutorials helped me understand VLSI design concepts clearly.</p>
-</div>
-
-<div class="testimonial-card">
-<p>Great explanation of semiconductor workflows.</p>
-</div>
-
-<div class="testimonial-card">
-<p>The mentorship helped me plan my semiconductor career.</p>
-</div>
-
-</div>
-
-</section>
-
 <section id="contact" class="contact">
 
 <h2>Connect</h2>
 
-<a href="mailto:harsh_rt@ece.iitr.ac.in">Email</a>
-<br><br>
-<a href="https://youtube.com/@designtechvlsi">YouTube</a>
-<br><br>
+<a href="mailto:harsh_rt@ece.iitr.ac.in">Email</a><br><br>
+<a href="https://youtube.com/@designtechvlsi">YouTube</a><br><br>
 <a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/">LinkedIn</a>
 
 </section>
+
 <div class="floating-contact-section">
 
 <a class="big-contact whatsapp-big"
 href="https://wa.me/919431376806?text=Hello%20I%20want%20details%20about%20DesignTech%20VLSI%20courses"
 target="_blank">
-<span>💬</span>
+💬
 <p>WhatsApp</p>
 </a>
 
 <a class="big-contact call-big"
 href="https://docs.google.com/forms/d/e/1FAIpQLSdMVK0UebLy0tCBFakDAgDCVH-2WmH1iC6HTE-zV-DAVcj1sw/viewform"
 target="_blank">
-<span>📞</span>
+📞
 <p>Schedule Call</p>
 </a>
 
 <a class="big-contact channel-big"
 href="https://whatsapp.com/channel/0029VbBdXzK7Noa7bHphEr2E"
 target="_blank">
-<span>📢</span>
+📢
 <p>Join Channel</p>
 </a>
 
 </div>
+
+<footer>
 
 <p>© 2026 DesignTech VLSI</p>
 
@@ -426,14 +398,7 @@ requestAnimationFrame(animate)
 
 animate()
 
-// AUTO COUPON SYSTEM
-const params=new URLSearchParams(window.location.search)
-const coupon=params.get("coupon")
-
-if(coupon){
-document.getElementById("registerLink").href="register.html?coupon="+coupon
-}
-
 </script>
+
 </body>
 </html>
