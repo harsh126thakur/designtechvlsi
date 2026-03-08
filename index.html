@@ -479,44 +479,53 @@ target="_blank">
 <p>© 2026 DesignTech VLSI</p>
 
 </footer>
-
 <script>
 
-const canvas=document.getElementById("starfield")
-const ctx=canvas.getContext("2d")
+/* STAR BACKGROUND */
 
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
+const canvas = document.getElementById("starfield");
+const ctx = canvas.getContext("2d");
 
-let stars=[]
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
 
 for(let i=0;i<200;i++){
 stars.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
 size:Math.random()*2
-})
+});
 }
 
 function animate(){
 
-ctx.clearRect(0,0,canvas.width,canvas.height)
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
 stars.forEach(star=>{
-star.y+=0.3
-if(star.y>canvas.height) star.y=0
+star.y += 0.3;
 
-ctx.fillStyle="white"
-ctx.fillRect(star.x,star.y,star.size,star.size)
+if(star.y > canvas.height) star.y = 0;
 
-})
+ctx.fillStyle = "white";
+ctx.fillRect(star.x,star.y,star.size,star.size);
 
-requestAnimationFrame(animate)
+});
+
+requestAnimationFrame(animate);
 
 }
 
-animate()
+animate();
+
+
+/* SINGLE SINE WAVE */
+
 const waveCanvas = document.getElementById("sineWave");
+
+if(waveCanvas){
+
 const waveCtx = waveCanvas.getContext("2d");
 
 let t = 0;
@@ -545,8 +554,17 @@ requestAnimationFrame(drawWave);
 
 }
 
-drawWave();</script>
+drawWave();
+
+}
+
+
+/* THREE PHASE SIN WAVE */
+
 const canvasWave = document.getElementById("threePhaseWave");
+
+if(canvasWave){
+
 const ctxWave = canvasWave.getContext("2d");
 
 canvasWave.width = 600;
@@ -562,43 +580,43 @@ let amplitude = 50;
 let frequency = 0.02;
 let center = canvasWave.height/2;
 
-/* R phase (Red) */
+/* R phase */
 
 ctxWave.beginPath();
-for(let x=0; x<canvasWave.width; x++){
 
+for(let x=0; x<canvasWave.width; x++){
 let y = center + amplitude * Math.sin((x*frequency)+phase);
 ctxWave.lineTo(x,y);
-
 }
+
 ctxWave.strokeStyle="red";
 ctxWave.lineWidth=3;
 ctxWave.stroke();
 
 
-/* Y phase (Yellow) */
+/* Y phase */
 
 ctxWave.beginPath();
-for(let x=0; x<canvasWave.width; x++){
 
+for(let x=0; x<canvasWave.width; x++){
 let y = center + amplitude * Math.sin((x*frequency)+phase + (2*Math.PI/3));
 ctxWave.lineTo(x,y);
-
 }
+
 ctxWave.strokeStyle="yellow";
 ctxWave.lineWidth=3;
 ctxWave.stroke();
 
 
-/* B phase (Blue) */
+/* B phase */
 
 ctxWave.beginPath();
-for(let x=0; x<canvasWave.width; x++){
 
+for(let x=0; x<canvasWave.width; x++){
 let y = center + amplitude * Math.sin((x*frequency)+phase + (4*Math.PI/3));
 ctxWave.lineTo(x,y);
-
 }
+
 ctxWave.strokeStyle="#38bdf8";
 ctxWave.lineWidth=3;
 ctxWave.stroke();
@@ -610,5 +628,9 @@ requestAnimationFrame(drawThreePhase);
 }
 
 drawThreePhase();
+
+}
+
+</script>
 </body>
 </html>
