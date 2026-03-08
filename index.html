@@ -630,12 +630,16 @@ requestAnimationFrame(drawThreePhase);
 drawThreePhase();
 
 }
-/* SINC Function/
+/* SINC FUNCTION */
+
 const sincCanvas = document.getElementById("sincWave");
+
+if(sincCanvas){
+
 const sincCtx = sincCanvas.getContext("2d");
 
-sincCanvas.width = 800;
-sincCanvas.height = 300;
+sincCanvas.width = 900;
+sincCanvas.height = 320;
 
 let shift = 0;
 
@@ -667,18 +671,18 @@ sincCtx.beginPath();
 
 for(let x=-centerX; x<centerX; x++){
 
-let t = (x/scale)+shift;
+let t = (x/scale) + shift;
 
 let y;
 
 if(t===0){
 y=1;
 }else{
-y=Math.sin(t)/t;
+y = Math.sin(t)/t;
 }
 
 let px = centerX + x;
-let py = centerY - y*100;
+let py = centerY - y*120;
 
 sincCtx.lineTo(px,py);
 
@@ -688,7 +692,7 @@ sincCtx.strokeStyle="#38bdf8";
 sincCtx.lineWidth=3;
 sincCtx.stroke();
 
-shift += 0.02;
+shift += 0.01;
 
 requestAnimationFrame(drawSinc);
 
@@ -696,7 +700,7 @@ requestAnimationFrame(drawSinc);
 
 drawSinc();
 
-  
+}
 
 </script>
 </body>
