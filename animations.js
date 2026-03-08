@@ -43,10 +43,9 @@ requestAnimationFrame(animateStars);
 animateStars();
 
 }
-
-/* ==========================================
-   SIN CONVOLUTION WITH IMPULSE TRAIN
-========================================== */
+/* =====================================
+   HORIZONTAL CONVOLUTION FLOW
+===================================== */
 
 const convCanvas = document.getElementById("convCanvas");
 
@@ -54,29 +53,34 @@ if(convCanvas){
 
 const ctx = convCanvas.getContext("2d");
 
-convCanvas.width = 900;
-convCanvas.height = 420;
+convCanvas.width = 1000;
+convCanvas.height = 260;
 
 let shift = 0;
-const T = 120;
 
 function draw(){
 
 ctx.clearRect(0,0,convCanvas.width,convCanvas.height);
 
-/* vertical positions */
-let ySin = 90;
-let yImpulse = 210;
-let yResult = 340;
+let center = convCanvas.height/2;
 
-/* ---------- SIN SIGNAL ---------- */
+/* AXIS */
+
+ctx.beginPath();
+ctx.moveTo(0,center);
+ctx.lineTo(convCanvas.width,center);
+ctx.strokeStyle="#555";
+ctx.stroke();
+
+/* ---------- SIN SIGNAL (LEFT) ---------- */
 
 ctx.beginPath();
 
-for(let x=0;x<convCanvas.width;x++){
+for(let x=0;x<250;x++){
 
-let y = ySin - Math.sin((x+shift)/40)*25;
-ctx.lineTo(x,y);
+let y = center - Math.sin((x+shift)/25)*30;
+
+ctx.lineTo(x+50,y);
 
 }
 
@@ -86,13 +90,21 @@ ctx.stroke();
 
 
 
+/* ---------- CONVOLUTION SYMBOL ---------- */
+
+ctx.font="40px Poppins";
+ctx.fillStyle="white";
+ctx.fillText("*",320,center+10);
+
+
+
 /* ---------- IMPULSE TRAIN ---------- */
 
-for(let n=0;n<convCanvas.width;n+=T){
+for(let n=360;n<520;n+=30){
 
 ctx.beginPath();
-ctx.moveTo(n,yImpulse);
-ctx.lineTo(n,yImpulse-60);
+ctx.moveTo(n,center);
+ctx.lineTo(n,center-60);
 ctx.strokeStyle="yellow";
 ctx.lineWidth=2;
 ctx.stroke();
@@ -101,40 +113,27 @@ ctx.stroke();
 
 
 
-/* ---------- CONVOLUTION RESULT ---------- */
+/* ---------- EQUAL SYMBOL ---------- */
+
+ctx.fillText("=",560,center+10);
+
+
+
+/* ---------- RESULT SIGNAL ---------- */
 
 ctx.beginPath();
 
-for(let x=0;x<convCanvas.width;x++){
+for(let x=0;x<250;x++){
 
-let sum = 0;
+let y = center - Math.sin((x+shift)/25)*30;
 
-for(let n=-5;n<5;n++){
-
-let t = (x - n*T - shift)/40;
-sum += Math.sin(t);
-
-}
-
-let y = yResult - sum*20;
-
-ctx.lineTo(x,y);
+ctx.lineTo(x+620,y);
 
 }
 
 ctx.strokeStyle="#38bdf8";
 ctx.lineWidth=3;
 ctx.stroke();
-
-
-
-/* ---------- SYMBOLS ---------- */
-
-ctx.font="38px Poppins";
-ctx.fillStyle="white";
-
-ctx.fillText("*",convCanvas.width/2-10,150);
-ctx.fillText("=",convCanvas.width/2-10,285);
 
 
 
@@ -145,5 +144,7 @@ requestAnimationFrame(draw);
 }
 
 draw();
+
+}
 
 }
