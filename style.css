@@ -246,8 +246,13 @@ width:240px;
 border-radius:50%;
 border:4px solid #38bdf8;
 }
+/* SIN WAVE CANVAS */
 
-/* TESTIMONIALS */
+#sineWave{
+width:400px;
+height:200px;
+background:transparent;
+}/* TESTIMONIALS */
 
 .testimonials{
 padding:80px 40px;
