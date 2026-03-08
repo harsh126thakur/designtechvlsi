@@ -195,7 +195,7 @@ drawThreePhase();
 }
 
 /* =====================================
-   SIN CONVOLVED WITH IMPULSE TRAIN
+   SIN CONVOLUTION WITH IMPULSE TRAIN
 ===================================== */
 
 const convCanvas = document.getElementById("convCanvas");
@@ -205,29 +205,54 @@ if(convCanvas){
 const ctx = convCanvas.getContext("2d");
 
 convCanvas.width = 900;
-convCanvas.height = 260;
+convCanvas.height = 420;
 
 let shift = 0;
 
-/* impulse train spacing */
-
 const T = 120;
 
-function drawConv(){
+function draw(){
 
 ctx.clearRect(0,0,convCanvas.width,convCanvas.height);
 
-let center = convCanvas.height/2;
+let y1 = 90;
+let y2 = 210;
+let y3 = 340;
 
-/* AXIS */
+/* ---------- sin(t) ---------- */
 
 ctx.beginPath();
-ctx.moveTo(0,center);
-ctx.lineTo(convCanvas.width,center);
-ctx.strokeStyle="#444";
+
+for(let x=0;x<convCanvas.width;x++){
+
+let y = y1 - Math.sin((x+shift)/40)*30;
+
+ctx.lineTo(x,y);
+
+}
+
+ctx.strokeStyle="#38bdf8";
+ctx.lineWidth=2;
 ctx.stroke();
 
-/* RESULT SIGNAL */
+
+
+/* ---------- impulse train ---------- */
+
+for(let n=0;n<convCanvas.width;n+=T){
+
+ctx.beginPath();
+ctx.moveTo(n,y2);
+ctx.lineTo(n,y2-60);
+ctx.strokeStyle="yellow";
+ctx.lineWidth=2;
+ctx.stroke();
+
+}
+
+
+
+/* ---------- convolution result ---------- */
 
 ctx.beginPath();
 
@@ -235,17 +260,15 @@ for(let x=0;x<convCanvas.width;x++){
 
 let sum = 0;
 
-/* impulse train convolution */
-
 for(let n=-5;n<5;n++){
 
-let t = (x - shift - n*T)/40;
+let t = (x - n*T - shift)/40;
 
 sum += Math.sin(t);
 
 }
 
-let y = center - sum*25;
+let y = y3 - sum*25;
 
 ctx.lineTo(x,y);
 
@@ -255,14 +278,25 @@ ctx.strokeStyle="#38bdf8";
 ctx.lineWidth=3;
 ctx.stroke();
 
-/* animate */
 
-shift += 0.5;
 
-requestAnimationFrame(drawConv);
+/* ---------- convolution symbol ---------- */
+
+ctx.font="40px Poppins";
+ctx.fillStyle="white";
+ctx.fillText("*",convCanvas.width/2-10,160);
+
+ctx.font="30px Poppins";
+ctx.fillText("=",convCanvas.width/2-10,285);
+
+
+
+shift += 1;
+
+requestAnimationFrame(draw);
 
 }
 
-drawConv();
+draw();
 
 }
