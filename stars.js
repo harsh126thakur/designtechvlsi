@@ -136,3 +136,97 @@ requestAnimationFrame(drawThreePhase);
 }
 
 drawThreePhase();
+
+const convCanvas = document.getElementById("convCanvas");
+
+if(convCanvas){
+
+const ctx = convCanvas.getContext("2d");
+
+convCanvas.width = 900;
+convCanvas.height = 350;
+
+let shift = -200;
+
+function rect(x){
+return (Math.abs(x) < 40) ? 1 : 0;
+}
+
+function draw(){
+
+ctx.clearRect(0,0,convCanvas.width,convCanvas.height);
+
+let centerY = convCanvas.height/2;
+
+/* AXIS */
+
+ctx.beginPath();
+ctx.moveTo(0,centerY);
+ctx.lineTo(convCanvas.width,centerY);
+ctx.strokeStyle="#888";
+ctx.stroke();
+
+/* SIGNAL f(t) */
+
+ctx.beginPath();
+for(let x=0;x<convCanvas.width;x++){
+
+let t = x-200;
+let y = rect(t)*60;
+
+ctx.lineTo(x,centerY-y);
+}
+
+ctx.strokeStyle="red";
+ctx.lineWidth=2;
+ctx.stroke();
+
+
+/* SIGNAL g(t-τ) */
+
+ctx.beginPath();
+for(let x=0;x<convCanvas.width;x++){
+
+let t = x-shift;
+let y = rect(t)*60;
+
+ctx.lineTo(x,centerY+120-y);
+}
+
+ctx.strokeStyle="yellow";
+ctx.lineWidth=2;
+ctx.stroke();
+
+
+/* CONVOLUTION RESULT */
+
+ctx.beginPath();
+
+for(let x=0;x<convCanvas.width;x++){
+
+let sum = 0;
+
+for(let k=-50;k<50;k++){
+sum += rect(k)*rect(x-k-shift);
+}
+
+ctx.lineTo(x, centerY+200 - sum*1.5);
+
+}
+
+ctx.strokeStyle="#38bdf8";
+ctx.lineWidth=3;
+ctx.stroke();
+
+shift += 1;
+
+if(shift > 400) shift = -200;
+
+requestAnimationFrame(draw);
+
+}
+
+draw();
+
+}
+
