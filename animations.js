@@ -1,6 +1,22 @@
-/* =================================================
-   STAR BACKGROUND
-================================================= */
+/* =========================================================
+   DesignTech VLSI Website Animations
+   File: animations.js
+
+   Contains:
+   1. Starfield background animation
+   2. Chip signal animation (hero section)
+   3. Signal processing flow animation
+   4. 3D sine wave animation
+   5. Rotating silicon wafer animation
+
+   Author: Harsh Raj Thakur
+   Website: DesignTech VLSI
+========================================================= */
+
+
+/* =========================================================
+   1. STAR BACKGROUND ANIMATION
+========================================================= */
 
 const starCanvas = document.getElementById("starfield");
 
@@ -8,8 +24,13 @@ if(starCanvas){
 
 const ctxStar = starCanvas.getContext("2d");
 
+function resizeStars(){
 starCanvas.width = window.innerWidth;
 starCanvas.height = window.innerHeight;
+}
+
+resizeStars();
+window.addEventListener("resize", resizeStars);
 
 let stars = [];
 
@@ -17,7 +38,8 @@ for(let i=0;i<200;i++){
 stars.push({
 x:Math.random()*starCanvas.width,
 y:Math.random()*starCanvas.height,
-size:Math.random()*2
+size:Math.random()*2,
+speed:Math.random()*0.5+0.2
 });
 }
 
@@ -27,9 +49,12 @@ ctxStar.clearRect(0,0,starCanvas.width,starCanvas.height);
 
 stars.forEach(star=>{
 
-star.y += 0.3;
+star.y += star.speed;
 
-if(star.y > starCanvas.height) star.y = 0;
+if(star.y > starCanvas.height){
+star.y = 0;
+star.x = Math.random()*starCanvas.width;
+}
 
 ctxStar.fillStyle="white";
 ctxStar.fillRect(star.x,star.y,star.size,star.size);
@@ -45,9 +70,10 @@ animateStars();
 }
 
 
-/* ==========================================
-   CHIP SIGNAL ANIMATION
-========================================== */
+
+/* =========================================================
+   2. CHIP SIGNAL ANIMATION (HERO)
+========================================================= */
 
 const chipCanvas = document.getElementById("chipAnimation");
 
@@ -60,7 +86,7 @@ chipCanvas.height = 260;
 
 let pulses = [];
 
-for(let i=0;i<10;i++){
+for(let i=0;i<12;i++){
 
 pulses.push({
 x:Math.random()*200+30,
@@ -83,7 +109,7 @@ ctxChip.strokeStyle="#38bdf8";
 ctxChip.lineWidth=3;
 ctxChip.strokeRect(30,30,200,200);
 
-/* grid inside chip */
+/* grid */
 
 ctxChip.strokeStyle="#334155";
 
@@ -110,14 +136,10 @@ ctxChip.arc(p.x,p.y,4,0,Math.PI*2);
 ctxChip.fillStyle="#22c55e";
 ctxChip.fill();
 
-/* move pulse */
-
 if(p.dir<1) p.x+=1;
 else if(p.dir<2) p.x-=1;
 else if(p.dir<3) p.y+=1;
 else p.y-=1;
-
-/* bounce */
 
 if(p.x<35||p.x>225||p.y<35||p.y>225){
 p.dir=Math.random()*4;
@@ -134,9 +156,10 @@ drawChip();
 }
 
 
-/* =====================================
-   SIGNAL FLOW ANIMATION
-===================================== */
+
+/* =========================================================
+   3. SIGNAL FLOW ANIMATION (FOUNDER SECTION)
+========================================================= */
 
 const flowCanvas = document.getElementById("signalFlow");
 
@@ -163,15 +186,13 @@ ctxFlow.lineTo(flowCanvas.width,center);
 ctxFlow.strokeStyle="#555";
 ctxFlow.stroke();
 
-
-/* SIN SIGNAL */
+/* sine signal */
 
 ctxFlow.beginPath();
 
 for(let x=0;x<200;x++){
 
-let y = center - Math.sin((x+shift)/25)*30;
-
+let y=center-Math.sin((x+shift)/25)*30;
 ctxFlow.lineTo(x+50,y);
 
 }
@@ -180,41 +201,36 @@ ctxFlow.strokeStyle="#38bdf8";
 ctxFlow.lineWidth=2;
 ctxFlow.stroke();
 
-
-/* ARROW */
+/* arrow */
 
 ctxFlow.font="30px Arial";
 ctxFlow.fillStyle="white";
 ctxFlow.fillText("→",270,center+10);
 
-
-/* SAMPLED SIGNAL */
+/* sampled points */
 
 for(let x=0;x<200;x+=20){
 
-let y = center - Math.sin((x+shift)/25)*30;
+let y=center-Math.sin((x+shift)/25)*30;
 
 ctxFlow.beginPath();
-ctxFlow.arc(x+320,y,4,0,2*Math.PI);
+ctxFlow.arc(x+320,y,4,0,Math.PI*2);
 ctxFlow.fillStyle="yellow";
 ctxFlow.fill();
 
 }
 
-
-/* ARROW */
+/* arrow */
 
 ctxFlow.fillText("→",540,center+10);
 
-
-/* RECONSTRUCTED SIGNAL */
+/* reconstructed signal */
 
 ctxFlow.beginPath();
 
 for(let x=0;x<200;x++){
 
-let y = center - Math.sin((x+shift)/25)*30;
-
+let y=center-Math.sin((x+shift)/25)*30;
 ctxFlow.lineTo(x+620,y);
 
 }
@@ -223,13 +239,112 @@ ctxFlow.strokeStyle="#38bdf8";
 ctxFlow.lineWidth=3;
 ctxFlow.stroke();
 
-
-shift += 1;
+shift+=1;
 
 requestAnimationFrame(drawFlow);
 
 }
 
 drawFlow();
+
+}
+
+
+
+/* =========================================================
+   4. 3D SINE WAVE ANIMATION
+========================================================= */
+
+const waveCanvas = document.getElementById("wave3d");
+
+if(waveCanvas){
+
+const ctxWave = waveCanvas.getContext("2d");
+
+waveCanvas.width = 200;
+waveCanvas.height = 200;
+
+let phase = 0;
+
+function drawWave(){
+
+ctxWave.clearRect(0,0,200,200);
+
+ctxWave.beginPath();
+
+for(let x=0;x<200;x++){
+
+let y = 100 + 40*Math.sin((x*0.05)+phase);
+ctxWave.lineTo(x,y);
+
+}
+
+ctxWave.strokeStyle="#38bdf8";
+ctxWave.lineWidth=3;
+ctxWave.stroke();
+
+phase += 0.05;
+
+requestAnimationFrame(drawWave);
+
+}
+
+drawWave();
+
+}
+
+
+
+/* =========================================================
+   5. ROTATING SILICON WAFER
+========================================================= */
+
+const waferCanvas = document.getElementById("wafer3d");
+
+if(waferCanvas){
+
+const ctxWafer = waferCanvas.getContext("2d");
+
+waferCanvas.width = 200;
+waferCanvas.height = 200;
+
+let angle = 0;
+
+function drawWafer(){
+
+ctxWafer.clearRect(0,0,200,200);
+
+ctxWafer.save();
+
+ctxWafer.translate(100,100);
+ctxWafer.rotate(angle);
+
+/* wafer */
+
+ctxWafer.beginPath();
+ctxWafer.arc(0,0,80,0,Math.PI*2);
+ctxWafer.strokeStyle="#38bdf8";
+ctxWafer.lineWidth=3;
+ctxWafer.stroke();
+
+/* dies */
+
+for(let x=-60;x<=60;x+=30){
+for(let y=-60;y<=60;y+=30){
+
+ctxWafer.strokeRect(x,y,20,20);
+
+}
+}
+
+ctxWafer.restore();
+
+angle += 0.01;
+
+requestAnimationFrame(drawWafer);
+
+}
+
+drawWafer();
 
 }
