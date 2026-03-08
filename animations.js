@@ -194,9 +194,9 @@ drawThreePhase();
 
 }
 
-/* ======================================
-   HORIZONTAL CONVOLUTION (DIFFERENT SIGNALS)
-====================================== */
+/* =====================================
+   SIN CONVOLVED WITH IMPULSE TRAIN
+===================================== */
 
 const convCanvas = document.getElementById("convCanvas");
 
@@ -207,23 +207,11 @@ const ctx = convCanvas.getContext("2d");
 convCanvas.width = 900;
 convCanvas.height = 260;
 
-let shift = -200;
+let shift = 0;
 
-/* SIGNAL 1 : RECTANGULAR */
+/* impulse train spacing */
 
-function rect(x){
-return Math.abs(x) < 40 ? 1 : 0;
-}
-
-/* SIGNAL 2 : TRIANGULAR */
-
-function triangle(x){
-
-if(Math.abs(x) > 60) return 0;
-
-return 1 - Math.abs(x)/60;
-
-}
+const T = 120;
 
 function drawConv(){
 
@@ -239,7 +227,7 @@ ctx.lineTo(convCanvas.width,center);
 ctx.strokeStyle="#444";
 ctx.stroke();
 
-/* CONVOLUTION RESULT */
+/* RESULT SIGNAL */
 
 ctx.beginPath();
 
@@ -247,13 +235,17 @@ for(let x=0;x<convCanvas.width;x++){
 
 let sum = 0;
 
-for(let k=-80;k<80;k++){
+/* impulse train convolution */
 
-sum += rect(k) * triangle(x-k-shift);
+for(let n=-5;n<5;n++){
+
+let t = (x - shift - n*T)/40;
+
+sum += Math.sin(t);
 
 }
 
-let y = center - sum*1.5;
+let y = center - sum*25;
 
 ctx.lineTo(x,y);
 
@@ -263,9 +255,9 @@ ctx.strokeStyle="#38bdf8";
 ctx.lineWidth=3;
 ctx.stroke();
 
-shift += 1;
+/* animate */
 
-if(shift > 400) shift = -200;
+shift += 0.5;
 
 requestAnimationFrame(drawConv);
 
