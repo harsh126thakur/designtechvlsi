@@ -1,133 +1,188 @@
-const canvas = document.getElementById("stars");
-const ctx = canvas.getContext("2d");
+/* =================================================
+   STAR BACKGROUND
+================================================= */
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+const starCanvas = document.getElementById("starfield");
+
+if(starCanvas){
+
+const ctx = starCanvas.getContext("2d");
+
+starCanvas.width = window.innerWidth;
+starCanvas.height = window.innerHeight;
 
 let stars = [];
 
 for(let i=0;i<200;i++){
-
 stars.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-size:Math.random()*2,
-speed:Math.random()*0.4
+x:Math.random()*starCanvas.width,
+y:Math.random()*starCanvas.height,
+size:Math.random()*2
 });
-
 }
 
-function animate(){
+function animateStars(){
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.clearRect(0,0,starCanvas.width,starCanvas.height);
 
 stars.forEach(star=>{
 
-star.y += star.speed;
+star.y += 0.3;
 
-if(star.y>canvas.height){
-
-star.y=0;
-
-}
+if(star.y > starCanvas.height) star.y = 0;
 
 ctx.fillStyle="white";
-
 ctx.fillRect(star.x,star.y,star.size,star.size);
 
 });
 
-requestAnimationFrame(animate);
+requestAnimationFrame(animateStars);
 
 }
 
-animate();
-const waveCanvas = document.getElementById("sineWave");
-const waveCtx = waveCanvas.getContext("2d");
+animateStars();
+
+}
+
+
+/* =================================================
+   SIN WAVE
+================================================= */
+
+const sineCanvas = document.getElementById("sineWave");
+
+if(sineCanvas){
+
+const ctx = sineCanvas.getContext("2d");
+
+sineCanvas.width = 600;
+sineCanvas.height = 200;
 
 let t = 0;
 
-function drawWave(){
+function drawSine(){
 
-waveCtx.clearRect(0,0,waveCanvas.width,waveCanvas.height);
+ctx.clearRect(0,0,sineCanvas.width,sineCanvas.height);
 
-waveCtx.beginPath();
+ctx.beginPath();
 
-for(let x=0; x<waveCanvas.width; x++){
+for(let x=0;x<sineCanvas.width;x++){
 
-let y = 100 + 40 * Math.sin((x * 0.02) + t);
+let y = 100 + 40*Math.sin(x*0.02 + t);
 
-waveCtx.lineTo(x,y);
+ctx.lineTo(x,y);
 
 }
 
-waveCtx.strokeStyle = "#38bdf8";
-waveCtx.lineWidth = 3;
-waveCtx.stroke();
+ctx.strokeStyle="#38bdf8";
+ctx.lineWidth=3;
+ctx.stroke();
 
 t += 0.05;
 
-requestAnimationFrame(drawWave);
+requestAnimationFrame(drawSine);
 
 }
 
-drawWave();
-const canvasWave = document.getElementById("threePhaseWave");
-const ctxWave = canvasWave.getContext("2d");
+drawSine();
 
-canvasWave.width = 600;
-canvasWave.height = 220;
+}
+
+
+/* =================================================
+   SINC FUNCTION
+================================================= */
+
+const sincCanvas = document.getElementById("sincWave");
+
+if(sincCanvas){
+
+const ctx = sincCanvas.getContext("2d");
+
+sincCanvas.width = 900;
+sincCanvas.height = 300;
+
+let shift = 0;
+
+function drawSinc(){
+
+ctx.clearRect(0,0,sincCanvas.width,sincCanvas.height);
+
+let cx = sincCanvas.width/2;
+let cy = sincCanvas.height/2;
+
+ctx.beginPath();
+
+for(let x=-cx;x<cx;x++){
+
+let t = x/40 + shift;
+
+let y = (t===0)?1:Math.sin(t)/t;
+
+let px = cx + x;
+let py = cy - y*120;
+
+ctx.lineTo(px,py);
+
+}
+
+ctx.strokeStyle="#38bdf8";
+ctx.lineWidth=3;
+ctx.stroke();
+
+shift += 0.02;
+
+requestAnimationFrame(drawSinc);
+
+}
+
+drawSinc();
+
+}
+
+
+/* =================================================
+   THREE PHASE SIGNAL (RYB)
+================================================= */
+
+const phaseCanvas = document.getElementById("threePhaseWave");
+
+if(phaseCanvas){
+
+const ctx = phaseCanvas.getContext("2d");
+
+phaseCanvas.width = 700;
+phaseCanvas.height = 250;
 
 let phase = 0;
 
 function drawThreePhase(){
 
-ctxWave.clearRect(0,0,canvasWave.width,canvasWave.height);
+ctx.clearRect(0,0,phaseCanvas.width,phaseCanvas.height);
 
-let amplitude = 50;
-let frequency = 0.02;
-let center = canvasWave.height/2;
+let center = phaseCanvas.height/2;
 
-/* R phase (Red) */
+function drawWave(offset,color){
 
-ctxWave.beginPath();
-for(let x=0; x<canvasWave.width; x++){
+ctx.beginPath();
 
-let y = center + amplitude * Math.sin((x*frequency)+phase);
-ctxWave.lineTo(x,y);
+for(let x=0;x<phaseCanvas.width;x++){
 
-}
-ctxWave.strokeStyle="red";
-ctxWave.lineWidth=3;
-ctxWave.stroke();
+let y = center + 60*Math.sin(x*0.02 + phase + offset);
 
-
-/* Y phase (Yellow) */
-
-ctxWave.beginPath();
-for(let x=0; x<canvasWave.width; x++){
-
-let y = center + amplitude * Math.sin((x*frequency)+phase + (2*Math.PI/3));
-ctxWave.lineTo(x,y);
+ctx.lineTo(x,y);
 
 }
-ctxWave.strokeStyle="yellow";
-ctxWave.lineWidth=3;
-ctxWave.stroke();
 
-
-/* B phase (Blue) */
-
-ctxWave.beginPath();
-for(let x=0; x<canvasWave.width; x++){
-
-let y = center + amplitude * Math.sin((x*frequency)+phase + (4*Math.PI/3));
-ctxWave.lineTo(x,y);
+ctx.strokeStyle=color;
+ctx.lineWidth=2;
+ctx.stroke();
 
 }
-ctxWave.strokeStyle="#38bdf8";
-ctxWave.lineWidth=3;
-ctxWave.stroke();
+
+drawWave(0,"red");
+drawWave(2*Math.PI/3,"yellow");
+drawWave(4*Math.PI/3,"#38bdf8");
 
 phase += 0.05;
 
@@ -136,6 +191,13 @@ requestAnimationFrame(drawThreePhase);
 }
 
 drawThreePhase();
+
+}
+
+
+/* =================================================
+   CONVOLUTION ANIMATION
+================================================= */
 
 const convCanvas = document.getElementById("convCanvas");
 
@@ -152,13 +214,13 @@ function rect(x){
 return (Math.abs(x) < 40) ? 1 : 0;
 }
 
-function draw(){
+function drawConv(){
 
 ctx.clearRect(0,0,convCanvas.width,convCanvas.height);
 
 let centerY = convCanvas.height/2;
 
-/* AXIS */
+/* axis */
 
 ctx.beginPath();
 ctx.moveTo(0,centerY);
@@ -166,39 +228,39 @@ ctx.lineTo(convCanvas.width,centerY);
 ctx.strokeStyle="#888";
 ctx.stroke();
 
-/* SIGNAL f(t) */
+/* f(t) */
 
 ctx.beginPath();
+
 for(let x=0;x<convCanvas.width;x++){
 
 let t = x-200;
 let y = rect(t)*60;
 
 ctx.lineTo(x,centerY-y);
+
 }
 
 ctx.strokeStyle="red";
-ctx.lineWidth=2;
 ctx.stroke();
 
-
-/* SIGNAL g(t-τ) */
+/* g(t-τ) */
 
 ctx.beginPath();
+
 for(let x=0;x<convCanvas.width;x++){
 
 let t = x-shift;
 let y = rect(t)*60;
 
 ctx.lineTo(x,centerY+120-y);
+
 }
 
 ctx.strokeStyle="yellow";
-ctx.lineWidth=2;
 ctx.stroke();
 
-
-/* CONVOLUTION RESULT */
+/* convolution */
 
 ctx.beginPath();
 
@@ -210,7 +272,7 @@ for(let k=-50;k<50;k++){
 sum += rect(k)*rect(x-k-shift);
 }
 
-ctx.lineTo(x, centerY+200 - sum*1.5);
+ctx.lineTo(x,centerY+200 - sum*1.5);
 
 }
 
@@ -222,11 +284,10 @@ shift += 1;
 
 if(shift > 400) shift = -200;
 
-requestAnimationFrame(draw);
+requestAnimationFrame(drawConv);
 
 }
 
-draw();
+drawConv();
 
 }
-
