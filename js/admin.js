@@ -11,13 +11,12 @@ getDocs,
 addDoc,
 doc,
 deleteDoc,
-updateDoc
+updateDoc,
+getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 // ================= LOGIN =================
-import { getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 window.login = async function(){
 
 const email = document.getElementById("email").value;
@@ -27,7 +26,7 @@ try{
 
 await signInWithEmailAndPassword(auth, email, password);
 
-// 🔥 CHECK DIRECT DOC
+// ADMIN CHECK
 const adminDoc = await getDoc(doc(db,"admins",email));
 
 if(!adminDoc.exists()){
@@ -36,19 +35,24 @@ signOut(auth);
 return;
 }
 
-// ✅ ALLOWED
+// SHOW DASHBOARD
 document.getElementById("loginSection").style.display="none";
 document.getElementById("dashboardSection").style.display="block";
 
-loadAdminData();
-loadCourses();
-loadEnquiries();
+// LOAD DATA
+await loadAdminData();
+await loadCourses();
+
+// LOAD CHARTS AFTER UI READY
+setTimeout(loadCharts, 700);
 
 }catch(err){
+console.error(err);
 alert("Login failed");
 }
 
 };
+
 
 // ================= LOGOUT =================
 window.logout = function(){
@@ -57,7 +61,7 @@ location.reload();
 };
 
 
-// ================= ADD LECTURE FIELD =================
+// ================= ADD LECTURE =================
 window.addLectureField = function(){
 
 const container = document.getElementById("lectureContainer");
@@ -71,45 +75,35 @@ div.innerHTML = `
 `;
 
 container.appendChild(div);
-
 };
 
 
 // ================= SAVE COURSE =================
 async function saveNewCourse(){
 
-try{
-
 const title = document.getElementById("courseTitle").value;
 const type = document.getElementById("courseType").value;
 const price = document.getElementById("coursePrice").value;
 
-// 🔥 Collect lectures
 const lectureDivs = document.querySelectorAll("#lectureContainer div");
 
 let lectures = [];
 
 lectureDivs.forEach(div=>{
-
 const inputs = div.querySelectorAll("input");
 
-const lectureTitle = inputs[0].value;
-const lectureLink = inputs[1].value;
-
-if(lectureTitle && lectureLink){
+if(inputs[0].value && inputs[1].value){
 lectures.push({
-title: lectureTitle,
-link: lectureLink
+title: inputs[0].value,
+link: inputs[1].value
 });
 }
-
 });
 
-// 🔥 Save to Firestore
 await addDoc(collection(db,"courses"),{
 title,
 type,
-price: type === "paid" ? Number(price) : 0,
+price: type==="paid" ? Number(price) : 0,
 lectures
 });
 
@@ -117,33 +111,22 @@ alert("Course Added");
 
 resetForm();
 loadCourses();
-
-}catch(err){
-console.error(err);
-alert("Error adding course");
-}
-
 }
 
 window.saveCourse = saveNewCourse;
 
 
-// ================= RESET FORM =================
+// ================= RESET =================
 function resetForm(){
-
 document.getElementById("courseTitle").value="";
 document.getElementById("coursePrice").value="";
 document.getElementById("lectureContainer").innerHTML="";
-
 window.saveCourse = saveNewCourse;
-
 }
 
 
 // ================= LOAD COURSES =================
 async function loadCourses(){
-
-try{
 
 const snap = await getDocs(collection(db,"courses"));
 
@@ -158,68 +141,57 @@ let lectureHTML = "";
 
 if(data.lectures){
 data.lectures.forEach(l=>{
-lectureHTML += `
-<li>
-<a href="${l.link}" target="_blank">${l.title}</a>
-</li>`;
+lectureHTML += `<li><a href="${l.link}" target="_blank">▶ ${l.title}</a></li>`;
 });
 }
+
+const safeTitle = data.title.replace(/'/g, "\\'");
 
 html += `
 <div class="course">
 <h4>${data.title}</h4>
-<p>${data.type.toUpperCase()} ${data.type==="paid" ? "₹"+data.price : ""}</p>
+
+<p>
+${data.type.toUpperCase()} 
+${data.type==="paid" ? "₹"+data.price : ""}
+<br>
+<span style="color:#38bdf8;">
+${data.lectures ? data.lectures.length : 0} Lectures
+</span>
+</p>
 
 <ul>${lectureHTML}</ul>
 
-<button onclick="editCourse('${id}','${data.title}','${data.type}',${data.price})">
-Edit
-</button>
-
-<button onclick="deleteCourse('${id}')">
-Delete
-</button>
+<button onclick="editCourse('${id}','${safeTitle}','${data.type}',${data.price})">Edit</button>
+<button onclick="deleteCourse('${id}')">Delete</button>
 </div>
 `;
 
 });
 
 document.getElementById("courseListAdmin").innerHTML = html;
-
-}catch(err){
-console.error("Load error:", err);
-}
-
 }
 
 
-// ================= DELETE COURSE =================
+// ================= DELETE =================
 window.deleteCourse = async function(id){
+if(!confirm("Delete course?")) return;
 
-if(!confirm("Delete this course?")) return;
-
-try{
 await deleteDoc(doc(db,"courses",id));
 loadCourses();
-}catch(err){
-console.error(err);
-}
-
 };
 
 
-// ================= EDIT COURSE =================
+// ================= EDIT =================
 window.editCourse = async function(id,title,type,price){
 
 document.getElementById("courseTitle").value = title;
 document.getElementById("courseType").value = type;
 document.getElementById("coursePrice").value = price;
 
-// 🔥 CLEAR OLD LECTURES
 const container = document.getElementById("lectureContainer");
 container.innerHTML = "";
 
-// 🔥 FETCH COURSE DATA
 const snap = await getDocs(collection(db,"courses"));
 
 snap.forEach(docSnap=>{
@@ -229,35 +201,24 @@ const data = docSnap.data();
 
 if(data.lectures){
 data.lectures.forEach(l=>{
-
 const div = document.createElement("div");
 
 div.innerHTML = `
-<input type="text" value="${l.title}">
-<input type="text" value="${l.link}">
+<input value="${l.title}">
+<input value="${l.link}">
 <button onclick="this.parentElement.remove()">❌</button>
 `;
 
 container.appendChild(div);
-
 });
 }
 
 }
-
 });
 
-
-// 🔥 UPDATE FUNCTION
+// override save
 window.saveCourse = async function(){
 
-try{
-
-const newTitle = document.getElementById("courseTitle").value;
-const newType = document.getElementById("courseType").value;
-const newPrice = document.getElementById("coursePrice").value;
-
-// collect lectures again
 const lectureDivs = document.querySelectorAll("#lectureContainer div");
 
 let lectures = [];
@@ -274,9 +235,11 @@ link: inputs[1].value
 });
 
 await updateDoc(doc(db,"courses",id),{
-title:newTitle,
-type:newType,
-price:newType==="paid" ? Number(newPrice) : 0,
+title: document.getElementById("courseTitle").value,
+type: document.getElementById("courseType").value,
+price: document.getElementById("courseType").value==="paid"
+? Number(document.getElementById("coursePrice").value)
+: 0,
 lectures
 });
 
@@ -284,62 +247,7 @@ alert("Course Updated");
 
 resetForm();
 loadCourses();
-
-}catch(err){
-console.error(err);
-alert("Update failed");
-}
-
 };
-
-};
-
-// override save
-window.saveCourse = async function(){
-
-try{
-
-const newTitle = document.getElementById("courseTitle").value;
-const newType = document.getElementById("courseType").value;
-const newPrice = document.getElementById("coursePrice").value;
-
-// 🔥 Collect lectures again
-const lectureDivs = document.querySelectorAll("#lectureContainer div");
-
-let lectures = [];
-
-lectureDivs.forEach(div=>{
-
-const inputs = div.querySelectorAll("input");
-
-const lectureTitle = inputs[0].value;
-const lectureLink = inputs[1].value;
-
-if(lectureTitle && lectureLink){
-lectures.push({
-title: lectureTitle,
-link: lectureLink
-});
-}
-
-});
-
-await updateDoc(doc(db,"courses",id),{
-title:newTitle,
-type:newType,
-price:newType === "paid" ? Number(newPrice) : 0,
-lectures
-});
-
-alert("Course Updated");
-
-resetForm();
-loadCourses();
-
-}catch(err){
-console.error(err);
-alert("Error updating");
-}
 
 };
 
@@ -347,72 +255,210 @@ alert("Error updating");
 // ================= ADMIN STATS =================
 async function loadAdminData(){
 
-try{
+const userSnap = await getDocs(collection(db,"users"));
+const enquirySnap = await getDocs(collection(db,"enquiries"));
 
-let totalUsers = 0;
-let totalEnquiries = 0;
 let paidUsers = 0;
 let revenue = 0;
-
-// USERS
-const userSnap = await getDocs(collection(db,"users"));
-totalUsers = userSnap.size;
 
 userSnap.forEach(doc=>{
 const d = doc.data();
 
-if(d.purchasedCourses && d.purchasedCourses.length > 0){
+if(d.progress){
 paidUsers++;
-revenue += d.purchasedCourses.length * 500;
+revenue += Object.keys(d.progress).length * 500;
 }
 });
 
-// ENQUIRIES
-const enquirySnap = await getDocs(collection(db,"enquiries"));
-totalEnquiries = enquirySnap.size;
-
-// UI
-document.getElementById("totalUsers").innerText = totalUsers;
-document.getElementById("totalEnquiries").innerText = totalEnquiries;
+document.getElementById("totalUsers").innerText = userSnap.size;
+document.getElementById("totalEnquiries").innerText = enquirySnap.size;
 document.getElementById("paidUsers").innerText = paidUsers;
 document.getElementById("revenue").innerText = "₹" + revenue;
-
-}catch(err){
-console.error(err);
-}
-
 }
 
 
-// ================= LOAD ENQUIRIES =================
+// ================= USERS =================
+async function loadUsers(){
+
+const userSnap = await getDocs(collection(db,"users"));
+const courseSnap = await getDocs(collection(db,"courses"));
+
+let courseMap = {};
+
+courseSnap.forEach(doc=>{
+courseMap[doc.id] = doc.data().title;
+});
+
+let html = "";
+
+userSnap.forEach(docSnap=>{
+const data = docSnap.data();
+
+let courses = "None";
+
+if(data.progress){
+const ids = Object.keys(data.progress);
+courses = ids.map(id => courseMap[id] || id).join(", ");
+}
+
+html += `
+<tr>
+<td>${data.name || "User"}</td>
+<td>${data.email || ""}</td>
+<td>${courses}</td>
+</tr>`;
+});
+
+document.getElementById("userTable").innerHTML = html;
+}
+
+
+// ================= ENQUIRIES =================
 async function loadEnquiries(){
-
-try{
 
 const snap = await getDocs(collection(db,"enquiries"));
 
 let html = "";
 
 snap.forEach(docSnap=>{
-
-const data = docSnap.data();
+const d = docSnap.data();
 
 html += `
 <tr>
-<td>${data.name || ""}</td>
-<td>${data.email || ""}</td>
-<td>${data.phone || ""}</td>
-<td>${data.message || ""}</td>
-<td>${data.status || "new"}</td>
-</tr>
-`;
-
+<td>${d.name||""}</td>
+<td>${d.email||""}</td>
+<td>${d.phone||""}</td>
+<td>${d.message||""}</td>
+<td>${d.status||"new"}</td>
+</tr>`;
 });
 
 document.getElementById("table").innerHTML = html;
-
-}catch(err){
-console.error(err);
 }
+
+
+// ================= PAID USERS =================
+async function loadPaidUsers(){
+
+const snap = await getDocs(collection(db,"users"));
+
+let html = "";
+
+snap.forEach(docSnap=>{
+const d = docSnap.data();
+
+if(d.progress){
+html += `<p>${d.email}</p>`;
+}
+});
+
+document.getElementById("paidUsersList").innerHTML = html;
+}
+
+
+// ================= REVENUE =================
+async function loadRevenue(){
+
+const snap = await getDocs(collection(db,"users"));
+
+let revenue = 0;
+
+snap.forEach(doc=>{
+const d = doc.data();
+
+if(d.progress){
+revenue += Object.keys(d.progress).length * 500;
+}
+});
+
+document.getElementById("revenueDetail").innerText = "₹" + revenue;
+}
+
+
+// ================= TOGGLE =================
+function toggleSection(id, loader){
+
+const sections = ["usersSection","enquirySection","paidSection","revenueSection"];
+
+sections.forEach(sec=>{
+const el = document.getElementById(sec);
+if(el) el.style.display = "none";
+});
+
+const section = document.getElementById(id);
+
+if(section.style.display === "block"){
+section.style.display = "none";
+}else{
+section.style.display = "block";
+if(loader) loader();
+}
+
+}
+
+window.toggleUsers = () => toggleSection("usersSection", loadUsers);
+window.toggleEnquiries = () => toggleSection("enquirySection", loadEnquiries);
+window.togglePaidUsers = () => toggleSection("paidSection", loadPaidUsers);
+window.toggleRevenue = () => toggleSection("revenueSection", loadRevenue);
+
+
+// ================= CHARTS =================
+let userChart, revenueChart, enquiryChart;
+
+async function loadCharts(){
+
+if(userChart) userChart.destroy();
+if(revenueChart) revenueChart.destroy();
+if(enquiryChart) enquiryChart.destroy();
+
+const userSnap = await getDocs(collection(db,"users"));
+const enquirySnap = await getDocs(collection(db,"enquiries"));
+
+let totalUsers = userSnap.size;
+let totalEnquiries = enquirySnap.size;
+
+let paidUsers = 0;
+let revenue = 0;
+
+userSnap.forEach(doc=>{
+const d = doc.data();
+
+if(d.progress){
+paidUsers++;
+revenue += Object.keys(d.progress).length * 500;
+}
+});
+
+userChart = new Chart(document.getElementById("userChart"), {
+type: "bar",
+data: {
+labels: ["Total Users", "Paid Users"],
+datasets: [{
+label: "Users",
+data: [totalUsers, paidUsers]
+}]
+}
+});
+
+revenueChart = new Chart(document.getElementById("revenueChart"), {
+type: "line",
+data: {
+labels: ["Revenue"],
+datasets: [{
+label: "Revenue ₹",
+data: [revenue]
+}]
+}
+});
+
+enquiryChart = new Chart(document.getElementById("enquiryChart"), {
+type: "pie",
+data: {
+labels: ["Enquiries"],
+datasets: [{
+data: [totalEnquiries]
+}]
+}
+});
 
 }

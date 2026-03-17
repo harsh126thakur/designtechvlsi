@@ -8,6 +8,10 @@
 <link rel="stylesheet" href="css/admin.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- ✅ REQUIRED FOR CHARTS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -51,22 +55,22 @@
     <!-- ================= STATS ================= -->
     <div class="admin-stats">
 
-        <div class="card">
+        <div class="card" onclick="toggleUsers()">
             <h3>Total Students</h3>
             <p id="totalUsers">0</p>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="toggleEnquiries()">
             <h3>Total Enquiries</h3>
             <p id="totalEnquiries">0</p>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="togglePaidUsers()">
             <h3>Paid Students</h3>
             <p id="paidUsers">0</p>
         </div>
 
-        <div class="card">
+        <div class="card" onclick="toggleRevenue()">
             <h3>Revenue</h3>
             <p id="revenue">₹0</p>
         </div>
@@ -74,22 +78,72 @@
     </div>
 
 
+    <!-- ================= 📊 CHART SECTION ================= -->
+    <div id="chartSection" style="margin-top:30px;">
+
+        <h3>Analytics Dashboard</h3>
+
+        <canvas id="userChart"></canvas>
+        <br><br>
+
+        <canvas id="revenueChart"></canvas>
+        <br><br>
+
+        <canvas id="enquiryChart"></canvas>
+
+    </div>
+
+
+    <!-- ================= USERS ================= -->
+    <div id="usersSection" style="display:none; margin-top:20px;">
+        <h3>Registered Users</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Courses Enrolled</th>
+                </tr>
+            </thead>
+
+            <tbody id="userTable"></tbody>
+        </table>
+    </div>
+
+
     <!-- ================= ENQUIRIES ================= -->
-    <h3>Enquiries</h3>
+    <div id="enquirySection" style="display:none; margin-top:20px;">
+        <h3>Enquiries</h3>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Message</th>
-                <th>Status</th>
-            </tr>
-        </thead>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
 
-        <tbody id="table"></tbody>
-    </table>
+            <tbody id="table"></tbody>
+        </table>
+    </div>
+
+
+    <!-- ================= PAID USERS ================= -->
+    <div id="paidSection" style="display:none; margin-top:20px;">
+        <h3>Paid Users</h3>
+        <div id="paidUsersList"></div>
+    </div>
+
+
+    <!-- ================= REVENUE ================= -->
+    <div id="revenueSection" style="display:none; margin-top:20px;">
+        <h3>Revenue Details</h3>
+        <p>Total Revenue: <span id="revenueDetail">₹0</span></p>
+    </div>
 
 
     <!-- ================= COURSES ================= -->
@@ -112,7 +166,6 @@
     <h4>Lectures</h4>
     <div id="lectureContainer"></div>
 
-    <!-- ✅ FIXED BUTTON -->
     <button onclick="addLectureField()">+ Add Lecture</button>
     <br><br>
 
