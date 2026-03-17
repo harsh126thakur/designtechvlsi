@@ -114,3 +114,12 @@ text-decoration:none;
 padding:25px;
 }
 }
+.google-btn{
+background:#ffffff;
+color:#000;
+font-weight:bold;
+}
+
+.google-btn:hover{
+background:#e5e5e5;
+}
