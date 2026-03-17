@@ -38,6 +38,13 @@ const auth = getAuth(app);
 
 
 // ---------------- ENQUIRY FORM ----------------
+import { db } from "./firebase.js";
+
+import {
+collection,
+addDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
 const enquiryForm = document.getElementById("enquiryForm");
 
@@ -47,34 +54,38 @@ enquiryForm.addEventListener("submit", async function(e){
 
 e.preventDefault();
 
-const name = document.getElementById("name")?.value || "";
-const email = document.getElementById("email")?.value || "";
-const phone = document.getElementById("phone")?.value || "";
-const message = document.getElementById("message")?.value || "";
+const name = document.getElementById("name").value;
+const email = document.getElementById("email").value;
+const phone = document.getElementById("phone").value;
+const message = document.getElementById("message").value;
+
+// validation
+if(!name || !email || !phone || !message){
+alert("Please fill all fields");
+return;
+}
 
 try {
 
+// 🔥 SAVE TO FIREBASE
 await addDoc(collection(db,"enquiries"),{
-
-name: name,
-email: email,
-phone: phone,
-message: message,
-time: new Date()
-
+name,
+email,
+phone,
+message,
+status: "new",
+createdAt: new Date()
 });
 
-alert("Enquiry submitted successfully!");
+alert("Enquiry submitted successfully");
 
 enquiryForm.reset();
 
 }
 
 catch(error){
-
-console.error("Error:", error);
+console.error(error);
 alert("Error submitting enquiry");
-
 }
 
 });
