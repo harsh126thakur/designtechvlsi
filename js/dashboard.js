@@ -14,18 +14,24 @@ getDoc
 
 
 // ================= AUTH =================
-onAuthStateChanged(auth, async (user)=>{
+onAuthStateChanged(auth, async (user) => {
 
-if(!user){
-window.location.href="login.html";
-return;
+if (!user) {
+    window.location.href = "login.html";
+    return;
 }
-
-console.log("Current UID:", user.uid);
 
 document.getElementById("welcome").innerText = "Welcome " + user.email;
 
-loadCourses(user);
+// Loading state
+document.getElementById("courseList").innerHTML = "<p style='padding:20px'>Loading courses...</p>";
+
+try {
+    await loadCourses(user);
+} catch (error) {
+    console.error(error);
+    document.getElementById("courseList").innerHTML = "<p style='color:red'>Error loading courses</p>";
+}
 
 });
 
@@ -33,12 +39,10 @@ loadCourses(user);
 // ================= LOAD COURSES =================
 async function loadCourses(user){
 
-const courseSnap = await getDocs(collection(db,"courses"));
-const userSnap = await getDoc(doc(db,"users",user.uid));
+const courseSnap = await getDocs(collection(db, "courses"));
+const userSnap = await getDoc(doc(db, "users", user.uid));
 
 let userData = userSnap.exists() ? userSnap.data() : {};
-
-console.log("User Data:", userData);
 
 let html = "";
 
@@ -47,30 +51,21 @@ courseSnap.forEach(docSnap => {
 const c = docSnap.data();
 const id = docSnap.id;
 
-console.log("Course ID:", id);
-
-// 🔒 PURCHASE CHECK
+// PURCHASE CHECK
 let purchased = userData.purchasedCourses || [];
 let unlocked = c.type === "free" || purchased.includes(id);
 
-// 📊 PROGRESS DATA
+// PROGRESS
 let completed = userData.progress?.[id]?.completed || [];
 let total = (c.lectures || []).length;
 
-// % calculation
 let percent = total > 0 ? Math.floor((completed.length / total) * 100) : 0;
-
-// fix visibility
-if(percent === 0 && completed.length > 0){
-percent = 1;
-}
-
 
 // ================= CARD =================
 html += `
 <div class="course-card ${unlocked ? "" : "locked-card"}">
 
-<h3>${c.title}</h3>
+<h3>${c.title || "Untitled Course"}</h3>
 
 <p class="${c.type}">
 ${c.type === "free" ? "FREE" : "PAID ₹" + (c.price || 0)}
@@ -87,7 +82,7 @@ ${percent}% Completed (${completed.length}/${total})
 </p>
 
 <button onclick="continueCourse('${id}')">
-▶ Continue Learning
+▶ Continue
 </button>
 
 ` : `
@@ -105,6 +100,11 @@ ${percent}% Completed (${completed.length}/${total})
 
 });
 
+// EMPTY STATE
+if(html === ""){
+html = "<p style='padding:20px'>No courses available</p>";
+}
+
 document.getElementById("courseList").innerHTML = html;
 
 }
@@ -117,7 +117,7 @@ window.location.href = `course.html?id=${id}`;
 
 
 // ================= PAYMENT =================
-window.goToPayment = function(id,price){
+window.goToPayment = function(id, price){
 window.location.href = `payment.html?id=${id}&price=${price}`;
 };
 
@@ -125,5 +125,5 @@ window.location.href = `payment.html?id=${id}&price=${price}`;
 // ================= LOGOUT =================
 window.logout = function(){
 signOut(auth);
-window.location.href="login.html";
+window.location.href = "login.html";
 };

@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Student Dashboard</title>
-<link rel="stylesheet" href="css/login.css">
+
 <link rel="stylesheet" href="css/dashboard.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -16,8 +18,8 @@ background:#0f172a;
 color:white;
 }
 
-/* NAV */
-.nav{
+/* NAVBAR */
+.navbar{
 display:flex;
 justify-content:space-between;
 align-items:center;
@@ -25,7 +27,35 @@ background:#020617;
 padding:15px 30px;
 }
 
-.nav button{
+.logo{
+font-size:20px;
+font-weight:bold;
+}
+
+.navbar ul{
+list-style:none;
+display:flex;
+gap:20px;
+}
+
+.navbar ul li a{
+color:white;
+text-decoration:none;
+}
+
+.navbar ul li a:hover{
+color:#38bdf8;
+}
+
+/* HEADER */
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 30px;
+}
+
+.header button{
 background:#38bdf8;
 border:none;
 padding:8px 14px;
@@ -33,63 +63,31 @@ border-radius:6px;
 cursor:pointer;
 }
 
-/* GRID */
-#courseList{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-padding:30px;
-}
-
-/* CARD */
-.course{
-background:#020617;
-padding:20px;
-border-radius:12px;
-cursor:pointer;
-transition:0.3s;
-}
-
-.course:hover{
-transform:scale(1.05);
-background:#1e293b;
-}
-
-.price{
-color:#38bdf8;
-font-weight:bold;
-margin-top:10px;
-}
-
-.free{
-color:#22c55e;
-}
-
-.paid{
-color:#f87171;
-}
-
 </style>
 
 </head>
 
 <body>
-    <nav class="navbar">
-    <h2 class="logo">DesignTech VLSI</h2>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="logo">DesignTech VLSI</div>
     <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="course.html">Courses</a></li>
-        <li><a href="login.html">Login</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
     </ul>
 </nav>
 
-<div class="nav">
-<h2>Student Dashboard</h2>
-<button onclick="logout()">Logout</button>
+<!-- HEADER -->
+<div class="header">
+    <h2>Student Dashboard</h2>
+    <button onclick="logout()">Logout</button>
 </div>
 
-<h2 id="welcome" style="padding:20px"></h2>
+<h3 id="welcome" style="padding:0 30px;"></h3>
 
+<!-- COURSE LIST -->
 <div id="courseList"></div>
 
 <script type="module" src="js/dashboard.js"></script>

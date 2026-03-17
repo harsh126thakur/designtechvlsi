@@ -1,24 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Student Login</title>
+
 <link rel="stylesheet" href="css/login.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
-<body class="center">
+<body>
 
-<div class="box">
+<!-- NAVBAR -->
+<nav class="nav">
+    <h2>DesignTech VLSI</h2>
+    <div>
+        <a href="index.html">Home</a>
+        <a href="course.html">Courses</a>
+        <a href="login.html">Login</a>
+    </div>
+</nav>
 
-<h2>Student Login</h2>
+<!-- LOGIN CENTER -->
+<div class="center">
 
-<input type="email" id="email" placeholder="Email">
-<input type="password" id="password" placeholder="Password">
+    <div class="box">
 
-<button onclick="login()">Login</button>
-<p id="error"></p>
+        <h2>Student Login</h2>
+
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+
+        <button onclick="login()">Login</button>
+
+        <p id="error"></p>
+
+        <p class="small-text">
+            Don't have an account? <a href="signup.html">Sign up</a>
+        </p>
+
+    </div>
 
 </div>
 
+<!-- SCRIPT -->
 <script type="module">
 
 import { auth } from "./js/firebase.js";
@@ -28,6 +55,12 @@ window.login = function(){
 
 const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
+
+// simple validation
+if(!email || !password){
+document.getElementById("error").innerText = "Please fill all fields";
+return;
+}
 
 signInWithEmailAndPassword(auth,email,password)
 
@@ -42,14 +75,6 @@ document.getElementById("error").innerText="Invalid credentials";
 }
 
 </script>
-<nav class="navbar">
-    <h2 class="logo">DesignTech VLSI</h2>
-    <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="course.html">Courses</a></li>
-        <li><a href="login.html">Login</a></li>
-    </ul>
-</nav>
+
 </body>
 </html>
-
