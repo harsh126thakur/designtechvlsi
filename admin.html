@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Panel</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+
+<div id="loginSection" class="center">
+<div class="box">
+<h2>Admin Login</h2>
+
+<input type="email" id="email" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+<p id="error"></p>
+</div>
+</div>
+
+
+<div id="dashboardSection" class="dashboard">
+
+<div class="nav">
+<h2>Admin Dashboard</h2>
+<button onclick="logout()">Logout</button>
+</div>
+
+<h3>Enquiries</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Phone</th>
+<th>Message</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+
+<h3>Active Courses</h3>
+<div id="courseListAdmin"></div>
+
+<h3>Create / Edit Course</h3>
+
+<input type="text" id="courseTitle" placeholder="Course Name">
+
+<select id="courseType">
+<option value="free">Free</option>
+<option value="paid">Paid</option>
+</select>
+
+<!-- 🔥 FIXED POSITION -->
+<input type="number" id="coursePrice" placeholder="Course Price (₹)">
+
+<h4>Lectures</h4>
+<div id="lectureContainer"></div>
+
+<button onclick="addLecture()">+ Add Lecture</button>
+<br><br>
+
+<button onclick="saveCourse()">Save Course</button>
+
+</div>
+
+<script type="module" src="js/admin.js"></script>
+
+</body>
+</html>
+

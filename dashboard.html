@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Dashboard</title>
+<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" href="css/dashboard.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins;
+background:#0f172a;
+color:white;
+}
+
+/* NAV */
+.nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#020617;
+padding:15px 30px;
+}
+
+.nav button{
+background:#38bdf8;
+border:none;
+padding:8px 14px;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* GRID */
+#courseList{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+padding:30px;
+}
+
+/* CARD */
+.course{
+background:#020617;
+padding:20px;
+border-radius:12px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.course:hover{
+transform:scale(1.05);
+background:#1e293b;
+}
+
+.price{
+color:#38bdf8;
+font-weight:bold;
+margin-top:10px;
+}
+
+.free{
+color:#22c55e;
+}
+
+.paid{
+color:#f87171;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="nav">
+<h2>Student Dashboard</h2>
+<button onclick="logout()">Logout</button>
+</div>
+
+<h2 id="welcome" style="padding:20px"></h2>
+
+<div id="courseList"></div>
+
+<script type="module" src="js/dashboard.js"></script>
+
+</body>
+</html>

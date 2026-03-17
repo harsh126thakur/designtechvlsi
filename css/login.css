@@ -1,0 +1,72 @@
+body{
+margin:0;
+font-family:Poppins, sans-serif;
+background:#0f172a;
+color:white;
+}
+
+/* CENTER LOGIN */
+.center{
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+/* LOGIN BOX */
+.box{
+background:#020617;
+padding:40px;
+border-radius:12px;
+width:320px;
+text-align:center;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+/* INPUT FIELDS */
+input, select{
+width:100%;
+padding:10px;
+margin:10px 0;
+border-radius:6px;
+border:none;
+outline:none;
+font-size:14px;
+}
+
+/* BUTTON */
+button{
+background:#38bdf8;
+border:none;
+padding:10px;
+width:100%;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+button:hover{
+background:#0ea5e9;
+}
+
+/* NAVBAR */
+.nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#020617;
+padding:15px 30px;
+}
+
+/* BASIC DASHBOARD TEXT (SAFE) */
+#welcome{
+padding:20px;
+font-size:18px;
+}
+
+/* ERROR MESSAGE */
+#error{
+color:#ef4444;
+margin-top:10px;
+}

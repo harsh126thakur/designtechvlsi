@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins;
+display:flex;
+background:#0f172a;
+color:white;
+}
+
+/* Sidebar */
+
+.sidebar{
+width:230px;
+background:#020617;
+height:100vh;
+padding:20px;
+}
+
+.sidebar h2{
+color:#38bdf8;
+}
+
+.sidebar a{
+display:block;
+color:white;
+text-decoration:none;
+margin:15px 0;
+}
+
+.sidebar a:hover{
+color:#38bdf8;
+}
+
+/* Main */
+
+.main{
+flex:1;
+padding:40px;
+}
+
+.card{
+background:#020617;
+padding:20px;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+button{
+background:#38bdf8;
+border:none;
+padding:8px 16px;
+border-radius:6px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- Sidebar -->
+
+<div class="sidebar">
+
+<h2>Dashboard</h2>
+
+<a href="#">Home</a>
+<a href="#">My Courses</a>
+<a href="#">Lectures</a>
+<a href="#">Profile</a>
+
+<button onclick="logout()">Logout</button>
+
+</div>
+
+
+
+<!-- Main Content -->
+
+<div class="main">
+
+<h1 id="welcomeText">Welcome</h1>
+
+<div class="card">
+
+<h3>My Courses</h3>
+
+<p>RTL Design</p>
+<p>Physical Design</p>
+
+</div>
+
+<div class="card">
+
+<h3>Announcements</h3>
+
+<p>New RTL batch starting next week.</p>
+
+</div>
+
+</div>
+
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
+authDomain: "designtechvlsi.firebaseapp.com",
+projectId: "designtechvlsi",
+storageBucket: "designtechvlsi.firebasestorage.app",
+messagingSenderId: "268545364402",
+appId: "1:268545364402:web:57a3d1d3fb8535998754ab"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+
+// Check login
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+document.getElementById("welcomeText").innerText="Welcome "+user.email;
+
+}else{
+
+window.location.href="login.html";
+
+}
+
+});
+
+
+// Logout
+
+window.logout=function(){
+
+signOut(auth).then(()=>{
+
+window.location.href="login.html";
+
+});
+
+}
+
+</script>
+
+</body>
+
+</html>

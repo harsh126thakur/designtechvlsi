@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Course Player</title>
+<link rel="stylesheet" href="css/course.css">
+
+<style>
+
+body{
+margin:0;
+font-family:Poppins;
+background:#0f172a;
+color:white;
+}
+
+/* NAV */
+.nav{
+background:#020617;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+/* LAYOUT */
+.container{
+display:flex;
+height:90vh;
+}
+
+/* PLAYER */
+.player{
+flex:3;
+padding:20px;
+}
+
+.player iframe{
+width:100%;
+height:85vh;
+border-radius:10px;
+}
+
+/* PLAYLIST */
+.playlist{
+flex:1;
+background:#020617;
+overflow-y:auto;
+padding:10px;
+}
+
+.lecture{
+padding:12px;
+border-bottom:1px solid #333;
+cursor:pointer;
+}
+
+.lecture:hover{
+background:#1e293b;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="nav">
+<h2 id="courseTitle">Course</h2>
+<button onclick="goBack()">⬅ Back</button>
+</div>
+
+<div class="container">
+
+<div class="player">
+
+<!-- ✅ FULLSCREEN ENABLED IFRAME -->
+<iframe 
+id="videoPlayer"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+allowfullscreen>
+</iframe>
+
+</div>
+
+<div class="playlist" id="playlist"></div>
+
+</div>
+
+<script type="module" src="js/course.js"></script>
+
+</body>
+</html>

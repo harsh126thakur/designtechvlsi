@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Payment</title>
+<link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+
+<h2>Complete Payment</h2>
+
+<p id="amount"></p>
+
+<input id="coupon" placeholder="Enter Coupon">
+<button onclick="applyCoupon()">Apply</button>
+
+<br><br>
+
+<button onclick="payNow()">Pay Now</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script type="module" src="js/payment.js"></script>
+
+</body>
+</html>
