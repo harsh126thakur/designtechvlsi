@@ -403,3 +403,56 @@ padding:6px 12px;
 border-radius:6px;
 cursor:pointer;
 }
+/* SIGNUP BUTTON (CTA) */
+.signup-btn{
+background:#3b82f6;
+padding:6px 14px;
+border-radius:6px;
+font-weight:600;
+color:white !important;
+}
+
+.signup-btn:hover{
+background:#2563eb;
+}
+
+/* NAV IMPROVEMENT */
+.navbar nav{
+display:flex;
+align-items:center;
+gap:20px;
+}
+
+/* BUTTON CONSISTENCY */
+.navbar button{
+background:#1e293b;
+border:none;
+padding:6px 12px;
+border-radius:6px;
+cursor:pointer;
+color:white;
+}
+
+/* MOBILE NAV FIX */
+@media (max-width:768px){
+
+.navbar{
+flex-direction:column;
+align-items:flex-start;
+gap:10px;
+}
+
+.navbar nav{
+flex-wrap:wrap;
+gap:10px;
+}
+
+.hero h1{
+font-size:30px;
+}
+
+.hero p{
+font-size:16px;
+}
+
+}
