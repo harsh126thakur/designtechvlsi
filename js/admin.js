@@ -29,11 +29,12 @@ document.getElementById("dashboardSection").style.display="block";
 
 loadAdminData();
 loadCourses();
-loadEnquiries(); // 🔥 FIXED
+loadEnquiries();
 
 })
 
-.catch(()=>{
+.catch((err)=>{
+console.error(err);
 document.getElementById("error").innerText="Invalid credentials";
 });
 
@@ -62,6 +63,8 @@ container.appendChild(input);
 
 // ================= SAVE COURSE =================
 async function saveNewCourse(){
+
+try {
 
 const title = document.getElementById("courseTitle").value;
 const type = document.getElementById("courseType").value;
@@ -94,6 +97,11 @@ alert("Course Saved");
 resetForm();
 loadCourses();
 
+} catch(err){
+console.error("Save error:", err);
+alert("Error saving course");
+}
+
 }
 
 
@@ -112,6 +120,8 @@ window.saveCourse = saveNewCourse;
 
 // ================= LOAD COURSES =================
 async function loadCourses(){
+
+try {
 
 const snap = await getDocs(collection(db,"courses"));
 
@@ -141,6 +151,10 @@ Delete
 
 document.getElementById("courseListAdmin").innerHTML = html;
 
+} catch(err){
+console.error("Load courses error:", err);
+}
+
 }
 
 
@@ -149,9 +163,12 @@ window.deleteCourse = async function(id){
 
 if(!confirm("Delete this course?")) return;
 
+try {
 await deleteDoc(doc(db,"courses",id));
-
 loadCourses();
+} catch(err){
+console.error("Delete error:", err);
+}
 
 };
 
@@ -165,6 +182,8 @@ document.getElementById("coursePrice").value = price;
 
 // override save
 window.saveCourse = async function(){
+
+try {
 
 const newTitle = document.getElementById("courseTitle").value;
 const newType = document.getElementById("courseType").value;
@@ -181,6 +200,11 @@ alert("Course Updated");
 resetForm();
 loadCourses();
 
+} catch(err){
+console.error("Update error:", err);
+alert("Error updating course");
+}
+
 };
 
 };
@@ -193,6 +217,8 @@ let totalUsers = 0;
 let totalEnquiries = 0;
 let paidUsers = 0;
 let revenue = 0;
+
+try {
 
 // USERS
 const userSnap = await getDocs(collection(db,"users"));
@@ -217,11 +243,17 @@ document.getElementById("totalEnquiries").innerText = totalEnquiries;
 document.getElementById("paidUsers").innerText = paidUsers;
 document.getElementById("revenue").innerText = "₹" + revenue;
 
+} catch(err){
+console.error("Admin data error:", err);
+}
+
 }
 
 
 // ================= LOAD ENQUIRIES =================
 async function loadEnquiries(){
+
+try {
 
 const snap = await getDocs(collection(db,"enquiries"));
 
@@ -244,5 +276,9 @@ html += `
 });
 
 document.getElementById("table").innerHTML = html;
+
+} catch(err){
+console.error("Enquiry load error:", err);
+}
 
 }

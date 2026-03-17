@@ -9,8 +9,11 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<nav class="navbar">
 
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
     <div class="logo">DesignTech VLSI</div>
 
     <div class="nav-links">
@@ -19,9 +22,9 @@
         <a href="login.html">Login</a>
         <a href="signup.html" class="signup-btn">Sign Up</a>
     </div>
-
 </nav>
-<body>
+
+
 <!-- ================= LOGIN ================= -->
 <div id="loginSection" class="center">
     <div class="box">
@@ -45,7 +48,7 @@
         <button onclick="logout()">Logout</button>
     </div>
 
-    <!-- 🔥 STATS -->
+    <!-- ================= STATS ================= -->
     <div class="admin-stats">
 
         <div class="card">
@@ -70,26 +73,29 @@
 
     </div>
 
+
     <!-- ================= ENQUIRIES ================= -->
-  <h3>Enquiries</h3>
+    <h3>Enquiries</h3>
 
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Email</th>
-<th>Phone</th>
-<th>Message</th>
-<th>Status</th>
-</tr>
-</thead>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Message</th>
+                <th>Status</th>
+            </tr>
+        </thead>
 
-<tbody id="table"></tbody>
-</table>
+        <tbody id="table"></tbody>
+    </table>
+
 
     <!-- ================= COURSES ================= -->
     <h3>Active Courses</h3>
     <div id="courseListAdmin"></div>
+
 
     <!-- ================= CREATE COURSE ================= -->
     <h3>Create / Edit Course</h3>
@@ -113,6 +119,7 @@
 
 </div>
 
+<!-- SCRIPT -->
 <script type="module" src="js/admin.js"></script>
 
 </body>
