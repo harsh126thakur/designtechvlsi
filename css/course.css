@@ -1,106 +1,122 @@
+/* ================= GLOBAL ================= */
 body{
 margin:0;
 font-family:Poppins;
-background:#0f172a;
+background:linear-gradient(135deg,#020617,#0f172a);
 color:white;
 }
 
-/* CENTER */
-.center{
+/* ================= NAVBAR ================= */
+.navbar{
 display:flex;
-justify-content:center;
+justify-content:space-between;
 align-items:center;
-height:100vh;
+padding:15px 30px;
+background:rgba(2,6,23,0.9);
+border-bottom:1px solid #1e293b;
 }
 
-/* BOX */
-.box{
-background:#020617;
-padding:40px;
-border-radius:12px;
-width:320px;
-text-align:center;
+.navbar ul{
+display:flex;
+gap:15px;
+list-style:none;
 }
 
-/* INPUT */
-input, select{
-width:100%;
-padding:10px;
-margin:10px 0;
-border-radius:6px;
-border:none;
+.navbar a{
+color:white;
+text-decoration:none;
 }
 
-/* BUTTON */
-button{
-background:#38bdf8;
-border:none;
-padding:10px;
-width:100%;
-border-radius:6px;
-cursor:pointer;
+.navbar a:hover{
+color:#38bdf8;
 }
 
-/* NAV */
+/* ================= HEADER ================= */
 .nav{
 display:flex;
 justify-content:space-between;
-background:#020617;
+align-items:center;
 padding:15px 30px;
 }
 
-/* DASHBOARD */
-.dashboard{
-display:none;
-padding:30px;
-}
-
-/* TABLE */
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-}
-
-th,td{
-border:1px solid #444;
-padding:10px;
-}
-
-/* CARD */
-.card{
-background:#020617;
+/* ================= LAYOUT ================= */
+.container{
+display:flex;
+gap:20px;
 padding:20px;
-margin-bottom:20px;
-border-radius:10px;
+height:calc(100vh - 120px);
 }
 
-/* COURSE */
-.course{
-background:#1e293b;
-padding:15px;
-margin:10px 0;
-border-radius:10px;
-transition:0.3s;
+/* ================= PLAYER ================= */
+.player{
+flex:3;
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
-.course:hover{
-background:#334155;
-transform:scale(1.02);
+.player iframe{
+width:100%;
+max-width:900px;
+height:500px;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
 }
 
-/* LECTURE */
-.lecture{
+/* ================= PLAYLIST ================= */
+.playlist{
+flex:1;
+background:rgba(2,6,23,0.8);
+border-radius:12px;
 padding:10px;
+overflow-y:auto;
+border:1px solid #1e293b;
+}
+
+/* ================= LECTURE ================= */
+.lecture{
+padding:12px;
+margin-bottom:8px;
+border-radius:8px;
 cursor:pointer;
-border-bottom:1px solid #333;
+transition:0.3s;
+background:#0f172a;
 }
 
 .lecture:hover{
 background:#1e293b;
+transform:translateX(5px);
 }
 
-/* ERROR */
-#error{
-color:red;
+/* ACTIVE VIDEO */
+.lecture.active{
+background:#38bdf8;
+color:black;
+}
+
+/* ================= BUTTON ================= */
+button{
+background:#38bdf8;
+border:none;
+padding:8px 12px;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0ea5e9;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width:900px){
+
+.container{
+flex-direction:column;
+height:auto;
+}
+
+.player iframe{
+height:250px;
+}
+
 }

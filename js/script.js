@@ -1,4 +1,4 @@
-// ---------------- FIREBASE SETUP ----------------
+// ================= FIREBASE SETUP =================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
@@ -15,7 +15,7 @@ signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 
-// CONFIG
+// 🔥 CONFIG
 const firebaseConfig = {
 apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
 authDomain: "designtechvlsi.firebaseapp.com",
@@ -27,15 +27,15 @@ measurementId: "G-F5KGZK2JDK"
 };
 
 
-// INIT
+// 🔥 INIT
 const app = initializeApp(firebaseConfig);
 getAnalytics(app);
 
-const db = getFirestore(app);
-const auth = getAuth(app);
+export const db = getFirestore(app);
+export const auth = getAuth(app);
 
 
-// ---------------- ENQUIRY FORM ----------------
+// ================= ENQUIRY FORM =================
 
 const enquiryForm = document.getElementById("enquiryForm");
 
@@ -45,20 +45,21 @@ enquiryForm.addEventListener("submit", async function(e){
 
 e.preventDefault();
 
-const name = document.getElementById("name").value;
-const email = document.getElementById("email").value;
-const phone = document.getElementById("phone").value;
-const message = document.getElementById("message").value;
+// 🔥 GET VALUES
+const name = document.getElementById("name")?.value.trim();
+const email = document.getElementById("email")?.value.trim();
+const phone = document.getElementById("phone")?.value.trim();
+const message = document.getElementById("message")?.value.trim();
 
-// validation
+// 🔥 VALIDATION
 if(!name || !email || !phone || !message){
-alert("Please fill all fields");
+alert("⚠️ Please fill all fields");
 return;
 }
 
 try {
 
-// 🔥 SAVE TO FIREBASE
+// 🔥 SAVE TO FIRESTORE
 await addDoc(collection(db,"enquiries"),{
 name,
 email,
@@ -68,15 +69,14 @@ status: "new",
 createdAt: new Date()
 });
 
-alert("Enquiry submitted successfully");
+alert("✅ Enquiry submitted successfully");
 
+// reset form
 enquiryForm.reset();
 
-}
-
-catch(error){
-console.error("Error:", error);
-alert("Error submitting enquiry");
+}catch(error){
+console.error("Enquiry Error:", error);
+alert("❌ Error submitting enquiry");
 }
 
 });
@@ -84,12 +84,13 @@ alert("Error submitting enquiry");
 }
 
 
-// ---------------- LOGOUT ----------------
+// ================= LOGOUT =================
 
 window.logout = function(){
 
 signOut(auth)
 .then(()=>{
+alert("Logged out successfully");
 window.location.href = "login.html";
 })
 .catch((error)=>{
@@ -99,60 +100,55 @@ console.error("Logout error:", error);
 };
 
 
-// ---------------- DARK MODE ----------------
+// ================= DARK MODE =================
 
 const modeToggle = document.getElementById("modeToggle");
 
 if(modeToggle){
-modeToggle.onclick = function(){
+modeToggle.addEventListener("click", ()=>{
 document.body.classList.toggle("dark-mode");
-};
+});
 }
 
 
-// ---------------- FAQ TOGGLE ----------------
+// ================= FAQ TOGGLE =================
 
 window.toggleFAQ = function(el){
 
-let p = el.nextElementSibling;
+const p = el.nextElementSibling;
 
-if(p.style.display === "block"){
-p.style.display = "none";
-}else{
-p.style.display = "block";
+if(!p) return;
+
+p.style.display = (p.style.display === "block") ? "none" : "block";
+
+};
+
+
+// ================= POPUPS =================
+
+function togglePopup(id, show=true){
+
+const el = document.getElementById(id);
+if(!el) return;
+
+el.style.display = show ? "flex" : "none";
+
 }
 
-};
+// LOGIN POPUP
+window.openLogin = () => togglePopup("loginPopup", true);
+window.closeLogin = () => togglePopup("loginPopup", false);
+
+// SIGNUP POPUP
+window.openSignup = () => togglePopup("signupPopup", true);
+window.closeSignup = () => togglePopup("signupPopup", false);
+
+// ADMIN POPUP
+window.openAdmin = () => togglePopup("adminPopup", true);
+window.closeAdmin = () => togglePopup("adminPopup", false);
 
 
-// ---------------- POPUPS ----------------
-
-window.openLogin = () => {
-const el = document.getElementById("loginPopup");
-if(el) el.style.display = "flex";
-};
-
-window.closeLogin = () => {
-const el = document.getElementById("loginPopup");
-if(el) el.style.display = "none";
-};
-
-window.openSignup = () => {
-const el = document.getElementById("signupPopup");
-if(el) el.style.display = "flex";
-};
-
-window.closeSignup = () => {
-const el = document.getElementById("signupPopup");
-if(el) el.style.display = "none";
-};
-
-window.openAdmin = () => {
-const el = document.getElementById("adminPopup");
-if(el) el.style.display = "flex";
-};
-
-window.closeAdmin = () => {
-const el = document.getElementById("adminPopup");
-if(el) el.style.display = "none";
-};
+// ================= GLOBAL ERROR HANDLER =================
+window.addEventListener("error", function(e){
+console.error("Global Error:", e.message);
+});

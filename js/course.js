@@ -1,141 +1,126 @@
-import { db, auth } from "./firebase.js";
+import { db } from "./script.js";
 
 import {
 doc,
-getDoc,
-setDoc
+getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import {
-onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-
-// GET COURSE ID
+// ================= GET COURSE ID =================
 const params = new URLSearchParams(window.location.search);
 const courseId = params.get("id");
 
-let userData = {};
-let courseData = {};
 
+// ================= LOAD COURSE =================
+async function loadCourse(){
 
-// AUTH CHECK
-onAuthStateChanged(auth, async (user)=>{
-
-if(!user){
-window.location.href="login.html";
+if(!courseId){
+alert("No course selected");
 return;
 }
 
-// GET COURSE
-const courseSnap = await getDoc(doc(db,"courses",courseId));
+try{
 
-if(!courseSnap.exists()){
+const docRef = doc(db,"courses",courseId);
+const snap = await getDoc(docRef);
+
+if(!snap.exists()){
 alert("Course not found");
 return;
 }
 
-courseData = courseSnap.data();
+const data = snap.data();
 
+// 🔥 SET TITLE
+document.getElementById("courseTitle").innerText = data.title;
 
-// 🔒 CHECK PURCHASE
-if(courseData.type === "paid"){
-
-const userSnap = await getDoc(doc(db,"users",user.uid));
-
-const purchased = userSnap.exists() ? userSnap.data().purchasedCourses || [] : [];
-
-if(!purchased.includes(courseId)){
-alert("Please purchase first 💰");
-window.location.href = `payment.html?id=${courseId}&price=${courseData.price}`;
-return;
-}
-
-userData = userSnap.data() || {};
-
-}
-
-// LOAD UI
-loadCourse(user);
-
-});
-
-
-// LOAD COURSE
-function loadCourse(user){
-
-document.getElementById("courseTitle").innerText = courseData.title;
-
-let progress = userData.progress?.[courseId]?.completed || [];
-let lastVideo = userData.progress?.[courseId]?.lastVideo;
-
+// 🔥 BUILD PLAYLIST
 let html = "";
 
-// BUILD PLAYLIST
-course.lectures.forEach(lec=>{
+if(data.lectures && data.lectures.length > 0){
+
+data.lectures.forEach((lec,index)=>{
+
 html += `
-<div>
-<h4>${lec.title}</h4>
-<iframe src="${lec.link}" width="100%" height="200"></iframe>
+<div class="lecture" data-link="${lec.link}">
+▶ ${lec.title}
 </div>
 `;
+
 });
-// RESUME LAST VIDEO
-if(lastVideo){
-playVideo(lastVideo);
+
+}else{
+html = "<p>No lectures available</p>";
 }
-else if(courseData.lectures.length > 0){
-playVideo(courseData.lectures[0].video,0);
+
+document.getElementById("playlist").innerHTML = html;
+
+
+// 🔥 ADD CLICK EVENTS (BETTER THAN INLINE onclick)
+document.querySelectorAll(".lecture").forEach((el)=>{
+
+el.addEventListener("click", ()=>{
+
+const link = el.getAttribute("data-link");
+playVideo(link);
+
+// 🔥 ACTIVE HIGHLIGHT
+document.querySelectorAll(".lecture").forEach(l=>{
+l.classList.remove("active");
+});
+
+el.classList.add("active");
+
+});
+
+});
+
+
+// 🔥 AUTO PLAY FIRST VIDEO
+if(data.lectures && data.lectures.length > 0){
+
+playVideo(data.lectures[0].link);
+
+// highlight first
+const first = document.querySelector(".lecture");
+if(first) first.classList.add("active");
+
+}
+
+}catch(err){
+console.error(err);
+alert("Error loading course");
 }
 
 }
-// PLAY VIDEO + SAVE PROGRESS
-window.playVideo = async function(url,index){
+
+loadCourse();
+
+
+// ================= PLAY VIDEO =================
+window.playVideo = function(link){
 
 let videoId = "";
 
-if(url.includes("watch?v=")){
-videoId = url.split("watch?v=")[1];
+// ✅ HANDLE ALL YOUTUBE FORMATS
+if(link.includes("watch?v=")){
+videoId = link.split("watch?v=")[1].split("&")[0];
 }
-else if(url.includes("youtu.be/")){
-videoId = url.split("youtu.be/")[1];
+else if(link.includes("youtu.be/")){
+videoId = link.split("youtu.be/")[1].split("?")[0];
+}
+else if(link.includes("embed/")){
+videoId = link.split("embed/")[1];
 }
 
-videoId = videoId.split("&")[0];
+// 🔥 SET VIDEO
+document.getElementById("videoPlayer").src =
+`https://www.youtube.com/embed/${videoId}?autoplay=1`;
 
-const embed = `https://www.youtube.com/embed/${videoId}?rel=0`;
-
-document.getElementById("videoPlayer").src = embed;
-
-
-// SAVE PROGRESS
-const user = auth.currentUser;
-const userRef = doc(db,"users",user.uid);
-
-const snap = await getDoc(userRef);
-
-let data = snap.exists() ? snap.data() : {};
-
-let progress = data.progress || {};
-
-if(!progress[courseId]){
-progress[courseId] = {
-completed: [],
-lastVideo: ""
 };
-}
 
-// MARK COMPLETE
-if(!progress[courseId].completed.includes(index)){
-progress[courseId].completed.push(index);
-}
 
-// SAVE LAST VIDEO
-progress[courseId].lastVideo = url;
-
-// UPDATE FIREBASE
-await setDoc(userRef,{
-progress: progress
-},{merge:true});
-
+// ================= BACK BUTTON =================
+window.goBack = function(){
+window.location.href = "course.html";
 };

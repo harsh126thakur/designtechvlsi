@@ -10,12 +10,11 @@
 <link rel="stylesheet" href="css/style.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 </head>
 
 <body>
 
-
+<!-- ================= NAVBAR ================= -->
 <header class="navbar">
 
 <div class="logo">DesignTech VLSI</div>
@@ -30,313 +29,116 @@
 <a href="login.html">Login</a>
 <a href="signup.html" class="signup-btn">Sign Up</a>
 
+<!-- ✅ ADMIN BUTTON -->
+<button onclick="openAdmin()" class="admin-btn">Admin</button>
+
 <button id="modeToggle">🌙</button>
 </nav>
 
 </header>
 
 
-
+<!-- ================= HERO ================= -->
 <section class="hero">
 
 <h1>Design Your Career in Semiconductor Industry</h1>
 
 <p>RTL • Physical Design • Verification • Analog • FPGA • Research</p>
 
-<button class="btn">Start Learning</button>
+<button class="btn" onclick="window.location.href='course.html'">
+Start Learning
+</button>
 
 </section>
 
 
-
-<!-- CAREER FLOWS -->
-
+<!-- ================= FLOWS ================= -->
 <section id="flows" class="flows">
 
 <h2>VLSI Career Paths</h2>
 
-
-
-<!-- SEMICONDUCTOR DEVICES FLOW -->
-
+<!-- Semiconductor -->
 <div class="flow-box">
-
 <h3>Semiconductor Devices</h3>
-
 <div class="flow">
-
-<div class="step">
-Semiconductor Basics
-<span class="tooltip">Crystal structure, intrinsic and extrinsic semiconductors.</span>
-</div>
-
+<div class="step">Semiconductor Basics<span class="tooltip">Crystal structure, intrinsic & extrinsic semiconductors</span></div>
 <div class="arrow">→</div>
-
-<div class="step">
-Carrier Transport
-<span class="tooltip">Drift current, diffusion current and mobility.</span>
-</div>
-
+<div class="step">Carrier Transport<span class="tooltip">Drift & diffusion</span></div>
 <div class="arrow">→</div>
-
-<div class="step">
-PN Junction
-<span class="tooltip">Formation of depletion region and built-in potential.</span>
-</div>
-
+<div class="step">PN Junction<span class="tooltip">Depletion region</span></div>
 <div class="arrow">→</div>
-
-<div class="step">
-Diodes
-<span class="tooltip">Ideal diode, Zener diode and breakdown mechanisms.</span>
-</div>
-
+<div class="step">Diodes<span class="tooltip">Zener & breakdown</span></div>
 <div class="arrow">→</div>
-
-<div class="step">
-BJT
-<span class="tooltip">Bipolar Junction Transistor operation and current gain.</span>
-</div>
-
+<div class="step">BJT<span class="tooltip">Current gain</span></div>
 <div class="arrow">→</div>
-
-<div class="step">
-MOSFET
-<span class="tooltip">MOS capacitor, threshold voltage and IV characteristics.</span>
+<div class="step">MOSFET<span class="tooltip">Threshold & IV</span></div>
+</div>
 </div>
 
-<div class="arrow">→</div>
-
-<div class="step">
-Device Applications
-<span class="tooltip">Used in analog circuits, digital design and VLSI systems.</span>
-</div>
-
-</div>
-
-</div>
-
-
-
-<!-- RTL FLOW -->
-
+<!-- RTL -->
 <div class="flow-box">
-
 <h3>RTL / Digital Design</h3>
-
 <div class="flow">
-
-<div class="step">
-Basics
-<span class="tooltip">Semiconductor fundamentals and logic gates.</span>
-</div>
-
+<div class="step">Basics</div>
 <div class="arrow">→</div>
-
-<div class="step">
-Digital Design
-<span class="tooltip">Sequential and combinational circuits.</span>
-</div>
-
+<div class="step">Digital Design</div>
 <div class="arrow">→</div>
-
-<div class="step">
-Verilog
-<span class="tooltip">Hardware description language.</span>
-</div>
-
+<div class="step">Verilog</div>
 <div class="arrow">→</div>
-
-<div class="step">
-RTL
-<span class="tooltip">Register Transfer Level architecture.</span>
-</div>
-
+<div class="step">RTL</div>
 <div class="arrow">→</div>
-
-<div class="step">
-RTL Engineer
-<span class="tooltip">Design microarchitecture and digital logic.</span>
+<div class="step">RTL Engineer</div>
+</div>
 </div>
 
-</div>
-
-</div>
-
-
-
-<!-- PHYSICAL DESIGN -->
-
+<!-- Physical -->
 <div class="flow-box">
-
 <h3>Physical Design</h3>
-
 <div class="flow">
-
-<div class="step">
-Synthesis
-<span class="tooltip">Generate gate level netlist.</span>
-</div>
-
+<div class="step">Synthesis</div>
 <div class="arrow">→</div>
-
-<div class="step">
-Floorplan
-<span class="tooltip">Chip layout planning.</span>
-</div>
-
+<div class="step">Floorplan</div>
 <div class="arrow">→</div>
-
-<div class="step">
-Placement
-<span class="tooltip">Standard cell placement.</span>
-</div>
-
+<div class="step">Placement</div>
 <div class="arrow">→</div>
-
-<div class="step">
-CTS
-<span class="tooltip">Clock tree synthesis.</span>
-</div>
-
+<div class="step">CTS</div>
 <div class="arrow">→</div>
-
-<div class="step">
-Routing
-<span class="tooltip">Wire connections across metal layers.</span>
+<div class="step">Routing</div>
+</div>
 </div>
 
-</div>
-
-</div>
-
-
-
-<!-- VERIFICATION -->
-
+<!-- Verification -->
 <div class="flow-box">
-
 <h3>Verification</h3>
-
 <div class="flow">
-
-<div class="step">
-Verilog
-<span class="tooltip">Hardware modeling language.</span>
-</div>
-
+<div class="step">Verilog</div>
 <div class="arrow">→</div>
-
-<div class="step">
-SystemVerilog
-<span class="tooltip">Advanced verification language.</span>
-</div>
-
+<div class="step">SystemVerilog</div>
 <div class="arrow">→</div>
-
-<div class="step">
-UVM
-<span class="tooltip">Universal Verification Methodology.</span>
-</div>
-
+<div class="step">UVM</div>
 <div class="arrow">→</div>
-
-<div class="step">
-DV Engineer
-<span class="tooltip">Responsible for chip verification.</span>
+<div class="step">DV Engineer</div>
+</div>
 </div>
 
-</div>
-
-</div>
-
-
-
-<!-- ANALOG DESIGN -->
-
+<!-- Analog -->
 <div class="flow-box">
-
 <h3>Analog Design</h3>
-
 <div class="flow">
-
-<div class="step">
-MOSFET
-<span class="tooltip">Transistor fundamentals.</span>
-</div>
-
+<div class="step">MOSFET</div>
 <div class="arrow">→</div>
-
-<div class="step">
-Circuit Design
-<span class="tooltip">Amplifiers and analog blocks.</span>
-</div>
-
+<div class="step">Circuit Design</div>
 <div class="arrow">→</div>
-
-<div class="step">
-Simulation
-<span class="tooltip">Cadence simulation tools.</span>
-</div>
-
+<div class="step">Simulation</div>
 <div class="arrow">→</div>
-
-<div class="step">
-Analog Engineer
-<span class="tooltip">Design analog IC circuits.</span>
+<div class="step">Analog Engineer</div>
 </div>
-
 </div>
-
-</div>
-
-
-
-<!-- ECE GATE -->
-
-<div class="flow-box">
-
-<h3>ECE → GATE → Research</h3>
-
-<div class="flow">
-
-<div class="step">
-ECE
-<span class="tooltip">Electronics and communication fundamentals.</span>
-</div>
-
-<div class="arrow">→</div>
-
-<div class="step">
-GATE
-<span class="tooltip">Graduate Aptitude Test for IIT admission.</span>
-</div>
-
-<div class="arrow">→</div>
-
-<div class="step">
-IIT MTech
-<span class="tooltip">Advanced semiconductor education.</span>
-</div>
-
-<div class="arrow">→</div>
-
-<div class="step">
-PhD
-<span class="tooltip">Research career in semiconductor devices.</span>
-</div>
-
-</div>
-
-</div>
-
 
 </section>
 
 
-
-<!-- FOUNDER -->
-
+<!-- ================= FOUNDER ================= -->
 <section class="founder">
 
 <h2>Founder</h2>
@@ -346,13 +148,8 @@ PhD
 <img src="https://via.placeholder.com/200">
 
 <div>
-
 <h3>Harsh Raj Thakur</h3>
-
-<p>
-Semiconductor researcher building industry-ready VLSI education and training engineers for the global semiconductor ecosystem.
-</p>
-
+<p>Semiconductor researcher building industry-ready VLSI education.</p>
 </div>
 
 </div>
@@ -360,180 +157,116 @@ Semiconductor researcher building industry-ready VLSI education and training eng
 </section>
 
 
-
-<!-- FACULTY -->
-
+<!-- ================= FACULTY ================= -->
 <section id="faculty" class="faculty">
 
 <h2>Our Faculty</h2>
 
 <div class="faculty-grid">
-
-<div class="faculty-card">
-Industry Experts
-</div>
-
-<div class="faculty-card">
-Academic Mentors
-</div>
-
-<div class="faculty-card">
-Interview Mentors
-</div>
-
+<div class="faculty-card">Industry Experts</div>
+<div class="faculty-card">Academic Mentors</div>
+<div class="faculty-card">Interview Mentors</div>
 </div>
 
 </section>
 
 
-
-<!-- FAQ -->
-
+<!-- ================= FAQ ================= -->
 <section id="faq" class="faq">
 
 <h2>FAQ</h2>
 
 <div class="faq-item">
-
 <h3 onclick="toggleFAQ(this)">What is VLSI?</h3>
-
-<p>Very Large Scale Integration integrates millions or billions of transistors onto a single integrated circuit.</p>
-
+<p>Integration of millions of transistors into IC.</p>
 </div>
 
 <div class="faq-item">
-
 <h3 onclick="toggleFAQ(this)">Is VLSI a good career?</h3>
-
-<p>The semiconductor industry is expanding rapidly with high demand for skilled engineers worldwide.</p>
-
+<p>High demand industry with global opportunities.</p>
 </div>
 
 </section>
 
-<section id="youtube" class="youtube">
 
+<!-- ================= YOUTUBE ================= -->
+<section class="youtube">
 <h2>Our YouTube Channel</h2>
-
-<p>Learn VLSI concepts and semiconductor fundamentals.</p>
-
 <a href="https://youtube.com" target="_blank">
-
 <button class="btn">Visit Channel</button>
-
 </a>
-
 </section>
 
+
+<!-- ================= ENQUIRY ================= -->
 <section class="enquiry">
 
 <h2>Course Enquiry</h2>
 
 <form id="enquiryForm">
-
 <input type="text" id="name" placeholder="Name">
 <input type="email" id="email" placeholder="Email">
 <input type="text" id="phone" placeholder="Phone">
 <textarea id="message" placeholder="Message"></textarea>
-
 <button type="submit">Submit</button>
-
 </form>
-</section>
-<!-- CONTACT -->
 
+</section>
+
+
+<!-- ================= CONTACT ================= -->
 <section id="contact" class="contact">
-
 <h2>Contact</h2>
-
 <p>Email: designtechvlsi@gmail.com</p>
-
 </section>
 
 
-
+<!-- ================= FOOTER ================= -->
 <footer>
-
 © 2026 Design Tech VLSI
-
 </footer>
 
 
+<!-- ================= POPUPS ================= -->
 
-<!-- POPUP -->
-
-<div id="popup" class="popup">
-
-<div class="popup-content">
-
-<span class="close" onclick="closePopup()">×</span>
-
-<p id="popup-text"></p>
-
-</div>
-
-</div>
-
-
-<script type="module" src="js/script.js"></script>
+<!-- LOGIN -->
 <div id="loginPopup" class="popup">
-
 <div class="popup-content">
-
 <span class="close" onclick="closeLogin()">×</span>
-
 <h2>User Login</h2>
-
 <input type="email" placeholder="Email">
-
 <input type="password" placeholder="Password">
-
 <button class="btn">Login</button>
-
+</div>
 </div>
 
-</div>
-
+<!-- SIGNUP -->
 <div id="signupPopup" class="popup">
-
 <div class="popup-content">
-
 <span class="close" onclick="closeSignup()">×</span>
-
 <h2>Create Account</h2>
-
 <input type="text" placeholder="Full Name">
-
 <input type="email" placeholder="Email">
-
 <input type="password" placeholder="Password">
-
 <button class="btn">Signup</button>
-
+</div>
 </div>
 
-</div>
-<div id="signupPopup" class="popup">
-
+<!-- ADMIN -->
+<div id="adminPopup" class="popup">
 <div class="popup-content">
-
-<span class="close" onclick="closeSignup()">×</span>
-
-<h2>Create Account</h2>
-
-<input type="text" placeholder="Full Name">
-
-<input type="email" placeholder="Email">
-
-<input type="password" placeholder="Password">
-
-<button class="btn">Signup</button>
-
+<span class="close" onclick="closeAdmin()">×</span>
+<h2>Admin Panel</h2>
+<p>Go to Admin Dashboard</p>
+<a href="admin.html">
+<button class="btn">Open Admin</button>
+</a>
+</div>
 </div>
 
-</div>
 
+<!-- SCRIPT -->
+<script type="module" src="js/script.js"></script>
 
 </body>
-
 </html>

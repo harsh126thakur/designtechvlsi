@@ -16,14 +16,27 @@ updateDoc
 
 
 // ================= LOGIN =================
-window.login = function(){
+import { getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+window.login = async function(){
 
 const email = document.getElementById("email").value;
 const password = document.getElementById("password").value;
 
-signInWithEmailAndPassword(auth, email, password)
+try{
 
-.then(()=>{
+await signInWithEmailAndPassword(auth, email, password);
+
+// 🔥 CHECK DIRECT DOC
+const adminDoc = await getDoc(doc(db,"admins",email));
+
+if(!adminDoc.exists()){
+alert("Access denied: Not admin");
+signOut(auth);
+return;
+}
+
+// ✅ ALLOWED
 document.getElementById("loginSection").style.display="none";
 document.getElementById("dashboardSection").style.display="block";
 
@@ -31,15 +44,11 @@ loadAdminData();
 loadCourses();
 loadEnquiries();
 
-})
-
-.catch((err)=>{
-console.error(err);
-document.getElementById("error").innerText="Invalid credentials";
-});
+}catch(err){
+alert("Login failed");
+}
 
 };
-
 
 // ================= LOGOUT =================
 window.logout = function(){
@@ -200,11 +209,90 @@ console.error(err);
 
 
 // ================= EDIT COURSE =================
-window.editCourse = function(id,title,type,price){
+window.editCourse = async function(id,title,type,price){
 
 document.getElementById("courseTitle").value = title;
 document.getElementById("courseType").value = type;
 document.getElementById("coursePrice").value = price;
+
+// 🔥 CLEAR OLD LECTURES
+const container = document.getElementById("lectureContainer");
+container.innerHTML = "";
+
+// 🔥 FETCH COURSE DATA
+const snap = await getDocs(collection(db,"courses"));
+
+snap.forEach(docSnap=>{
+if(docSnap.id === id){
+
+const data = docSnap.data();
+
+if(data.lectures){
+data.lectures.forEach(l=>{
+
+const div = document.createElement("div");
+
+div.innerHTML = `
+<input type="text" value="${l.title}">
+<input type="text" value="${l.link}">
+<button onclick="this.parentElement.remove()">❌</button>
+`;
+
+container.appendChild(div);
+
+});
+}
+
+}
+
+});
+
+
+// 🔥 UPDATE FUNCTION
+window.saveCourse = async function(){
+
+try{
+
+const newTitle = document.getElementById("courseTitle").value;
+const newType = document.getElementById("courseType").value;
+const newPrice = document.getElementById("coursePrice").value;
+
+// collect lectures again
+const lectureDivs = document.querySelectorAll("#lectureContainer div");
+
+let lectures = [];
+
+lectureDivs.forEach(div=>{
+const inputs = div.querySelectorAll("input");
+
+if(inputs[0].value && inputs[1].value){
+lectures.push({
+title: inputs[0].value,
+link: inputs[1].value
+});
+}
+});
+
+await updateDoc(doc(db,"courses",id),{
+title:newTitle,
+type:newType,
+price:newType==="paid" ? Number(newPrice) : 0,
+lectures
+});
+
+alert("Course Updated");
+
+resetForm();
+loadCourses();
+
+}catch(err){
+console.error(err);
+alert("Update failed");
+}
+
+};
+
+};
 
 // override save
 window.saveCourse = async function(){
@@ -252,8 +340,6 @@ loadCourses();
 console.error(err);
 alert("Error updating");
 }
-
-};
 
 };
 
