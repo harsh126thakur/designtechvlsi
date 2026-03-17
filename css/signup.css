@@ -1,0 +1,137 @@
+/* RESET */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins', sans-serif;
+}
+
+/* BODY */
+body{
+background:#0f172a;
+color:white;
+}
+
+/* NAVBAR */
+.nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#020617;
+padding:15px 30px;
+}
+
+.nav h2{
+font-size:20px;
+}
+
+.nav a{
+color:white;
+text-decoration:none;
+margin-left:15px;
+}
+
+.nav a:hover{
+color:#38bdf8;
+}
+
+/* CENTER */
+.center{
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:90vh;
+padding:20px;
+}
+
+/* SIGNUP BOX */
+.box{
+background:#020617;
+padding:40px;
+border-radius:16px;
+width:100%;
+max-width:380px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* TITLE */
+.box h2{
+margin-bottom:20px;
+}
+
+/* INPUT */
+input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+border:none;
+outline:none;
+background:#1e293b;
+color:white;
+}
+
+/* FOCUS */
+input:focus{
+border:1px solid #38bdf8;
+}
+
+/* BUTTON */
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:8px;
+margin-top:10px;
+cursor:pointer;
+font-weight:bold;
+transition:0.3s;
+}
+
+/* PRIMARY BUTTON */
+button:first-of-type{
+background:#38bdf8;
+color:white;
+}
+
+button:first-of-type:hover{
+background:#0ea5e9;
+transform:scale(1.02);
+}
+
+/* GOOGLE BUTTON */
+.google-btn{
+background:#ffffff;
+color:#000;
+}
+
+.google-btn:hover{
+background:#e5e5e5;
+}
+
+/* ERROR */
+#error{
+color:#ef4444;
+margin-top:10px;
+font-size:14px;
+}
+
+/* SMALL TEXT */
+.small-text{
+margin-top:15px;
+font-size:14px;
+color:#94a3b8;
+}
+
+.small-text a{
+color:#38bdf8;
+text-decoration:none;
+}
+
+/* MOBILE */
+@media (max-width:768px){
+.box{
+padding:25px;
+}
+}

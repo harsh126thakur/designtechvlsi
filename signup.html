@@ -6,7 +6,7 @@
 
 <title>Signup</title>
 
-<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" href="css/signup.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
@@ -29,12 +29,14 @@
 
         <h2>Create Account</h2>
 
+        <input type="text" id="name" placeholder="Full Name">
+        <input type="tel" id="phone" placeholder="Phone Number">
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="password" placeholder="Password">
 
         <button onclick="signup()">Sign Up</button>
 
-        <!-- GOOGLE BUTTON -->
+        <!-- GOOGLE SIGNUP -->
         <button onclick="googleSignup()" class="google-btn" style="margin-top:10px;">
             Continue with Google
         </button>
@@ -50,88 +52,8 @@
 </div>
 
 <!-- SCRIPT -->
-<script type="module">
-
-import { auth, db } from "./js/firebase.js";
-
-import { 
-createUserWithEmailAndPassword,
-GoogleAuthProvider,
-signInWithPopup
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-import { doc, setDoc, getDoc } 
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-// ================= EMAIL SIGNUP =================
-window.signup = async function(){
-
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
-
-// validation
-if(!email || !password){
-document.getElementById("error").innerText = "Please fill all fields";
-return;
-}
-
-if(password.length < 6){
-document.getElementById("error").innerText = "Password must be at least 6 characters";
-return;
-}
-
-try {
-
-const userCred = await createUserWithEmailAndPassword(auth, email, password);
-
-// Save user in Firestore
-await setDoc(doc(db, "users", userCred.user.uid), {
-email: email,
-purchasedCourses: [],
-progress: {}
-});
-
-window.location.href = "dashboard.html";
-
-} catch (error) {
-document.getElementById("error").innerText = error.message;
-}
-
-};
-
-
-// ================= GOOGLE SIGNUP =================
-const provider = new GoogleAuthProvider();
-
-window.googleSignup = async function(){
-
-try {
-
-const result = await signInWithPopup(auth, provider);
-const user = result.user;
-
-// Check if user already exists
-const userRef = doc(db, "users", user.uid);
-const snap = await getDoc(userRef);
-
-if(!snap.exists()){
-await setDoc(userRef, {
-email: user.email,
-purchasedCourses: [],
-progress: {}
-});
-}
-
-window.location.href = "dashboard.html";
-
-} catch (error) {
-document.getElementById("error").innerText = error.message;
-}
-
-};
-
+<script type="module" src="js/signup.js">
+    
 </script>
-
 </body>
 </html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+
+<link rel="stylesheet" href="css/admin.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+<div class="logo">DesignTech VLSI</div>
+
+<div class="nav-links">
+<a href="index.html">Home</a>
+<a href="course.html">Courses</a>
+<a href="login.html">Login</a>
+<a href="signup.html" class="signup-btn">Sign Up</a>
+</div>
+</nav>
+
+<!-- ================= LOGIN ================= -->
+<div id="loginSection" class="center">
+    <div class="box">
+        <h2>Admin Login</h2>
+
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+
+        <button onclick="login()">Login</button>
+        <p id="error"></p>
+    </div>
+</div>
+
+
+<!-- ================= DASHBOARD ================= -->
+<div id="dashboardSection" class="dashboard" style="display:none;">
+
+    <!-- TOP BAR -->
+    <div class="nav">
+        <h2>Admin Dashboard</h2>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <!-- 🔥 STATS -->
+    <div class="admin-stats">
+
+        <div class="card">
+            <h3>Total Students</h3>
+            <p id="totalUsers">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Enquiries</h3>
+            <p id="totalEnquiries">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Paid Students</h3>
+            <p id="paidUsers">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Revenue</h3>
+            <p id="revenue">₹0</p>
+        </div>
+
+    </div>
+
+    <!-- ================= ENQUIRIES ================= -->
+    <h3>Enquiries</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody id="table"></tbody>
+    </table>
+
+    <!-- ================= COURSES ================= -->
+    <h3>Active Courses</h3>
+    <div id="courseListAdmin"></div>
+
+    <!-- ================= CREATE COURSE ================= -->
+    <h3>Create / Edit Course</h3>
+
+    <input type="text" id="courseTitle" placeholder="Course Name">
+
+    <select id="courseType">
+        <option value="free">Free</option>
+        <option value="paid">Paid</option>
+    </select>
+
+    <input type="number" id="coursePrice" placeholder="Course Price (₹)">
+
+    <h4>Lectures</h4>
+    <div id="lectureContainer"></div>
+
+    <button onclick="addLecture()">+ Add Lecture</button>
+    <br><br>
+
+    <button onclick="saveCourse()">Save Course</button>
+
+</div>
+
+<script type="module" src="js/admin.js"></script>
+
+</body>
+</html>
