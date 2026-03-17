@@ -72,21 +72,14 @@ let lastVideo = userData.progress?.[courseId]?.lastVideo;
 let html = "";
 
 // BUILD PLAYLIST
-(courseData.lectures || []).forEach((lec,i)=>{
-
-const done = progress.includes(i) ? "✔" : "";
-
+course.lectures.forEach(lec=>{
 html += `
-<div class="lecture" onclick="playVideo('${lec.video}',${i})">
-${i+1}. ${lec.title} ${done}
+<div>
+<h4>${lec.title}</h4>
+<iframe src="${lec.link}" width="100%" height="200"></iframe>
 </div>
 `;
-
 });
-
-document.getElementById("playlist").innerHTML = html;
-
-
 // RESUME LAST VIDEO
 if(lastVideo){
 playVideo(lastVideo);
@@ -96,8 +89,6 @@ playVideo(courseData.lectures[0].video,0);
 }
 
 }
-
-
 // PLAY VIDEO + SAVE PROGRESS
 window.playVideo = async function(url,index){
 

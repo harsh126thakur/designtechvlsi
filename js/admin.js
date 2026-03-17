@@ -48,15 +48,20 @@ location.reload();
 };
 
 
-// ================= ADD LECTURE =================
-window.addLecture = function(){
+// ================= ADD LECTURE FIELD =================
+window.addLectureField = function(){
 
 const container = document.getElementById("lectureContainer");
 
-const input = document.createElement("input");
-input.placeholder = "Lecture Title";
+const div = document.createElement("div");
 
-container.appendChild(input);
+div.innerHTML = `
+<input type="text" placeholder="Lecture Title">
+<input type="text" placeholder="Lecture Link">
+<button onclick="this.parentElement.remove()">❌</button>
+`;
+
+container.appendChild(div);
 
 };
 
@@ -64,27 +69,34 @@ container.appendChild(input);
 // ================= SAVE COURSE =================
 async function saveNewCourse(){
 
-try {
+try{
 
 const title = document.getElementById("courseTitle").value;
 const type = document.getElementById("courseType").value;
 const price = document.getElementById("coursePrice").value;
 
-const lectureInputs = document.querySelectorAll("#lectureContainer input");
+// 🔥 Collect lectures
+const lectureDivs = document.querySelectorAll("#lectureContainer div");
 
 let lectures = [];
 
-lectureInputs.forEach(input=>{
-if(input.value){
-lectures.push(input.value);
+lectureDivs.forEach(div=>{
+
+const inputs = div.querySelectorAll("input");
+
+const lectureTitle = inputs[0].value;
+const lectureLink = inputs[1].value;
+
+if(lectureTitle && lectureLink){
+lectures.push({
+title: lectureTitle,
+link: lectureLink
+});
 }
+
 });
 
-if(!title){
-alert("Enter course title");
-return;
-}
-
+// 🔥 Save to Firestore
 await addDoc(collection(db,"courses"),{
 title,
 type,
@@ -92,36 +104,37 @@ price: type === "paid" ? Number(price) : 0,
 lectures
 });
 
-alert("Course Saved");
+alert("Course Added");
 
 resetForm();
 loadCourses();
 
-} catch(err){
-console.error("Save error:", err);
-alert("Error saving course");
+}catch(err){
+console.error(err);
+alert("Error adding course");
 }
 
 }
+
+window.saveCourse = saveNewCourse;
 
 
 // ================= RESET FORM =================
 function resetForm(){
+
 document.getElementById("courseTitle").value="";
 document.getElementById("coursePrice").value="";
 document.getElementById("lectureContainer").innerHTML="";
+
 window.saveCourse = saveNewCourse;
+
 }
-
-
-// default save
-window.saveCourse = saveNewCourse;
 
 
 // ================= LOAD COURSES =================
 async function loadCourses(){
 
-try {
+try{
 
 const snap = await getDocs(collection(db,"courses"));
 
@@ -132,10 +145,23 @@ snap.forEach(docSnap=>{
 const data = docSnap.data();
 const id = docSnap.id;
 
+let lectureHTML = "";
+
+if(data.lectures){
+data.lectures.forEach(l=>{
+lectureHTML += `
+<li>
+<a href="${l.link}" target="_blank">${l.title}</a>
+</li>`;
+});
+}
+
 html += `
 <div class="course">
 <h4>${data.title}</h4>
 <p>${data.type.toUpperCase()} ${data.type==="paid" ? "₹"+data.price : ""}</p>
+
+<ul>${lectureHTML}</ul>
 
 <button onclick="editCourse('${id}','${data.title}','${data.type}',${data.price})">
 Edit
@@ -151,29 +177,29 @@ Delete
 
 document.getElementById("courseListAdmin").innerHTML = html;
 
-} catch(err){
-console.error("Load courses error:", err);
+}catch(err){
+console.error("Load error:", err);
 }
 
 }
 
 
-// ================= DELETE =================
+// ================= DELETE COURSE =================
 window.deleteCourse = async function(id){
 
 if(!confirm("Delete this course?")) return;
 
-try {
+try{
 await deleteDoc(doc(db,"courses",id));
 loadCourses();
-} catch(err){
-console.error("Delete error:", err);
+}catch(err){
+console.error(err);
 }
 
 };
 
 
-// ================= EDIT =================
+// ================= EDIT COURSE =================
 window.editCourse = function(id,title,type,price){
 
 document.getElementById("courseTitle").value = title;
@@ -183,16 +209,38 @@ document.getElementById("coursePrice").value = price;
 // override save
 window.saveCourse = async function(){
 
-try {
+try{
 
 const newTitle = document.getElementById("courseTitle").value;
 const newType = document.getElementById("courseType").value;
 const newPrice = document.getElementById("coursePrice").value;
 
+// 🔥 Collect lectures again
+const lectureDivs = document.querySelectorAll("#lectureContainer div");
+
+let lectures = [];
+
+lectureDivs.forEach(div=>{
+
+const inputs = div.querySelectorAll("input");
+
+const lectureTitle = inputs[0].value;
+const lectureLink = inputs[1].value;
+
+if(lectureTitle && lectureLink){
+lectures.push({
+title: lectureTitle,
+link: lectureLink
+});
+}
+
+});
+
 await updateDoc(doc(db,"courses",id),{
 title:newTitle,
 type:newType,
-price:newType === "paid" ? Number(newPrice) : 0
+price:newType === "paid" ? Number(newPrice) : 0,
+lectures
 });
 
 alert("Course Updated");
@@ -200,9 +248,9 @@ alert("Course Updated");
 resetForm();
 loadCourses();
 
-} catch(err){
-console.error("Update error:", err);
-alert("Error updating course");
+}catch(err){
+console.error(err);
+alert("Error updating");
 }
 
 };
@@ -213,12 +261,12 @@ alert("Error updating course");
 // ================= ADMIN STATS =================
 async function loadAdminData(){
 
+try{
+
 let totalUsers = 0;
 let totalEnquiries = 0;
 let paidUsers = 0;
 let revenue = 0;
-
-try {
 
 // USERS
 const userSnap = await getDocs(collection(db,"users"));
@@ -243,8 +291,8 @@ document.getElementById("totalEnquiries").innerText = totalEnquiries;
 document.getElementById("paidUsers").innerText = paidUsers;
 document.getElementById("revenue").innerText = "₹" + revenue;
 
-} catch(err){
-console.error("Admin data error:", err);
+}catch(err){
+console.error(err);
 }
 
 }
@@ -253,13 +301,13 @@ console.error("Admin data error:", err);
 // ================= LOAD ENQUIRIES =================
 async function loadEnquiries(){
 
-try {
+try{
 
 const snap = await getDocs(collection(db,"enquiries"));
 
 let html = "";
 
-snap.forEach(docSnap => {
+snap.forEach(docSnap=>{
 
 const data = docSnap.data();
 
@@ -277,8 +325,8 @@ html += `
 
 document.getElementById("table").innerHTML = html;
 
-} catch(err){
-console.error("Enquiry load error:", err);
+}catch(err){
+console.error(err);
 }
 
 }
