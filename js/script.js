@@ -16,7 +16,6 @@ signOut
 
 
 // CONFIG
-
 const firebaseConfig = {
 apiKey: "AIzaSyA9ses0NXK4OI9JcEH3ym8nDS-kvBlBT_8",
 authDomain: "designtechvlsi.firebaseapp.com",
@@ -29,7 +28,6 @@ measurementId: "G-F5KGZK2JDK"
 
 
 // INIT
-
 const app = initializeApp(firebaseConfig);
 getAnalytics(app);
 
@@ -38,13 +36,6 @@ const auth = getAuth(app);
 
 
 // ---------------- ENQUIRY FORM ----------------
-import { db } from "./firebase.js";
-
-import {
-collection,
-addDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 
 const enquiryForm = document.getElementById("enquiryForm");
 
@@ -84,7 +75,7 @@ enquiryForm.reset();
 }
 
 catch(error){
-console.error(error);
+console.error("Error:", error);
 alert("Error submitting enquiry");
 }
 
@@ -99,15 +90,13 @@ window.logout = function(){
 
 signOut(auth)
 .then(()=>{
-
 window.location.href = "login.html";
-
 })
 .catch((error)=>{
 console.error("Logout error:", error);
 });
 
-}
+};
 
 
 // ---------------- DARK MODE ----------------
@@ -115,13 +104,9 @@ console.error("Logout error:", error);
 const modeToggle = document.getElementById("modeToggle");
 
 if(modeToggle){
-
 modeToggle.onclick = function(){
-
 document.body.classList.toggle("dark-mode");
-
 };
-
 }
 
 
@@ -140,52 +125,34 @@ p.style.display = "block";
 };
 
 
-// ---------------- LOGIN POPUP ----------------
+// ---------------- POPUPS ----------------
 
-window.openLogin = function(){
-
+window.openLogin = () => {
 const el = document.getElementById("loginPopup");
 if(el) el.style.display = "flex";
+};
 
-}
-
-window.closeLogin = function(){
-
+window.closeLogin = () => {
 const el = document.getElementById("loginPopup");
 if(el) el.style.display = "none";
+};
 
-}
-
-
-// ---------------- SIGNUP POPUP ----------------
-
-window.openSignup = function(){
-
+window.openSignup = () => {
 const el = document.getElementById("signupPopup");
 if(el) el.style.display = "flex";
+};
 
-}
-
-window.closeSignup = function(){
-
+window.closeSignup = () => {
 const el = document.getElementById("signupPopup");
 if(el) el.style.display = "none";
+};
 
-}
-
-
-// ---------------- ADMIN POPUP ----------------
-
-window.openAdmin = function(){
-
+window.openAdmin = () => {
 const el = document.getElementById("adminPopup");
 if(el) el.style.display = "flex";
+};
 
-}
-
-window.closeAdmin = function(){
-
+window.closeAdmin = () => {
 const el = document.getElementById("adminPopup");
 if(el) el.style.display = "none";
-
-}
+};
