@@ -8,11 +8,13 @@
 <title>Design Tech VLSI</title>
 
 <link rel="stylesheet" href="css/style.css">
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
+
+<!-- 🌌 STARS -->
+<div class="stars" id="stars"></div>
 
 <!-- ================= NAVBAR ================= -->
 <header class="navbar">
@@ -29,9 +31,7 @@
 <a href="login.html">Login</a>
 <a href="signup.html" class="signup-btn">Sign Up</a>
 
-<!-- ✅ ADMIN BUTTON -->
 <button onclick="openAdmin()" class="admin-btn">Admin</button>
-
 <button id="modeToggle">🌙</button>
 </nav>
 
@@ -61,16 +61,11 @@ Start Learning
 <div class="flow-box">
 <h3>Semiconductor Devices</h3>
 <div class="flow">
-<div class="step">Semiconductor Basics<span class="tooltip">Crystal structure, intrinsic & extrinsic semiconductors</span></div>
-<div class="arrow">→</div>
+<div class="step">Semiconductor Basics<span class="tooltip">Crystal structure</span></div>
 <div class="step">Carrier Transport<span class="tooltip">Drift & diffusion</span></div>
-<div class="arrow">→</div>
 <div class="step">PN Junction<span class="tooltip">Depletion region</span></div>
-<div class="arrow">→</div>
 <div class="step">Diodes<span class="tooltip">Zener & breakdown</span></div>
-<div class="arrow">→</div>
 <div class="step">BJT<span class="tooltip">Current gain</span></div>
-<div class="arrow">→</div>
 <div class="step">MOSFET<span class="tooltip">Threshold & IV</span></div>
 </div>
 </div>
@@ -80,13 +75,9 @@ Start Learning
 <h3>RTL / Digital Design</h3>
 <div class="flow">
 <div class="step">Basics</div>
-<div class="arrow">→</div>
 <div class="step">Digital Design</div>
-<div class="arrow">→</div>
 <div class="step">Verilog</div>
-<div class="arrow">→</div>
 <div class="step">RTL</div>
-<div class="arrow">→</div>
 <div class="step">RTL Engineer</div>
 </div>
 </div>
@@ -96,13 +87,9 @@ Start Learning
 <h3>Physical Design</h3>
 <div class="flow">
 <div class="step">Synthesis</div>
-<div class="arrow">→</div>
 <div class="step">Floorplan</div>
-<div class="arrow">→</div>
 <div class="step">Placement</div>
-<div class="arrow">→</div>
 <div class="step">CTS</div>
-<div class="arrow">→</div>
 <div class="step">Routing</div>
 </div>
 </div>
@@ -112,11 +99,8 @@ Start Learning
 <h3>Verification</h3>
 <div class="flow">
 <div class="step">Verilog</div>
-<div class="arrow">→</div>
 <div class="step">SystemVerilog</div>
-<div class="arrow">→</div>
 <div class="step">UVM</div>
-<div class="arrow">→</div>
 <div class="step">DV Engineer</div>
 </div>
 </div>
@@ -126,11 +110,8 @@ Start Learning
 <h3>Analog Design</h3>
 <div class="flow">
 <div class="step">MOSFET</div>
-<div class="arrow">→</div>
 <div class="step">Circuit Design</div>
-<div class="arrow">→</div>
 <div class="step">Simulation</div>
-<div class="arrow">→</div>
 <div class="step">Analog Engineer</div>
 </div>
 </div>
@@ -208,7 +189,7 @@ Start Learning
 <input type="email" id="email" placeholder="Email">
 <input type="text" id="phone" placeholder="Phone">
 <textarea id="message" placeholder="Message"></textarea>
-<button type="submit">Submit</button>
+<button type="submit" class="btn">Submit</button>
 </form>
 
 </section>
@@ -229,7 +210,6 @@ Start Learning
 
 <!-- ================= POPUPS ================= -->
 
-<!-- LOGIN -->
 <div id="loginPopup" class="popup">
 <div class="popup-content">
 <span class="close" onclick="closeLogin()">×</span>
@@ -240,7 +220,6 @@ Start Learning
 </div>
 </div>
 
-<!-- SIGNUP -->
 <div id="signupPopup" class="popup">
 <div class="popup-content">
 <span class="close" onclick="closeSignup()">×</span>
@@ -252,7 +231,6 @@ Start Learning
 </div>
 </div>
 
-<!-- ADMIN -->
 <div id="adminPopup" class="popup">
 <div class="popup-content">
 <span class="close" onclick="closeAdmin()">×</span>

@@ -26,7 +26,7 @@ try{
 
 await signInWithEmailAndPassword(auth, email, password);
 
-// ADMIN CHECK
+// 🔥 ADMIN CHECK
 const adminDoc = await getDoc(doc(db,"admins",email));
 
 if(!adminDoc.exists()){
@@ -39,15 +39,10 @@ return;
 document.getElementById("loginSection").style.display="none";
 document.getElementById("dashboardSection").style.display="block";
 
-// LOAD DATA
-await loadAdminData();
-await loadCourses();
-
-// LOAD CHARTS AFTER UI READY
-setTimeout(loadCharts, 700);
+loadAdminData();
+loadCourses();
 
 }catch(err){
-console.error(err);
 alert("Login failed");
 }
 
@@ -81,6 +76,8 @@ container.appendChild(div);
 // ================= SAVE COURSE =================
 async function saveNewCourse(){
 
+try{
+
 const title = document.getElementById("courseTitle").value;
 const type = document.getElementById("courseType").value;
 const price = document.getElementById("coursePrice").value;
@@ -111,6 +108,12 @@ alert("Course Added");
 
 resetForm();
 loadCourses();
+
+}catch(err){
+console.error(err);
+alert("Error adding course");
+}
+
 }
 
 window.saveCourse = saveNewCourse;
@@ -243,7 +246,7 @@ price: document.getElementById("courseType").value==="paid"
 lectures
 });
 
-alert("Course Updated");
+alert("Updated");
 
 resetForm();
 loadCourses();
@@ -258,23 +261,10 @@ async function loadAdminData(){
 const userSnap = await getDocs(collection(db,"users"));
 const enquirySnap = await getDocs(collection(db,"enquiries"));
 
-let paidUsers = 0;
-let revenue = 0;
-
-userSnap.forEach(doc=>{
-const d = doc.data();
-
-if(d.progress){
-paidUsers++;
-revenue += Object.keys(d.progress).length * 500;
-}
-});
-
 document.getElementById("totalUsers").innerText = userSnap.size;
 document.getElementById("totalEnquiries").innerText = enquirySnap.size;
-document.getElementById("paidUsers").innerText = paidUsers;
-document.getElementById("revenue").innerText = "₹" + revenue;
-}
+
+};
 
 
 // ================= USERS =================
@@ -375,16 +365,23 @@ document.getElementById("revenueDetail").innerText = "₹" + revenue;
 }
 
 
-// ================= TOGGLE =================
+// ================= COMMON TOGGLE =================
 function toggleSection(id, loader){
 
-const sections = ["usersSection","enquirySection","paidSection","revenueSection"];
+const sections = [
+"usersSection",
+"enquirySection",
+"paidSection",
+"revenueSection"
+];
 
+// hide all
 sections.forEach(sec=>{
 const el = document.getElementById(sec);
 if(el) el.style.display = "none";
 });
 
+// toggle selected
 const section = document.getElementById(id);
 
 if(section.style.display === "block"){
@@ -396,69 +393,9 @@ if(loader) loader();
 
 }
 
+
+// ================= TOGGLES =================
 window.toggleUsers = () => toggleSection("usersSection", loadUsers);
 window.toggleEnquiries = () => toggleSection("enquirySection", loadEnquiries);
 window.togglePaidUsers = () => toggleSection("paidSection", loadPaidUsers);
 window.toggleRevenue = () => toggleSection("revenueSection", loadRevenue);
-
-
-// ================= CHARTS =================
-let userChart, revenueChart, enquiryChart;
-
-async function loadCharts(){
-
-if(userChart) userChart.destroy();
-if(revenueChart) revenueChart.destroy();
-if(enquiryChart) enquiryChart.destroy();
-
-const userSnap = await getDocs(collection(db,"users"));
-const enquirySnap = await getDocs(collection(db,"enquiries"));
-
-let totalUsers = userSnap.size;
-let totalEnquiries = enquirySnap.size;
-
-let paidUsers = 0;
-let revenue = 0;
-
-userSnap.forEach(doc=>{
-const d = doc.data();
-
-if(d.progress){
-paidUsers++;
-revenue += Object.keys(d.progress).length * 500;
-}
-});
-
-userChart = new Chart(document.getElementById("userChart"), {
-type: "bar",
-data: {
-labels: ["Total Users", "Paid Users"],
-datasets: [{
-label: "Users",
-data: [totalUsers, paidUsers]
-}]
-}
-});
-
-revenueChart = new Chart(document.getElementById("revenueChart"), {
-type: "line",
-data: {
-labels: ["Revenue"],
-datasets: [{
-label: "Revenue ₹",
-data: [revenue]
-}]
-}
-});
-
-enquiryChart = new Chart(document.getElementById("enquiryChart"), {
-type: "pie",
-data: {
-labels: ["Enquiries"],
-datasets: [{
-data: [totalEnquiries]
-}]
-}
-});
-
-}
