@@ -8,7 +8,13 @@
 <title>Design Tech VLSI</title>
 
 <link rel="stylesheet" href="css/style.css">
+
+<!-- GOOGLE FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- AOS ANIMATION -->
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -22,30 +28,34 @@
 <div class="logo">DesignTech VLSI</div>
 
 <nav>
-<a href="#">Home</a>
-<a href="#flows">Career Flows</a>
-<a href="#faculty">Faculty</a>
-<a href="#faq">FAQ</a>
-<a href="#contact">Contact</a>
 
-<a href="login.html">Login</a>
-<a href="signup.html" class="signup-btn">Sign Up</a>
+<div class="nav-left">
+  <a href="#">Home</a>
+  <a href="#flows">Career Flows</a>
+  <a href="#faculty">Faculty</a>
+  <a href="#faq">FAQ</a>
+  <a href="#contact">Contact</a>
+</div>
 
-<button onclick="openAdmin()" class="admin-btn">Admin</button>
-<button id="modeToggle">🌙</button>
+<div class="nav-right">
+  <a href="login.html">Login</a>
+  <a href="signup.html" class="signup-btn">Sign Up</a>
+  <button onclick="openAdmin()" class="admin-btn">Admin</button>
+</div>
+
 </nav>
 
 </header>
 
 
 <!-- ================= HERO ================= -->
-<section class="hero">
+<section class="hero" data-aos="fade-up">
 
 <h1>Design Your Career in Semiconductor Industry</h1>
 
 <p>RTL • Physical Design • Verification • Analog • FPGA • Research</p>
 
-<button class="btn" onclick="window.location.href='course.html'">
+<button class="btn" onclick="window.location.href='login.html'">
 Start Learning
 </button>
 
@@ -55,10 +65,9 @@ Start Learning
 <!-- ================= FLOWS ================= -->
 <section id="flows" class="flows">
 
-<h2>VLSI Career Paths</h2>
+<h2 data-aos="fade-up">VLSI Career Paths</h2>
 
-<!-- Semiconductor -->
-<div class="flow-box">
+<div class="flow-box" data-aos="fade-right">
 <h3>Semiconductor Devices</h3>
 <div class="flow">
 <div class="step">Semiconductor Basics<span class="tooltip">Crystal structure</span></div>
@@ -70,8 +79,7 @@ Start Learning
 </div>
 </div>
 
-<!-- RTL -->
-<div class="flow-box">
+<div class="flow-box" data-aos="fade-left">
 <h3>RTL / Digital Design</h3>
 <div class="flow">
 <div class="step">Basics</div>
@@ -82,8 +90,7 @@ Start Learning
 </div>
 </div>
 
-<!-- Physical -->
-<div class="flow-box">
+<div class="flow-box" data-aos="fade-right">
 <h3>Physical Design</h3>
 <div class="flow">
 <div class="step">Synthesis</div>
@@ -94,8 +101,7 @@ Start Learning
 </div>
 </div>
 
-<!-- Verification -->
-<div class="flow-box">
+<div class="flow-box" data-aos="fade-left">
 <h3>Verification</h3>
 <div class="flow">
 <div class="step">Verilog</div>
@@ -105,8 +111,7 @@ Start Learning
 </div>
 </div>
 
-<!-- Analog -->
-<div class="flow-box">
+<div class="flow-box" data-aos="fade-right">
 <h3>Analog Design</h3>
 <div class="flow">
 <div class="step">MOSFET</div>
@@ -120,13 +125,13 @@ Start Learning
 
 
 <!-- ================= FOUNDER ================= -->
-<section class="founder">
+<section class="founder" data-aos="zoom-in">
 
 <h2>Founder</h2>
 
 <div class="founder-card">
 
-<img src="https://via.placeholder.com/200">
+<img src="images/FOUNDER.JPG" alt="Founder">
 
 <div>
 <h3>Harsh Raj Thakur</h3>
@@ -141,48 +146,107 @@ Start Learning
 <!-- ================= FACULTY ================= -->
 <section id="faculty" class="faculty">
 
-<h2>Our Faculty</h2>
+<h2 data-aos="fade-up">OUR TEAM</h2>
 
 <div class="faculty-grid">
-<div class="faculty-card">Industry Experts</div>
-<div class="faculty-card">Academic Mentors</div>
-<div class="faculty-card">Interview Mentors</div>
+
+  <div class="faculty-card" data-aos="fade-up">
+    <img src="images/kaja.jpg" alt="Corporate Mentors">
+    <h3>Corporate Mentors</h3>
+    <p>
+Kajal Kumari is a corporate mentor who helps students develop practical skills, gain industry insights, and prepare for successful professional careers.
+</p>
+  </div>
+
+  <div class="faculty-card" data-aos="fade-up" data-aos-delay="100">
+    <img src="images/ASHU.PNG.png" alt="Academic Mentor">
+    <h3>Academic Mentors</h3>
+    <p>
+Ashutosh Tripathi is an experienced academic mentor with a strong foundation in electronics and VLSI. He is dedicated to helping students build deep conceptual understanding and problem-solving skills, guiding them toward excellence in semiconductor and chip design domains, currently he is pursuing his research from IIT Roorkee.
+</p>
+  </div>
+
+  <div class="faculty-card" data-aos="fade-up" data-aos-delay="200">
+    <img src="images/harsh.jpeg" alt="Interview Mentor">
+    <h3>Interview Mentors</h3>
+    <p>
+Harsh Raj Thakur, an IITian currently pursuing research at IIT Roorkee, is an aspiring digital domain research scientist. Former Placement Coordinator, he has trained students at Assam Rifles DGAR and worked in EdTech, preparing learners for top chip design careers.
+</p>
+  </div>
+
 </div>
 
 </section>
 
 
+
+<!-- ================= PODCAST ================= -->
+<section class="podcast">
+<h2 style="font-size:36px; color:#38bdf8;">
+🎙️ Podcasts & Expert Talks
+</h2>
+
+<p style="color:#94a3b8; margin-bottom:20px;">
+Conversations with researchers, professors, and industry professionals.
+</p>
+
+<div id="podcastContainerFront" class="video-scroll"></div>
+
+</section>
 <!-- ================= FAQ ================= -->
 <section id="faq" class="faq">
 
-<h2>FAQ</h2>
+<h2>❓ Frequently Asked Questions</h2>
 
-<div class="faq-item">
-<h3 onclick="toggleFAQ(this)">What is VLSI?</h3>
-<p>Integration of millions of transistors into IC.</p>
-</div>
+<div class="faq-container">
 
-<div class="faq-item">
-<h3 onclick="toggleFAQ(this)">Is VLSI a good career?</h3>
-<p>High demand industry with global opportunities.</p>
+  <div class="faq-item">
+    <div class="faq-question">
+      <span>What is VLSI?</span>
+      <span class="icon">+</span>
+    </div>
+    <div class="faq-answer">
+      <p>VLSI involves designing integrated circuits by combining millions of transistors into a single chip.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">
+      <span>Is VLSI a good career in 2026?</span>
+      <span class="icon">+</span>
+    </div>
+    <div class="faq-answer">
+      <p>Yes, VLSI is a high-demand field with strong growth in semiconductor industries globally.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">
+      <span>What skills are required?</span>
+      <span class="icon">+</span>
+    </div>
+    <div class="faq-answer">
+      <p>Digital design, Verilog/SystemVerilog, CMOS concepts, and problem-solving are key skills.</p>
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question">
+      <span>Can beginners start VLSI?</span>
+      <span class="icon">+</span>
+    </div>
+    <div class="faq-answer">
+      <p>Yes, with structured learning and mentorship, beginners can enter VLSI successfully.</p>
+    </div>
+  </div>
+
 </div>
 
 </section>
-
-
-<!-- ================= YOUTUBE ================= -->
-<section class="youtube">
-<h2>Our YouTube Channel</h2>
-<a href="https://youtube.com" target="_blank">
-<button class="btn">Visit Channel</button>
-</a>
-</section>
-
-
 <!-- ================= ENQUIRY ================= -->
-<section class="enquiry">
+<section class="enquiry" data-aos="fade-up">
 
-<h2>Course Enquiry</h2>
+<h2>📩 Course Enquiry</h2>
 
 <form id="enquiryForm">
 <input type="text" id="name" placeholder="Name">
@@ -196,11 +260,39 @@ Start Learning
 
 
 <!-- ================= CONTACT ================= -->
-<section id="contact" class="contact">
-<h2>Contact</h2>
-<p>Email: designtechvlsi@gmail.com</p>
-</section>
+<section id="contact" class="contact" data-aos="fade-up">
 
+<h2>📞 Contact Us</h2>
+
+<p style="color:#94a3b8; margin-bottom:25px;">
+We’d love to hear from you. Reach out for courses, mentorship, or collaborations.
+</p>
+
+<div class="contact-box">
+
+  <p>
+    📧 Email: 
+    <a href="mailto:harsh.thakur@designtechvlsi.com">
+      harsh.thakur@designtechvlsi.com
+    </a>
+  </p>
+
+  <p>
+    🎥 YouTube: 
+    <a href="https://www.youtube.com/@DesignTechVLSI" target="_blank">
+      DesignTech VLSI Channel
+    </a>
+  </p>
+
+  <p>
+    💼 LinkedIn: 
+    <a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/" target="_blank">
+      Connect with us
+    </a>
+  </p>
+</div>
+
+</section>
 
 <!-- ================= FOOTER ================= -->
 <footer>
@@ -243,7 +335,12 @@ Start Learning
 </div>
 
 
-<!-- SCRIPT -->
+<!-- SCRIPTS -->
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script>
+AOS.init();
+</script>
+
 <script type="module" src="js/script.js"></script>
 
 </body>

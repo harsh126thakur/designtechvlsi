@@ -1,3 +1,4 @@
+// ================= IMPORTS =================
 import { auth, db } from "./firebase.js";
 
 import {
@@ -12,26 +13,36 @@ addDoc,
 doc,
 deleteDoc,
 updateDoc,
-getDoc
+getDoc,
+query,
+orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 // ================= LOGIN =================
 window.login = async function(){
 
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+const email = document.getElementById("email").value.trim();
+const password = document.getElementById("password").value.trim();
+const errorBox = document.getElementById("error");
+
+errorBox.innerText = "";
+
+if(!email || !password){
+errorBox.innerText = "Enter email & password";
+return;
+}
 
 try{
 
 await signInWithEmailAndPassword(auth, email, password);
 
-// 🔥 ADMIN CHECK
+// ADMIN CHECK
 const adminDoc = await getDoc(doc(db,"admins",email));
 
 if(!adminDoc.exists()){
-alert("Access denied: Not admin");
-signOut(auth);
+errorBox.innerText = "Access denied (not admin)";
+await signOut(auth);
 return;
 }
 
@@ -39,19 +50,22 @@ return;
 document.getElementById("loginSection").style.display="none";
 document.getElementById("dashboardSection").style.display="block";
 
+// LOAD ALL DATA
 loadAdminData();
 loadCourses();
+loadPodcasts(); // 🔥 FIX
 
 }catch(err){
-alert("Login failed");
+console.error(err);
+errorBox.innerText = err.message;
 }
 
 };
 
 
 // ================= LOGOUT =================
-window.logout = function(){
-signOut(auth);
+window.logout = async function(){
+await signOut(auth);
 location.reload();
 };
 
@@ -176,7 +190,7 @@ document.getElementById("courseListAdmin").innerHTML = html;
 }
 
 
-// ================= DELETE =================
+// ================= DELETE COURSE =================
 window.deleteCourse = async function(id){
 if(!confirm("Delete course?")) return;
 
@@ -185,7 +199,7 @@ loadCourses();
 };
 
 
-// ================= EDIT =================
+// ================= EDIT COURSE =================
 window.editCourse = async function(id,title,type,price){
 
 document.getElementById("courseTitle").value = title;
@@ -271,31 +285,17 @@ document.getElementById("totalEnquiries").innerText = enquirySnap.size;
 async function loadUsers(){
 
 const userSnap = await getDocs(collection(db,"users"));
-const courseSnap = await getDocs(collection(db,"courses"));
-
-let courseMap = {};
-
-courseSnap.forEach(doc=>{
-courseMap[doc.id] = doc.data().title;
-});
 
 let html = "";
 
 userSnap.forEach(docSnap=>{
 const data = docSnap.data();
 
-let courses = "None";
-
-if(data.progress){
-const ids = Object.keys(data.progress);
-courses = ids.map(id => courseMap[id] || id).join(", ");
-}
-
 html += `
 <tr>
 <td>${data.name || "User"}</td>
 <td>${data.email || ""}</td>
-<td>${courses}</td>
+<td>-</td>
 </tr>`;
 });
 
@@ -327,75 +327,112 @@ document.getElementById("table").innerHTML = html;
 }
 
 
-// ================= PAID USERS =================
-async function loadPaidUsers(){
+// ================= ADD PODCAST =================
+const podcastForm = document.getElementById("podcastForm");
 
-const snap = await getDocs(collection(db,"users"));
+if(podcastForm){
 
-let html = "";
+podcastForm.addEventListener("submit", async (e)=>{
 
-snap.forEach(docSnap=>{
-const d = docSnap.data();
+e.preventDefault();
 
-if(d.progress){
-html += `<p>${d.email}</p>`;
+const title = document.getElementById("pTitle").value.trim();
+const category = document.getElementById("pCategory").value.trim();
+const videoUrl = document.getElementById("pUrl").value.trim();
+
+if(!title || !videoUrl){
+alert("Fill required fields");
+return;
 }
+
+try{
+
+await addDoc(collection(db,"podcast"),{
+title,
+category,
+videoUrl,
+createdAt: new Date()
 });
 
-document.getElementById("paidUsersList").innerHTML = html;
+alert("Podcast added");
+podcastForm.reset();
+
+loadPodcasts(); // 🔥 FIX
+
+}catch(err){
+console.error(err);
+alert(err.message);
 }
 
-
-// ================= REVENUE =================
-async function loadRevenue(){
-
-const snap = await getDocs(collection(db,"users"));
-
-let revenue = 0;
-
-snap.forEach(doc=>{
-const d = doc.data();
-
-if(d.progress){
-revenue += Object.keys(d.progress).length * 500;
-}
 });
 
-document.getElementById("revenueDetail").innerText = "₹" + revenue;
 }
 
 
-// ================= COMMON TOGGLE =================
-function toggleSection(id, loader){
+// ================= LOAD PODCAST =================
+async function loadPodcasts(){
 
-const sections = [
-"usersSection",
-"enquirySection",
-"paidSection",
-"revenueSection"
-];
+const container = document.getElementById("podcastContainer");
+if(!container) return;
 
-// hide all
-sections.forEach(sec=>{
-const el = document.getElementById(sec);
-if(el) el.style.display = "none";
+container.innerHTML = "Loading...";
+
+try{
+
+const q = query(collection(db,"podcast"), orderBy("createdAt","desc"));
+const snapshot = await getDocs(q);
+
+container.innerHTML = "";
+
+snapshot.forEach(docSnap => {
+
+const data = docSnap.data();
+const id = docSnap.id;
+
+let videoId = "";
+
+if(data.videoUrl.includes("watch?v=")){
+videoId = data.videoUrl.split("watch?v=")[1].split("&")[0];
+}
+
+const thumbnail = `https://img.youtube.com/vi/${videoId}/0.jpg`;
+
+container.innerHTML += `
+<div class="video-card">
+
+  <img src="${thumbnail}" onclick="window.open('${data.videoUrl}','_blank')" />
+
+  <p>${data.title}</p>
+
+  <small>${data.category || ""}</small>
+
+  <button onclick="deletePodcast('${id}')" class="delete-btn">Delete</button>
+
+</div>
+`;
+
 });
 
-// toggle selected
-const section = document.getElementById(id);
-
-if(section.style.display === "block"){
-section.style.display = "none";
-}else{
-section.style.display = "block";
-if(loader) loader();
+}catch(err){
+console.error(err);
+container.innerHTML = "Error loading podcasts";
 }
 
 }
 
 
-// ================= TOGGLES =================
-window.toggleUsers = () => toggleSection("usersSection", loadUsers);
-window.toggleEnquiries = () => toggleSection("enquirySection", loadEnquiries);
-window.togglePaidUsers = () => toggleSection("paidSection", loadPaidUsers);
-window.toggleRevenue = () => toggleSection("revenueSection", loadRevenue);
+// ================= DELETE PODCAST =================
+window.deletePodcast = async function(id){
+
+if(!confirm("Delete this podcast?")) return;
+
+try{
+await deleteDoc(doc(db,"podcast",id));
+alert("Deleted");
+loadPodcasts();
+}catch(err){
+console.error(err);
+alert("Error deleting");
+}
+
+};

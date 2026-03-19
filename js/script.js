@@ -37,19 +37,39 @@ export const auth = getAuth(app);
 // ================= 🌌 FLOATING STARS =================
 (function createStars(){
 
-// prevent duplicate stars
-if(document.querySelector(".stars")) return;
+let starsContainer = document.getElementById("stars");
 
-const starsContainer = document.createElement("div");
+// ✅ use existing container
+if(!starsContainer){
+starsContainer = document.createElement("div");
 starsContainer.className = "stars";
 document.body.appendChild(starsContainer);
+}
 
+// prevent duplicate stars
+if(starsContainer.children.length > 0) return;
+
+// ⭐ generate stars
 for(let i=0;i<120;i++){
+
 let star = document.createElement("div");
 star.className = "star";
 
+// random position
 star.style.left = Math.random() * 100 + "vw";
-star.style.animationDuration = (5 + Math.random() * 10) + "s";
+
+// random size
+let size = Math.random() * 3 + "px";
+star.style.width = size;
+star.style.height = size;
+
+// random animation speed
+star.style.animationDuration = (6 + Math.random() * 10) + "s";
+
+// random delay
+star.style.animationDelay = Math.random() * 5 + "s";
+
+// random opacity
 star.style.opacity = Math.random();
 
 starsContainer.appendChild(star);
@@ -131,12 +151,26 @@ alert("❌ Logout failed");
 };
 
 
-// ================= DARK MODE =================
+// ================= 🌙 DARK MODE =================
 const modeToggle = document.getElementById("modeToggle");
+
+// load saved mode
+if(localStorage.getItem("theme") === "light"){
+document.body.classList.add("dark-mode");
+}
 
 if(modeToggle){
 modeToggle.addEventListener("click", ()=>{
+
 document.body.classList.toggle("dark-mode");
+
+// save mode
+if(document.body.classList.contains("dark-mode")){
+localStorage.setItem("theme","light");
+}else{
+localStorage.setItem("theme","dark");
+}
+
 });
 }
 
@@ -192,4 +226,98 @@ popup.style.display = "none";
 // ================= GLOBAL ERROR HANDLER =================
 window.addEventListener("error", function(e){
 console.error("Global Error:", e.message);
+});
+// ================= PODCAST FRONT =================
+import {
+getDocs,
+query,
+orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+async function loadPodcastsFront(){
+
+const container = document.getElementById("podcastContainerFront");
+
+if(!container){
+console.log("❌ Podcast container not found");
+return;
+}
+
+container.innerHTML = "Loading...";
+
+try{
+
+const q = query(collection(db,"podcast"), orderBy("createdAt","desc"));
+const snapshot = await getDocs(q);
+
+console.log("🔥 Podcasts fetched:", snapshot.size);
+
+container.innerHTML = "";
+
+snapshot.forEach(docSnap => {
+
+const data = docSnap.data();
+
+let videoId = "";
+
+// ✅ SUPPORT ALL TYPES OF LINKS
+if(data.videoUrl.includes("watch?v=")){
+videoId = data.videoUrl.split("watch?v=")[1].split("&")[0];
+}
+else if(data.videoUrl.includes("youtu.be/")){
+videoId = data.videoUrl.split("youtu.be/")[1].split("?")[0];
+}
+else if(data.videoUrl.includes("shorts/")){
+videoId = data.videoUrl.split("shorts/")[1].split("?")[0];
+}
+
+// skip invalid
+if(!videoId){
+console.log("Invalid URL:", data.videoUrl);
+return;
+}
+
+// thumbnail
+const thumbnail = `https://img.youtube.com/vi/${videoId}/0.jpg`;
+
+container.innerHTML += `
+<div class="video-card" onclick="window.open('${data.videoUrl}','_blank')">
+
+  <img src="${thumbnail}" />
+
+  <p>${data.title}</p>
+
+</div>
+`;
+
+});
+
+}catch(err){
+console.error("Podcast error:", err);
+container.innerHTML = "❌ Failed to load podcasts";
+}
+
+}
+
+// 🔥 CALL FUNCTION
+loadPodcastsFront();
+// ================= PREMIUM FAQ =================
+const faqItems = document.querySelectorAll(".faq-item");
+
+faqItems.forEach(item => {
+
+const question = item.querySelector(".faq-question");
+
+question.addEventListener("click", () => {
+
+// close all others
+faqItems.forEach(i => {
+if(i !== item) i.classList.remove("active");
+});
+
+// toggle current
+item.classList.toggle("active");
+
+});
+
 });

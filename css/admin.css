@@ -270,3 +270,63 @@ flex-direction:column;
 }
 
 }
+.video-card img{
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:10px;
+cursor:pointer;
+}
+
+.video-card small{
+display:block;
+color:#38bdf8;
+margin-top:5px;
+}
+
+.delete-btn{
+margin-top:10px;
+background:#ef4444;
+border:none;
+padding:6px 10px;
+border-radius:6px;
+cursor:pointer;
+color:white;
+font-size:12px;
+}
+
+.delete-btn:hover{
+background:#dc2626;
+}
+
+
+#podcastContainer{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+margin-top:20px;
+}
+
+.video-card{
+background:#020617;
+padding:15px;
+border-radius:10px;
+text-align:center;
+border:1px solid #1e293b;
+}
+
+.video-card img{
+width:100%;
+border-radius:8px;
+cursor:pointer;
+}
+
+.delete-btn{
+margin-top:10px;
+background:red;
+color:white;
+border:none;
+padding:6px 10px;
+border-radius:6px;
+cursor:pointer;
+}
