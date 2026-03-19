@@ -651,3 +651,51 @@ border-top:1px solid #1e293b;
 color:#94a3b8;
 font-size:14px;
 }
+/* ================= QUIZ ================= */
+.quiz-box{
+background:#1e293b;
+padding:20px;
+border-radius:12px;
+cursor:pointer;
+transition:0.3s;
+max-width:400px;
+margin:auto;
+}
+
+.quiz-box:hover{
+background:#38bdf8;
+color:black;
+transform:scale(1.05);
+}
+/* ================= MENTORSHIP ================= */
+.mentorship {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.mentorship-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+
+.mentorship-card {
+  background: #020617;
+  padding: 25px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+  border: 1px solid #1e293b;
+}
+
+.mentorship-card:hover {
+  transform: translateY(-8px);
+  border-color: #38bdf8;
+  box-shadow: 0 10px 30px rgba(56,189,248,0.2);
+}
+
+.mentorship-card h3 {
+  color: #38bdf8;
+  margin-bottom: 10px;
+}

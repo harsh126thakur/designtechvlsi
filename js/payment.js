@@ -10,8 +10,9 @@ setDoc
 // ================= GET DATA =================
 const params = new URLSearchParams(window.location.search);
 
-const courseId = params.get("id");
+const courseId = params.get("id");   // course OR mentorship
 let price = Number(params.get("price"));
+const type = params.get("type") || "Course Purchase";
 
 document.getElementById("amount").innerText = "Amount: ₹ " + price;
 
@@ -37,24 +38,59 @@ document.getElementById("amount").innerText = "Amount: ₹ " + price;
 };
 
 
-// ================= RAZORPAY PAYMENT =================
-window.payNow = function(){
-
-const options = {
-
-key: "rzp_live_SONJ2W1OZ1qVLZ", // your key
-
-amount: price * 100,
-currency: "INR",
-
-name: "Design Tech VLSI",
-description: "Course Purchase",
-
-handler: async function(){
+// ================= PAYMENT =================
+window.payNow = async function(){
 
 const user = auth.currentUser;
 
-// 🔥 GET EXISTING DATA
+if(!user){
+alert("Please login first");
+return;
+}
+
+// 🔐 STEP 1: CREATE ORDER
+const res = await fetch("http://localhost:5000/create-order", {
+method: "POST",
+headers: {"Content-Type":"application/json"},
+body: JSON.stringify({ amount: price })
+});
+
+const order = await res.json();
+
+
+// 🔐 STEP 2: RAZORPAY
+const options = {
+
+key: "rzp_live_SONJ2W1OZ1qVLZ",
+amount: order.amount,
+currency: "INR",
+name: "Design Tech VLSI",
+description: type,
+order_id: order.id,
+
+handler: async function(response){
+
+// 🔐 STEP 3: VERIFY PAYMENT
+const verifyRes = await fetch("http://localhost:5000/verify-payment", {
+method: "POST",
+headers: {"Content-Type":"application/json"},
+body: JSON.stringify({
+...response,
+courseId: courseId,
+userId: user.uid,
+type: type,
+price: price,
+email: user.email
+})
+});
+
+const data = await verifyRes.json();
+
+if(data.success){
+
+// ================= COURSE PURCHASE =================
+if(courseId){
+
 const userRef = doc(db,"users",user.uid);
 const snap = await getDoc(userRef);
 
@@ -64,20 +100,24 @@ if(snap.exists()){
 courses = snap.data().purchasedCourses || [];
 }
 
-// 🔥 ADD NEW COURSE
 if(!courses.includes(courseId)){
 courses.push(courseId);
 }
 
-// 🔥 SAVE BACK
 await setDoc(userRef,{
 purchasedCourses: courses
 },{merge:true});
 
-alert("Payment Successful 🎉");
+}
 
-// redirect
-window.location.href = `course.html?id=${courseId}`;
+// ================= SUCCESS =================
+alert("Payment Verified ✅");
+
+window.location.href = "success.html";
+
+}else{
+alert("Payment verification failed ❌");
+}
 
 }
 
