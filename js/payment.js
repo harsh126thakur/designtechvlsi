@@ -74,8 +74,8 @@ alert("Coupon error");
 };
 
 
-// ================= PAYMENT (NO SERVER) =================
-window.payNow = async function(){
+// ================= PAYMENT =================
+export async function payNow(){
 
 try{
 
@@ -84,24 +84,99 @@ alert("Please login first");
 return;
 }
 
-// ✅ SAVE INTENT BEFORE PAYMENT (optional)
-await addDoc(collection(db,"payments"),{
+// ================= CREATE ORDER =================
+const res = await fetch("https://razorpay-server-ok0j.onrender.com/create-order", {
+method: "POST",
+headers: {"Content-Type":"application/json"},
+body: JSON.stringify({ amount: price })
+});
+
+if(!res.ok){
+throw new Error("Order creation failed");
+}
+
+const order = await res.json();
+
+
+// ================= RAZORPAY =================
+const options = {
+
+key: "rzp_live_ST5Uj4sGNxUAGJ",
+
+amount: order.amount,
+currency: "INR",
+
+name: "Design Tech VLSI",
+description: type,
+
+order_id: order.id,
+
+
+handler: async function(response){
+
+try{
+
+// ================= VERIFY =================
+const verifyRes = await fetch("https://razorpay-server-ok0j.onrender.com/verify-payment", {
+method: "POST",
+headers: {"Content-Type":"application/json"},
+body: JSON.stringify(response)
+});
+
+const data = await verifyRes.json();
+
+if(!data.success){
+alert("Payment verification failed ❌");
+return;
+}
+
+alert("Payment Successful 🎉");
+
+// ================= SAVE BOOKING =================
+await addDoc(collection(db,"bookings"),{
 userId: currentUser.uid,
 email: currentUser.email,
 type,
-price,
-status: "initiated",
+date: date || "Not Selected",
+time: time || "Not Selected",
+price: Number(price),
+paymentId: response.razorpay_payment_id,
 createdAt: new Date()
 });
 
-// ✅ REDIRECT TO RAZORPAY PAYMENT LINK
-const paymentLink = "https://rzp.io/l/YOUR_PAYMENT_LINK";
+// ================= SAVE COURSE =================
+if(courseId){
 
-window.location.href = paymentLink;
+const userRef = doc(db,"users",currentUser.uid);
+const snap = await getDoc(userRef);
+
+let courses = snap.exists() ? snap.data().purchasedCourses || [] : [];
+
+if(!courses.includes(courseId)){
+courses.push(courseId);
+}
+
+await setDoc(userRef,{ purchasedCourses: courses },{ merge:true });
+
+}
+
+window.location.href = "success.html";
+
+}catch(err){
+console.error("Post-payment error:", err);
+alert("Error saving data");
+}
+
+}
+
+};
+
+const rzp = new Razorpay(options);
+rzp.open();
 
 }catch(err){
 console.error(err);
 alert("Payment failed ❌");
 }
 
-};
+}

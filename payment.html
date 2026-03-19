@@ -26,6 +26,7 @@ body{
   width:350px;
   text-align:center;
   border:1px solid #1e293b;
+  box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
 h2{ margin-bottom:20px; }
@@ -36,6 +37,7 @@ input{
   margin:10px 0;
   border:none;
   border-radius:8px;
+  outline:none;
 }
 
 button{
@@ -48,11 +50,23 @@ button{
   color:black;
   font-weight:600;
   cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  background:#0ea5e9;
+  transform:scale(1.03);
+}
+
+button:disabled{
+  background:#64748b;
+  cursor:not-allowed;
 }
 
 #amount{
   font-size:20px;
   color:#22c55e;
+  margin-bottom:10px;
 }
 </style>
 
@@ -70,12 +84,30 @@ button{
 <input id="coupon" placeholder="Enter Coupon Code">
 <button onclick="applyCoupon()">Apply Coupon</button>
 
-<button onclick="payNow()">Pay Now</button>
+<button id="payBtn" onclick="handlePay()">Pay Now</button>
 
 </div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script type="module" src="js/payment.js"></script>
+
+<script type="module">
+import { payNow } from "./js/payment.js";
+
+window.handlePay = async function(){
+
+const btn = document.getElementById("payBtn");
+btn.innerText = "Processing...";
+btn.disabled = true;
+
+try{
+  await payNow();
+}catch(e){
+  btn.innerText = "Pay Now";
+  btn.disabled = false;
+}
+
+};
+</script>
 
 </body>
 </html>
