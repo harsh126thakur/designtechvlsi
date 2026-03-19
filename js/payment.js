@@ -88,7 +88,7 @@ const order = await res.json();
 // 🔐 STEP 2: RAZORPAY
 const options = {
 
-key: "rzp_live_SONJ2W1OZ1qVLZ",
+key: "rzp_live_ST5Uj4sGNxUAGJ",
 amount: order.amount,
 currency: "INR",
 name: "Design Tech VLSI",

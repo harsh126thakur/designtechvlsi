@@ -40,10 +40,10 @@ app.post("/create-order", async (req, res) => {
 // ================= EMAIL SETUP =================
 const transporter = nodemailer.createTransport({
   service: "gmail",
-  auth: {
-    user: "kspqa126@gmail.com",
-    pass: "btolvqrfstnraabo"
-  }
+ auth: {
+  user: process.env.EMAIL,
+  pass: process.env.PASSWORD
+}
 });
 
 
@@ -62,7 +62,7 @@ app.post("/verify-payment", async (req, res) => {
   const body = razorpay_order_id + "|" + razorpay_payment_id;
 
   const expectedSignature = crypto
-    .createHmac("sha256", "eLDa13udpqxLNRCegHp3XIFt")
+   .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
     .update(body.toString())
     .digest("hex");
 
