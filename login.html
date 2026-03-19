@@ -30,12 +30,14 @@
 
         <h2>Student Login</h2>
 
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Password">
+        <!-- 🔥 FIXED INPUT -->
+        <input type="email" id="email" placeholder="Email" autocomplete="username">
+        <input type="password" id="password" placeholder="Password" autocomplete="current-password">
 
-        <button onclick="login()">Login</button>
+        <!-- 🔥 FIXED BUTTON -->
+        <button id="loginBtn">Login</button>
 
-        <p id="error"></p>
+        <p id="error" style="color:red;"></p>
 
         <p class="small-text">
             Don't have an account? <a href="signup.html">Sign up</a>
@@ -51,14 +53,17 @@
 import { auth } from "./js/firebase.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-window.login = function(){
+// 🔥 SAFE LOGIN FUNCTION
+function login(){
 
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
+const email = document.getElementById("email")?.value?.trim();
+const password = document.getElementById("password")?.value?.trim();
+const errorBox = document.getElementById("error");
 
-// simple validation
+errorBox.innerText = "";
+
 if(!email || !password){
-document.getElementById("error").innerText = "Please fill all fields";
+errorBox.innerText = "Please fill all fields";
 return;
 }
 
@@ -68,11 +73,17 @@ signInWithEmailAndPassword(auth,email,password)
 window.location.href="dashboard.html";
 })
 
-.catch(()=>{
-document.getElementById("error").innerText="Invalid credentials";
+.catch((err)=>{
+console.error("LOGIN ERROR:", err);
+
+// 🔥 SHOW REAL ERROR
+errorBox.innerText = err.message;
 });
 
 }
+
+// 🔥 BUTTON EVENT (MOBILE SAFE)
+document.getElementById("loginBtn").addEventListener("click", login);
 
 </script>
 

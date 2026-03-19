@@ -1,9 +1,14 @@
 /* ================= GLOBAL ================= */
+*{
+box-sizing:border-box;
+}
+
 body{
 margin:0;
-font-family:Poppins;
+font-family:Poppins, sans-serif;
 background:linear-gradient(135deg,#020617,#0f172a);
 color:white;
+overflow-x:hidden;
 }
 
 /* ================= NAVBAR ================= */
@@ -12,7 +17,7 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 padding:15px 30px;
-background:rgba(2,6,23,0.9);
+background:#020617;
 border-bottom:1px solid #1e293b;
 }
 
@@ -20,6 +25,8 @@ border-bottom:1px solid #1e293b;
 display:flex;
 gap:15px;
 list-style:none;
+margin:0;
+padding:0;
 }
 
 .navbar a{
@@ -33,10 +40,11 @@ color:#38bdf8;
 
 /* ================= HEADER ================= */
 .nav{
+background:#020617;
+padding:15px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:15px 30px;
 }
 
 /* ================= LAYOUT ================= */
@@ -50,45 +58,35 @@ height:calc(100vh - 120px);
 /* ================= PLAYER ================= */
 .player{
 flex:3;
-display:flex;
-justify-content:center;
-align-items:center;
 }
 
 .player iframe{
 width:100%;
-max-width:900px;
-height:500px;
-border-radius:12px;
-box-shadow:0 10px 30px rgba(0,0,0,0.5);
+aspect-ratio:16/9;
+border-radius:10px;
 }
 
 /* ================= PLAYLIST ================= */
 .playlist{
 flex:1;
-background:rgba(2,6,23,0.8);
-border-radius:12px;
-padding:10px;
+background:#020617;
 overflow-y:auto;
-border:1px solid #1e293b;
+padding:10px;
+border-radius:10px;
 }
 
 /* ================= LECTURE ================= */
 .lecture{
 padding:12px;
-margin-bottom:8px;
-border-radius:8px;
+border-bottom:1px solid #333;
 cursor:pointer;
 transition:0.3s;
-background:#0f172a;
 }
 
 .lecture:hover{
 background:#1e293b;
-transform:translateX(5px);
 }
 
-/* ACTIVE VIDEO */
 .lecture.active{
 background:#38bdf8;
 color:black;
@@ -108,15 +106,44 @@ background:#0ea5e9;
 }
 
 /* ================= MOBILE ================= */
-@media (max-width:900px){
+@media (max-width:768px){
+
+.navbar{
+flex-direction:column;
+gap:10px;
+text-align:center;
+}
+
+.navbar ul{
+flex-direction:column;
+gap:8px;
+}
+
+.nav{
+flex-direction:column;
+gap:10px;
+text-align:center;
+}
 
 .container{
 flex-direction:column;
 height:auto;
+padding:10px;
 }
 
 .player iframe{
-height:250px;
+width:100%;
+aspect-ratio:16/9;
+}
+
+.playlist{
+width:100%;
+margin-top:10px;
+max-height:300px;
+}
+
+button{
+width:100%;
 }
 
 }

@@ -10,6 +10,11 @@ getDoc
 const params = new URLSearchParams(window.location.search);
 const courseId = params.get("id");
 
+// ================= ELEMENTS =================
+const titleEl = document.getElementById("courseTitle");
+const playlistEl = document.getElementById("playlist");
+const player = document.getElementById("videoPlayer");
+
 
 // ================= LOAD COURSE =================
 async function loadCourse(){
@@ -31,60 +36,41 @@ return;
 
 const data = snap.data();
 
-// 🔥 SET TITLE
-document.getElementById("courseTitle").innerText = data.title;
+// TITLE
+titleEl.innerText = data.title || "Course";
 
-// 🔥 BUILD PLAYLIST
-let html = "";
+// PLAYLIST
+playlistEl.innerHTML = "";
 
 if(data.lectures && data.lectures.length > 0){
 
-data.lectures.forEach((lec,index)=>{
+data.lectures.forEach((lec)=>{
 
-html += `
-<div class="lecture" data-link="${lec.link}">
-▶ ${lec.title}
-</div>
-`;
+if(!lec.link) return;
+
+const div = document.createElement("div");
+div.className = "lecture";
+div.innerText = `▶ ${lec.title || "Lecture"}`;
+div.dataset.link = lec.link;
+
+div.addEventListener("click", ()=>{
+playVideo(lec.link);
+setActive(div);
+});
+
+playlistEl.appendChild(div);
 
 });
 
-}else{
-html = "<p>No lectures available</p>";
+// AUTO PLAY FIRST
+const first = playlistEl.querySelector(".lecture");
+if(first){
+playVideo(first.dataset.link);
+setActive(first);
 }
 
-document.getElementById("playlist").innerHTML = html;
-
-
-// 🔥 ADD CLICK EVENTS (BETTER THAN INLINE onclick)
-document.querySelectorAll(".lecture").forEach((el)=>{
-
-el.addEventListener("click", ()=>{
-
-const link = el.getAttribute("data-link");
-playVideo(link);
-
-// 🔥 ACTIVE HIGHLIGHT
-document.querySelectorAll(".lecture").forEach(l=>{
-l.classList.remove("active");
-});
-
-el.classList.add("active");
-
-});
-
-});
-
-
-// 🔥 AUTO PLAY FIRST VIDEO
-if(data.lectures && data.lectures.length > 0){
-
-playVideo(data.lectures[0].link);
-
-// highlight first
-const first = document.querySelector(".lecture");
-if(first) first.classList.add("active");
-
+}else{
+playlistEl.innerHTML = "<p>No lectures available</p>";
 }
 
 }catch(err){
@@ -98,11 +84,10 @@ loadCourse();
 
 
 // ================= PLAY VIDEO =================
-window.playVideo = function(link){
+function playVideo(link){
 
 let videoId = "";
 
-// ✅ HANDLE ALL YOUTUBE FORMATS
 if(link.includes("watch?v=")){
 videoId = link.split("watch?v=")[1].split("&")[0];
 }
@@ -110,17 +95,37 @@ else if(link.includes("youtu.be/")){
 videoId = link.split("youtu.be/")[1].split("?")[0];
 }
 else if(link.includes("embed/")){
-videoId = link.split("embed/")[1];
+videoId = link.split("embed/")[1].split("?")[0];
 }
 
-// 🔥 SET VIDEO
-document.getElementById("videoPlayer").src =
-`https://www.youtube.com/embed/${videoId}?autoplay=1`;
+if(!videoId){
+alert("Invalid video");
+return;
+}
 
-};
+player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+
+}
 
 
-// ================= BACK BUTTON =================
+// ================= ACTIVE =================
+function setActive(el){
+
+document.querySelectorAll(".lecture").forEach(e=>{
+e.classList.remove("active");
+});
+
+el.classList.add("active");
+
+el.scrollIntoView({
+behavior:"smooth",
+block:"center"
+});
+
+}
+
+
+// ================= BACK =================
 window.goBack = function(){
 window.location.href = "course.html";
 };

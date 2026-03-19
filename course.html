@@ -1,67 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Course Player</title>
+
 <link rel="stylesheet" href="css/course.css">
-
-<style>
-
-body{
-margin:0;
-font-family:Poppins;
-background:#0f172a;
-color:white;
-}
-
-/* NAV */
-.nav{
-background:#020617;
-padding:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-/* LAYOUT */
-.container{
-display:flex;
-height:90vh;
-}
-
-/* PLAYER */
-.player{
-flex:3;
-padding:20px;
-}
-
-.player iframe{
-width:100%;
-height:85vh;
-border-radius:10px;
-}
-
-/* PLAYLIST */
-.playlist{
-flex:1;
-background:#020617;
-overflow-y:auto;
-padding:10px;
-}
-
-.lecture{
-padding:12px;
-border-bottom:1px solid #333;
-cursor:pointer;
-}
-
-.lecture:hover{
-background:#1e293b;
-}
-
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
+
+<!-- NAVBAR -->
 <nav class="navbar">
     <h2 class="logo">DesignTech VLSI</h2>
     <ul>
@@ -70,29 +20,40 @@ background:#1e293b;
         <li><a href="login.html">Login</a></li>
     </ul>
 </nav>
+
+<!-- HEADER -->
 <div class="nav">
-<h2 id="courseTitle">Course</h2>
-<button onclick="goBack()">⬅ Back</button>
+    <h2 id="courseTitle">Loading...</h2>
+    <button onclick="goBack()">⬅ Back</button>
 </div>
 
+<!-- MAIN -->
 <div class="container">
 
-<div class="player">
+    <!-- PLAYER -->
+    <div class="player">
+        <iframe 
+        id="videoPlayer"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+        </iframe>
+    </div>
 
-<!-- ✅ FULLSCREEN ENABLED IFRAME -->
-<iframe 
-id="videoPlayer"
-allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-allowfullscreen>
-</iframe>
+    <!-- PLAYLIST -->
+    <div class="playlist" id="playlist">
+        <p>Loading lectures...</p>
+    </div>
 
 </div>
 
-<div class="playlist" id="playlist"></div>
-
-</div>
-
+<!-- ✅ IMPORTANT: MODULE -->
 <script type="module" src="js/course.js"></script>
+
+<script>
+function goBack(){
+    window.location.href = "course.html";
+}
+</script>
 
 </body>
 </html>
