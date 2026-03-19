@@ -7,7 +7,17 @@ const nodemailer = require("nodemailer");
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+
+// ✅ IMPORTANT: allow frontend requests
+app.use(cors({
+  origin: "*"
+}));
+
+
+// ================= ROOT CHECK =================
+app.get("/", (req, res) => {
+  res.send("Server is running 🚀");
+});
 
 
 // ================= RAZORPAY =================
@@ -31,7 +41,7 @@ app.post("/create-order", async (req, res) => {
   try {
 
     const order = await razorpay.orders.create({
-      amount: amount * 100,
+      amount: Math.round(amount * 100), // ✅ FIX (avoid float issue)
       currency: "INR",
       receipt: "receipt_" + Date.now()
     });
@@ -80,7 +90,7 @@ app.post("/verify-payment", async (req, res) => {
 
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(body)
+      .update(body.toString())
       .digest("hex");
 
     // ================= SUCCESS =================
@@ -88,8 +98,8 @@ app.post("/verify-payment", async (req, res) => {
 
       console.log("✅ PAYMENT VERIFIED");
 
-      // 📩 SEND EMAIL
-      await transporter.sendMail({
+      // 📩 SEND EMAIL (non-blocking)
+      transporter.sendMail({
         from: process.env.EMAIL,
         to: process.env.EMAIL,
         subject: "New Payment Received 🚀",
@@ -102,8 +112,9 @@ app.post("/verify-payment", async (req, res) => {
           <p><b>Date:</b> ${date || "N/A"}</p>
           <p><b>Time:</b> ${time || "N/A"}</p>
         `
-      });
+      }).catch(err => console.log("MAIL ERROR:", err));
 
+      // ✅ VERY IMPORTANT: respond immediately
       return res.json({ success: true });
 
     } else {
