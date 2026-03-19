@@ -35,10 +35,11 @@ return;
 
 try{
 
-await signInWithEmailAndPassword(auth, email, password);
+const userCred = await signInWithEmailAndPassword(auth, email, password);
+const user = userCred.user;
 
-// ADMIN CHECK
-const adminDoc = await getDoc(doc(db,"admins",email));
+// 🔥 ADMIN CHECK
+const adminDoc = await getDoc(doc(db,"admins",user.email));
 
 if(!adminDoc.exists()){
 errorBox.innerText = "Access denied (not admin)";
@@ -46,14 +47,15 @@ await signOut(auth);
 return;
 }
 
-// SHOW DASHBOARD
+// ✅ ADMIN VERIFIED
 document.getElementById("loginSection").style.display="none";
 document.getElementById("dashboardSection").style.display="block";
 
 // LOAD ALL DATA
 loadAdminData();
 loadCourses();
-loadPodcasts(); // 🔥 FIX
+loadPodcasts();
+loadBookings();
 
 }catch(err){
 console.error(err);
@@ -357,7 +359,7 @@ createdAt: new Date()
 alert("Podcast added");
 podcastForm.reset();
 
-loadPodcasts(); // 🔥 FIX
+loadPodcasts();
 
 }catch(err){
 console.error(err);
@@ -399,15 +401,10 @@ const thumbnail = `https://img.youtube.com/vi/${videoId}/0.jpg`;
 
 container.innerHTML += `
 <div class="video-card">
-
-  <img src="${thumbnail}" onclick="window.open('${data.videoUrl}','_blank')" />
-
-  <p>${data.title}</p>
-
-  <small>${data.category || ""}</small>
-
-  <button onclick="deletePodcast('${id}')" class="delete-btn">Delete</button>
-
+<img src="${thumbnail}" onclick="window.open('${data.videoUrl}','_blank')" />
+<p>${data.title}</p>
+<small>${data.category || ""}</small>
+<button onclick="deletePodcast('${id}')">Delete</button>
 </div>
 `;
 
@@ -426,13 +423,61 @@ window.deletePodcast = async function(id){
 
 if(!confirm("Delete this podcast?")) return;
 
-try{
 await deleteDoc(doc(db,"podcast",id));
 alert("Deleted");
 loadPodcasts();
-}catch(err){
-console.error(err);
-alert("Error deleting");
+
+};
+
+
+// ================= BOOKINGS =================
+async function loadBookings(){
+
+const container = document.getElementById("bookingList");
+if(!container) return;
+
+container.innerHTML = "Loading...";
+
+const snapshot = await getDocs(collection(db,"bookings"));
+
+container.innerHTML = "";
+
+snapshot.forEach(docSnap => {
+
+const data = docSnap.data();
+
+const div = document.createElement("div");
+
+div.style.background = "#020617";
+div.style.padding = "15px";
+div.style.margin = "10px";
+div.style.borderRadius = "8px";
+
+div.innerHTML = `
+<p><b>Email:</b> ${data.email}</p>
+<p><b>Type:</b> ${data.type}</p>
+<p><b>Date:</b> ${data.date}</p>
+<p><b>Time:</b> ${data.time}</p>
+<p><b>Price:</b> ₹${data.price}</p>
+<button onclick="deleteBooking('${docSnap.id}')">Delete</button>
+`;
+
+container.appendChild(div);
+
+});
+
 }
+
+
+// ================= DELETE BOOKING =================
+window.deleteBooking = async function(id){
+
+if(!confirm("Delete this booking?")) return;
+
+await deleteDoc(doc(db,"bookings",id));
+
+alert("Booking deleted");
+
+loadBookings();
 
 };

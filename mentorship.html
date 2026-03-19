@@ -8,8 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-
-/* BODY */
 body{
 background:#0f172a;
 color:white;
@@ -17,13 +15,11 @@ font-family:Poppins;
 margin:0;
 }
 
-/* SECTION */
 .mentorship-page{
 text-align:center;
 padding:80px 20px;
 }
 
-/* GRID */
 .mentorship-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
@@ -32,7 +28,6 @@ max-width:1100px;
 margin:auto;
 }
 
-/* CARD */
 .mentorship-card{
 background:#020617;
 padding:25px;
@@ -48,7 +43,6 @@ border-color:#38bdf8;
 box-shadow:0 10px 30px rgba(56,189,248,0.2);
 }
 
-/* BADGE */
 .badge{
 position:absolute;
 top:15px;
@@ -63,10 +57,8 @@ border-radius:6px;
 background:#a855f7;
 }
 
-/* TEXT */
 .mentorship-card h3{
 color:#38bdf8;
-margin-bottom:10px;
 }
 
 .duration{
@@ -74,7 +66,6 @@ color:#22c55e;
 margin:10px 0;
 }
 
-/* PRICE */
 .price{
 font-size:22px;
 font-weight:600;
@@ -85,15 +76,13 @@ color:#22c55e;
 text-decoration:line-through;
 color:#64748b;
 margin-right:10px;
-font-size:16px;
 }
 
-/* BUTTON */
 .btn{
 margin-top:15px;
 background:#38bdf8;
 border:none;
-padding:10px 20px;
+padding:10px;
 border-radius:8px;
 cursor:pointer;
 color:black;
@@ -105,101 +94,157 @@ width:100%;
 background:#0ea5e9;
 }
 
-</style>
+/* POPUP */
+.popup{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#000000aa;
+justify-content:center;
+align-items:center;
+}
 
+.popup-box{
+background:#020617;
+padding:20px;
+border-radius:10px;
+width:300px;
+text-align:center;
+}
+
+</style>
 </head>
 
 <body>
 
 <section class="mentorship-page">
 
-<h1 style="font-size:40px; margin-bottom:20px;">🚀 1:1 Mentorship</h1>
-
-<p style="color:#94a3b8; margin-bottom:40px;">
-Book a 30-minute personalized session with experts.
-</p>
+<h1>🚀 1:1 Mentorship</h1>
+<p style="color:#94a3b8;">Book a 30-minute personalized session</p>
 
 <div class="mentorship-grid">
 
 <!-- CV -->
 <div class="mentorship-card">
-<div class="badge">Limited Offer</div>
-<h3>CV / Resume Building</h3>
-<p>Build a strong resume for semiconductor roles</p>
-<div class="duration">⏱️ 30 Minutes</div>
+<div class="badge">Offer</div>
+<h3>CV Building</h3>
+<div class="duration">⏱️ 30 Min</div>
 <div class="price"><span class="old-price">₹1499</span> ₹999</div>
-<button class="btn" onclick="bookSession('CV Building',999)">Book Now</button>
+<button class="btn" onclick="openBooking('CV Building',999)">Book Now</button>
 </div>
 
-<!-- INTERNSHIP -->
+<!-- Internship -->
 <div class="mentorship-card">
-<div class="badge">Limited Offer</div>
+<div class="badge">Offer</div>
 <h3>Internship Mentorship</h3>
-<p>Guidance to secure VLSI internships</p>
-<div class="duration">⏱️ 30 Minutes</div>
+<div class="duration">⏱️ 30 Min</div>
 <div class="price"><span class="old-price">₹1799</span> ₹999</div>
-<button class="btn" onclick="bookSession('Internship Mentorship',999)">Book Now</button>
+<button class="btn" onclick="openBooking('Internship Mentorship',999)">Book Now</button>
 </div>
 
 <!-- GATE -->
 <div class="mentorship-card">
-<div class="badge">Limited Offer</div>
+<div class="badge">Offer</div>
 <h3>GATE Mentorship</h3>
-<p>Strategy & preparation guidance</p>
-<div class="duration">⏱️ 30 Minutes</div>
+<div class="duration">⏱️ 30 Min</div>
 <div class="price"><span class="old-price">₹1999</span> ₹999</div>
-<button class="btn" onclick="bookSession('GATE Mentorship',999)">Book Now</button>
+<button class="btn" onclick="openBooking('GATE Mentorship',999)">Book Now</button>
 </div>
 
 <!-- POST GATE -->
 <div class="mentorship-card">
 <div class="badge premium">Premium</div>
 <h3>Post-GATE Guidance</h3>
-<p>PSU, M.Tech, research or job planning</p>
-<div class="duration">⏱️ 30 Minutes</div>
+<div class="duration">⏱️ 30 Min</div>
 <div class="price"><span class="old-price">₹2499</span> ₹1499</div>
-<button class="btn" onclick="bookSession('Post-GATE Guidance',1499)">Book Now</button>
+<button class="btn" onclick="openBooking('Post-GATE Guidance',1499)">Book Now</button>
 </div>
 
 <!-- INTERVIEW -->
 <div class="mentorship-card">
 <div class="badge premium">Premium</div>
 <h3>Interview Mentorship</h3>
-<p>Mock interviews with expert feedback</p>
-<div class="duration">⏱️ 30 Minutes</div>
+<div class="duration">⏱️ 30 Min</div>
 <div class="price"><span class="old-price">₹2499</span> ₹1499</div>
-<button class="btn" onclick="bookSession('Interview Mentorship',1499)">Book Now</button>
+<button class="btn" onclick="openBooking('Interview Mentorship',1499)">Book Now</button>
 </div>
 
 <!-- VLSI -->
 <div class="mentorship-card">
 <div class="badge premium">Premium</div>
 <h3>VLSI Mentorship</h3>
-<p>Industry roadmap & skill development</p>
-<div class="duration">⏱️ 30 Minutes</div>
+<div class="duration">⏱️ 30 Min</div>
 <div class="price"><span class="old-price">₹2999</span> ₹1999</div>
-<button class="btn" onclick="bookSession('VLSI Mentorship',1999)">Book Now</button>
+<button class="btn" onclick="openBooking('VLSI Mentorship',1999)">Book Now</button>
 </div>
 
 <!-- PHD -->
 <div class="mentorship-card">
 <div class="badge premium">Premium</div>
 <h3>PhD Mentorship</h3>
-<p>Research direction & application guidance</p>
-<div class="duration">⏱️ 30 Minutes</div>
+<div class="duration">⏱️ 30 Min</div>
 <div class="price"><span class="old-price">₹3499</span> ₹2499</div>
-<button class="btn" onclick="bookSession('PhD Mentorship',2499)">Book Now</button>
+<button class="btn" onclick="openBooking('PhD Mentorship',2499)">Book Now</button>
 </div>
 
 </div>
 
 </section>
 
+<!-- 🔥 POPUP -->
+<div id="popup" class="popup">
+<div class="popup-box">
+
+<h3>Select Slot</h3>
+
+<input type="date" id="date"><br><br>
+
+<select id="time">
+<option value="">Select Time</option>
+<option>10:00 AM</option>
+<option>2:00 PM</option>
+<option>6:00 PM</option>
+</select>
+
+<br><br>
+
+<button onclick="confirmBooking()" class="btn">Proceed to Pay</button>
+<button onclick="closePopup()" class="btn" style="background:red;">Cancel</button>
+
+</div>
+</div>
+
 <script>
 
-// Redirect to payment page
-function bookSession(type, price){
-  window.location.href = `payment.html?type=${encodeURIComponent(type)}&price=${price}`;
+let selectedType = "";
+let selectedPrice = 0;
+
+function openBooking(type, price){
+selectedType = type;
+selectedPrice = price;
+document.getElementById("popup").style.display = "flex";
+}
+
+function closePopup(){
+document.getElementById("popup").style.display = "none";
+}
+
+function confirmBooking(){
+
+const date = document.getElementById("date").value;
+const time = document.getElementById("time").value;
+
+if(!date || !time){
+alert("Select date & time");
+return;
+}
+
+window.location.href =
+`payment.html?type=${encodeURIComponent(selectedType)}&price=${selectedPrice}&date=${date}&time=${encodeURIComponent(time)}`;
+
 }
 
 </script>
