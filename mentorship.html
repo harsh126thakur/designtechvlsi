@@ -7,7 +7,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-<style>
+<style> add in this  
 body{
 background:#0f172a;
 color:white;
@@ -43,12 +43,6 @@ border-color:#38bdf8;
 box-shadow:0 10px 30px rgba(56,189,248,0.2);
 }
 
-/* 🔥 Special highlight for ₹1 card */
-.highlight{
-border:1px solid #22c55e;
-box-shadow:0 0 20px rgba(34,197,94,0.3);
-}
-
 .badge{
 position:absolute;
 top:15px;
@@ -61,12 +55,6 @@ border-radius:6px;
 
 .premium{
 background:#a855f7;
-}
-
-/* 🔥 special badge */
-.special{
-background:#22c55e;
-color:black;
 }
 
 .mentorship-card h3{
@@ -140,17 +128,6 @@ text-align:center;
 
 <div class="mentorship-grid">
 
-<!-- 🔥 ₹1 TRIAL -->
-<div class="mentorship-card highlight">
-<div class="badge special">🔥 Limited ₹1</div>
-<h3>Trial Mentorship</h3>
-<div class="duration">⏱️ 30 Min</div>
-<div class="price"><span class="old-price">₹999</span> ₹1</div>
-<button class="btn" onclick="openBooking('₹1 Trial Mentorship',1)">Book Now</button>
-</div>
-
-<!-- EXISTING CARDS -->
-
 <div class="mentorship-card">
 <div class="badge">Offer</div>
 <h3>CV Building</h3>
@@ -211,7 +188,7 @@ text-align:center;
 
 </section>
 
-<!-- POPUP (UNCHANGED) -->
+<!-- POPUP -->
 <div id="popup" class="popup">
 <div class="popup-box">
 
@@ -235,10 +212,11 @@ text-align:center;
 </div>
 
 <script>
-// SAME SCRIPT (NO CHANGE)
+
 let selectedType = "";
 let selectedPrice = 0;
 
+// 🔥 Prevent past date
 const today = new Date().toISOString().split("T")[0];
 document.getElementById("date").setAttribute("min", today);
 
@@ -256,6 +234,7 @@ function closePopup(){
 document.getElementById("popup").style.display = "none";
 }
 
+// ✅ CLOSE ON OUTSIDE CLICK
 window.onclick = function(e){
 const popup = document.getElementById("popup");
 if(e.target === popup){
@@ -264,6 +243,7 @@ popup.style.display = "none";
 };
 
 function confirmBooking(){
+
 const date = document.getElementById("date").value;
 const time = document.getElementById("time").value;
 const btn = document.getElementById("payBtn");
@@ -273,13 +253,17 @@ alert("Select date & time");
 return;
 }
 
+// 🔒 Prevent double click
 btn.innerText = "Processing...";
 btn.disabled = true;
 
+// ✅ SAFE URL
 const url = `payment.html?type=${encodeURIComponent(selectedType)}&price=${encodeURIComponent(selectedPrice)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`;
 
 window.location.href = url;
+
 }
+
 </script>
 
 </body>
