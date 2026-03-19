@@ -74,7 +74,7 @@ alert("Coupon error");
 };
 
 
-// ================= PAYMENT =================
+// ================= PAYMENT (NO SERVER) =================
 window.payNow = async function(){
 
 try{
@@ -84,117 +84,24 @@ alert("Please login first");
 return;
 }
 
-// CREATE ORDER
-const res = await fetch("https://designtechvlsi.onrender.com/create-order", {
-method: "POST",
-headers: {"Content-Type":"application/json"},
-body: JSON.stringify({ amount: price })
-});
-
-if(!res.ok){
-throw new Error("Create order failed");
-}
-
-const order = await res.json();
-
-
-// ================= RAZORPAY =================
-const options = {
-
-key: "rzp_live_SONJ2W1OZ1qVLZ",
-amount: order.amount,
-currency: "INR",
-name: "Design Tech VLSI",
-description: type,
-order_id: order.id,
-
-// ================= SUCCESS HANDLER =================
-handler: function(response){
-
-console.log("PAYMENT SUCCESS:", response);
-
-// ✅ INSTANT USER EXPERIENCE
-alert("Payment Successful 🎉");
-
-// 🔥 REDIRECT IMMEDIATELY (NO WAIT)
-window.location.href = "success.html";
-
-
-// ================= BACKGROUND PROCESS =================
-(async () => {
-try{
-
-// 🔐 VERIFY PAYMENT
-const verifyRes = await fetch("https://designtechvlsi.onrender.com/verify-payment", {
-method: "POST",
-headers: {"Content-Type":"application/json"},
-body: JSON.stringify({
-...response,
-courseId,
+// ✅ SAVE INTENT BEFORE PAYMENT (optional)
+await addDoc(collection(db,"payments"),{
 userId: currentUser.uid,
+email: currentUser.email,
 type,
 price,
-email: currentUser.email,
-date,
-time
-})
-});
-
-const data = await verifyRes.json();
-
-console.log("VERIFY:", data);
-
-
-// 💾 SAVE BOOKING (MENTORSHIP)
-await addDoc(collection(db,"bookings"),{
-userId: currentUser.uid,
-email: currentUser.email,
-type,
-date: date || "Not Selected",
-time: time || "Not Selected",
-price: Number(price),
-paymentId: response.razorpay_payment_id,
+status: "initiated",
 createdAt: new Date()
 });
 
-console.log("BOOKING SAVED");
+// ✅ REDIRECT TO RAZORPAY PAYMENT LINK
+const paymentLink = "https://rzp.io/l/YOUR_PAYMENT_LINK";
 
-
-// 📚 SAVE COURSE (IF COURSE)
-if(courseId){
-
-const userRef = doc(db,"users",currentUser.uid);
-const snap = await getDoc(userRef);
-
-let courses = snap.exists() ? snap.data().purchasedCourses || [] : [];
-
-if(!courses.includes(courseId)){
-courses.push(courseId);
-}
-
-await setDoc(userRef,{ purchasedCourses: courses },{ merge:true });
-
-console.log("COURSE SAVED");
-
-}
+window.location.href = paymentLink;
 
 }catch(err){
-console.log("BACKGROUND ERROR:", err);
-}
-})();
-
-}
-
-};
-
-const rzp = new Razorpay(options);
-rzp.open();
-
-}catch(err){
-
-console.error("PAY ERROR:", err);
+console.error(err);
 alert("Payment failed ❌");
-
 }
 
 };

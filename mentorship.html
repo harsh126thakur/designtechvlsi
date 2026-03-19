@@ -88,10 +88,12 @@ cursor:pointer;
 color:black;
 font-weight:600;
 width:100%;
+transition:0.3s;
 }
 
 .btn:hover{
 background:#0ea5e9;
+transform:scale(1.05);
 }
 
 /* POPUP */
@@ -125,8 +127,6 @@ text-align:center;
 <p style="color:#94a3b8;">Book a 30-minute personalized session</p>
 
 <div class="mentorship-grid">
-
-<!-- ALL CARDS (UNCHANGED) -->
 
 <div class="mentorship-card">
 <div class="badge">Offer</div>
@@ -205,7 +205,7 @@ text-align:center;
 
 <br><br>
 
-<button onclick="confirmBooking()" class="btn">Proceed to Pay</button>
+<button id="payBtn" onclick="confirmBooking()" class="btn">Proceed to Pay</button>
 <button onclick="closePopup()" class="btn" style="background:red;">Cancel</button>
 
 </div>
@@ -224,7 +224,6 @@ function openBooking(type, price){
 selectedType = type;
 selectedPrice = price;
 
-// reset fields
 document.getElementById("date").value = "";
 document.getElementById("time").value = "";
 
@@ -235,19 +234,33 @@ function closePopup(){
 document.getElementById("popup").style.display = "none";
 }
 
+// ✅ CLOSE ON OUTSIDE CLICK
+window.onclick = function(e){
+const popup = document.getElementById("popup");
+if(e.target === popup){
+popup.style.display = "none";
+}
+};
+
 function confirmBooking(){
 
 const date = document.getElementById("date").value;
 const time = document.getElementById("time").value;
+const btn = document.getElementById("payBtn");
 
 if(!date || !time){
 alert("Select date & time");
 return;
 }
 
-// 🔥 redirect (FINAL CORRECT)
-window.location.href =
-`payment.html?type=${encodeURIComponent(selectedType)}&price=${selectedPrice}&date=${date}&time=${encodeURIComponent(time)}`;
+// 🔒 Prevent double click
+btn.innerText = "Processing...";
+btn.disabled = true;
+
+// ✅ SAFE URL
+const url = `payment.html?type=${encodeURIComponent(selectedType)}&price=${encodeURIComponent(selectedPrice)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`;
+
+window.location.href = url;
 
 }
 
