@@ -30,10 +30,6 @@ const type = params.get("type") || "Course Purchase";
 const date = params.get("date");
 const time = params.get("time");
 
-console.log("TYPE:", type);
-console.log("DATE:", date);
-console.log("TIME:", time);
-
 document.getElementById("amount").innerText = "Amount: ₹ " + price;
 document.getElementById("title").innerText = type;
 
@@ -47,6 +43,8 @@ if(!code){
 alert("Enter coupon");
 return;
 }
+
+try{
 
 const snap = await getDoc(doc(db,"coupons",code));
 
@@ -66,18 +64,24 @@ price = Math.round(price);
 document.getElementById("amount").innerText = "Amount: ₹ " + price;
 
 alert("Coupon Applied ✅");
+
+}catch(err){
+console.error(err);
+alert("Coupon error");
+}
+
 };
 
 
 // ================= PAYMENT =================
 window.payNow = async function(){
 
+try{
+
 if(!currentUser){
 alert("Please login first");
 return;
 }
-
-console.log("USER:", currentUser.email);
 
 // CREATE ORDER
 const res = await fetch("https://designtechvlsi.onrender.com/create-order", {
@@ -86,12 +90,14 @@ headers: {"Content-Type":"application/json"},
 body: JSON.stringify({ amount: price })
 });
 
+if(!res.ok){
+throw new Error("Create order failed");
+}
+
 const order = await res.json();
 
-console.log("ORDER:", order);
 
-
-// RAZORPAY
+// ================= RAZORPAY =================
 const options = {
 
 key: "rzp_live_SONJ2W1OZ1qVLZ",
@@ -103,9 +109,9 @@ order_id: order.id,
 
 handler: async function(response){
 
-console.log("PAYMENT:", response);
+try{
 
-// VERIFY
+// VERIFY PAYMENT
 const verifyRes = await fetch("https://designtechvlsi.onrender.com/verify-payment", {
 method: "POST",
 headers: {"Content-Type":"application/json"},
@@ -121,29 +127,28 @@ time
 })
 });
 
-const data = await verifyRes.json();
+// 🔥 CHECK RESPONSE
+if(!verifyRes.ok){
+throw new Error("Verify API failed");
+}
 
-console.log("VERIFY:", data);
+const data = await verifyRes.json();
 
 
 // ================= SUCCESS =================
 if(data.success){
 
-console.log("Saving booking...");
-
 // SAVE BOOKING
 await addDoc(collection(db,"bookings"),{
   userId: currentUser.uid,
   email: currentUser.email,
-  type: type,
+  type,
   date: date || "Not Selected",
   time: time || "Not Selected",
   price: Number(price),
   paymentId: response.razorpay_payment_id,
   createdAt: new Date()
 });
-
-console.log("BOOKING SAVED");
 
 // COURSE PURCHASE
 if(courseId){
@@ -163,14 +168,16 @@ await setDoc(userRef,{ purchasedCourses: courses },{ merge:true });
 
 alert("Payment Successful 🎉");
 
-window.location.href = "success.html";
+// 🔥 FORCE REDIRECT
+window.location.replace("success.html");
 
 }else{
-
-console.log("Verification failed");
-
 alert("Payment verification failed ❌");
+}
 
+}catch(err){
+console.error("VERIFY ERROR:", err);
+alert("Something went wrong after payment ❌");
 }
 
 }
@@ -179,5 +186,12 @@ alert("Payment verification failed ❌");
 
 const rzp = new Razorpay(options);
 rzp.open();
+
+}catch(err){
+
+console.error("PAY ERROR:", err);
+alert("Payment failed ❌");
+
+}
 
 };
