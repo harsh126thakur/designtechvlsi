@@ -180,3 +180,14 @@ alert("Payment failed ❌");
 }
 
 }
+
+// prevent multiple ₹1 usage
+if(price === 1){
+const userRef = doc(db,"users",currentUser.uid);
+const snap = await getDoc(userRef);
+
+if(snap.exists() && snap.data().usedTrial){
+alert("You already used ₹1 trial ❌");
+return;
+}
+}
