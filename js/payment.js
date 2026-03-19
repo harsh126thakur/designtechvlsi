@@ -30,6 +30,7 @@ const type = params.get("type") || "Course Purchase";
 const date = params.get("date");
 const time = params.get("time");
 
+// UI SET
 document.getElementById("amount").innerText = "Amount: ₹ " + price;
 document.getElementById("title").innerText = type;
 
@@ -107,11 +108,23 @@ name: "Design Tech VLSI",
 description: type,
 order_id: order.id,
 
-handler: async function(response){
+// ================= SUCCESS HANDLER =================
+handler: function(response){
 
+console.log("PAYMENT SUCCESS:", response);
+
+// ✅ INSTANT USER EXPERIENCE
+alert("Payment Successful 🎉");
+
+// 🔥 REDIRECT IMMEDIATELY (NO WAIT)
+window.location.href = "success.html";
+
+
+// ================= BACKGROUND PROCESS =================
+(async () => {
 try{
 
-// VERIFY PAYMENT
+// 🔐 VERIFY PAYMENT
 const verifyRes = await fetch("https://designtechvlsi.onrender.com/verify-payment", {
 method: "POST",
 headers: {"Content-Type":"application/json"},
@@ -127,30 +140,27 @@ time
 })
 });
 
-// 🔥 CHECK RESPONSE
-if(!verifyRes.ok){
-throw new Error("Verify API failed");
-}
-
 const data = await verifyRes.json();
 
+console.log("VERIFY:", data);
 
-// ================= SUCCESS =================
-if(data.success){
 
-// SAVE BOOKING
+// 💾 SAVE BOOKING (MENTORSHIP)
 await addDoc(collection(db,"bookings"),{
-  userId: currentUser.uid,
-  email: currentUser.email,
-  type,
-  date: date || "Not Selected",
-  time: time || "Not Selected",
-  price: Number(price),
-  paymentId: response.razorpay_payment_id,
-  createdAt: new Date()
+userId: currentUser.uid,
+email: currentUser.email,
+type,
+date: date || "Not Selected",
+time: time || "Not Selected",
+price: Number(price),
+paymentId: response.razorpay_payment_id,
+createdAt: new Date()
 });
 
-// COURSE PURCHASE
+console.log("BOOKING SAVED");
+
+
+// 📚 SAVE COURSE (IF COURSE)
 if(courseId){
 
 const userRef = doc(db,"users",currentUser.uid);
@@ -164,21 +174,14 @@ courses.push(courseId);
 
 await setDoc(userRef,{ purchasedCourses: courses },{ merge:true });
 
-}
+console.log("COURSE SAVED");
 
-alert("Payment Successful 🎉");
-
-// 🔥 FORCE REDIRECT
-window.location.replace("success.html");
-
-}else{
-alert("Payment verification failed ❌");
 }
 
 }catch(err){
-console.error("VERIFY ERROR:", err);
-alert("Something went wrong after payment ❌");
+console.log("BACKGROUND ERROR:", err);
 }
+})();
 
 }
 
