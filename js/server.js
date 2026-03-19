@@ -12,8 +12,8 @@ app.use(cors());
 
 // 🔐 RAZORPAY
 const razorpay = new Razorpay({
-  key_id: "rzp_live_SONJ2W1OZ1qVLZ",
-  key_secret: "eLDa13udpqxLNRCegHp3XIFt"
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
 });
 
 
