@@ -5,14 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Payment</title>
 
-<link rel="stylesheet" href="css/login.css">
-
-<!-- FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-
-/* BODY */
 body{
   background:#0f172a;
   font-family:Poppins;
@@ -24,7 +19,6 @@ body{
   margin:0;
 }
 
-/* BOX */
 .payment-box{
   background:#020617;
   padding:40px;
@@ -34,22 +28,16 @@ body{
   border:1px solid #1e293b;
 }
 
-/* TITLE */
-h2{
-  margin-bottom:20px;
-}
+h2{ margin-bottom:20px; }
 
-/* INPUT */
 input{
   width:100%;
   padding:10px;
   margin:10px 0;
   border:none;
   border-radius:8px;
-  outline:none;
 }
 
-/* BUTTON */
 button{
   width:100%;
   padding:12px;
@@ -62,23 +50,10 @@ button{
   cursor:pointer;
 }
 
-button:hover{
-  background:#0ea5e9;
-}
-
-/* PRICE */
 #amount{
   font-size:20px;
-  margin-bottom:10px;
   color:#22c55e;
 }
-
-/* SMALL TEXT */
-.small{
-  color:#94a3b8;
-  font-size:14px;
-}
-
 </style>
 
 </head>
@@ -89,32 +64,17 @@ button:hover{
 
 <h2>💳 Complete Payment</h2>
 
-<!-- COURSE / MENTORSHIP -->
-<p id="title" class="small"></p>
-
-<!-- PRICE -->
+<p id="title"></p>
 <p id="amount"></p>
 
-<!-- EMAIL -->
-<input id="email" type="email" placeholder="Enter Email" required>
-
-<!-- COUPON -->
 <input id="coupon" placeholder="Enter Coupon Code">
 <button onclick="applyCoupon()">Apply Coupon</button>
 
-<!-- PAY BUTTON -->
 <button onclick="payNow()">Pay Now</button>
-
-<p class="small" style="margin-top:15px;">
-Secure payment via Razorpay 🔐
-</p>
 
 </div>
 
-<!-- RAZORPAY -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-<!-- YOUR SCRIPT -->
 <script type="module" src="js/payment.js"></script>
 
 </body>

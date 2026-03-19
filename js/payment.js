@@ -8,6 +8,18 @@ addDoc,
 collection
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+import {
+onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+// ================= AUTH =================
+let currentUser = null;
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+});
+
 
 // ================= GET DATA =================
 const params = new URLSearchParams(window.location.search);
@@ -15,12 +27,15 @@ const params = new URLSearchParams(window.location.search);
 const courseId = params.get("id");
 let price = Number(params.get("price"));
 const type = params.get("type") || "Course Purchase";
-
-// 🔥 SLOT DATA
 const date = params.get("date");
 const time = params.get("time");
 
+console.log("TYPE:", type);
+console.log("DATE:", date);
+console.log("TIME:", time);
+
 document.getElementById("amount").innerText = "Amount: ₹ " + price;
+document.getElementById("title").innerText = type;
 
 
 // ================= APPLY COUPON =================
@@ -44,10 +59,7 @@ const discount = snap.data().discount;
 
 price = price - (price * discount / 100);
 
-// 🔥 FIX PRICE
-if(price < 10){
-price = 10;
-}
+if(price < 10) price = 10;
 
 price = Math.round(price);
 
@@ -60,14 +72,14 @@ alert("Coupon Applied ✅");
 // ================= PAYMENT =================
 window.payNow = async function(){
 
-const user = auth.currentUser;
-
-if(!user){
+if(!currentUser){
 alert("Please login first");
 return;
 }
 
-// 🔐 CREATE ORDER
+console.log("USER:", currentUser.email);
+
+// CREATE ORDER
 const res = await fetch("https://designtechvlsi.onrender.com/create-order", {
 method: "POST",
 headers: {"Content-Type":"application/json"},
@@ -76,8 +88,10 @@ body: JSON.stringify({ amount: price })
 
 const order = await res.json();
 
+console.log("ORDER:", order);
 
-// 🔐 RAZORPAY
+
+// RAZORPAY
 const options = {
 
 key: "rzp_live_SONJ2W1OZ1qVLZ",
@@ -89,17 +103,19 @@ order_id: order.id,
 
 handler: async function(response){
 
-// 🔐 VERIFY PAYMENT
+console.log("PAYMENT:", response);
+
+// VERIFY
 const verifyRes = await fetch("https://designtechvlsi.onrender.com/verify-payment", {
 method: "POST",
 headers: {"Content-Type":"application/json"},
 body: JSON.stringify({
 ...response,
 courseId,
-userId: user.uid,
+userId: currentUser.uid,
 type,
 price,
-email: user.email,
+email: currentUser.email,
 date,
 time
 })
@@ -107,28 +123,32 @@ time
 
 const data = await verifyRes.json();
 
+console.log("VERIFY:", data);
+
+
+// ================= SUCCESS =================
 if(data.success){
 
-// ================= SAVE BOOKING =================
-if(date && time){
+console.log("Saving booking...");
 
+// SAVE BOOKING
 await addDoc(collection(db,"bookings"),{
-userId: user.uid,
-email: user.email,
-type: type,
-date: date,
-time: time,
-price: price,
-paymentId: response.razorpay_payment_id,
-createdAt: new Date()
+  userId: currentUser.uid,
+  email: currentUser.email,
+  type: type,
+  date: date || "Not Selected",
+  time: time || "Not Selected",
+  price: Number(price),
+  paymentId: response.razorpay_payment_id,
+  createdAt: new Date()
 });
 
-}
+console.log("BOOKING SAVED");
 
-// ================= COURSE PURCHASE =================
+// COURSE PURCHASE
 if(courseId){
 
-const userRef = doc(db,"users",user.uid);
+const userRef = doc(db,"users",currentUser.uid);
 const snap = await getDoc(userRef);
 
 let courses = snap.exists() ? snap.data().purchasedCourses || [] : [];
@@ -141,12 +161,16 @@ await setDoc(userRef,{ purchasedCourses: courses },{ merge:true });
 
 }
 
-alert("Payment Verified ✅");
+alert("Payment Successful 🎉");
 
 window.location.href = "success.html";
 
 }else{
+
+console.log("Verification failed");
+
 alert("Payment verification failed ❌");
+
 }
 
 }

@@ -114,7 +114,6 @@ border-radius:10px;
 width:300px;
 text-align:center;
 }
-
 </style>
 </head>
 
@@ -127,7 +126,8 @@ text-align:center;
 
 <div class="mentorship-grid">
 
-<!-- CV -->
+<!-- ALL CARDS (UNCHANGED) -->
+
 <div class="mentorship-card">
 <div class="badge">Offer</div>
 <h3>CV Building</h3>
@@ -136,7 +136,6 @@ text-align:center;
 <button class="btn" onclick="openBooking('CV Building',999)">Book Now</button>
 </div>
 
-<!-- Internship -->
 <div class="mentorship-card">
 <div class="badge">Offer</div>
 <h3>Internship Mentorship</h3>
@@ -145,7 +144,6 @@ text-align:center;
 <button class="btn" onclick="openBooking('Internship Mentorship',999)">Book Now</button>
 </div>
 
-<!-- GATE -->
 <div class="mentorship-card">
 <div class="badge">Offer</div>
 <h3>GATE Mentorship</h3>
@@ -154,7 +152,6 @@ text-align:center;
 <button class="btn" onclick="openBooking('GATE Mentorship',999)">Book Now</button>
 </div>
 
-<!-- POST GATE -->
 <div class="mentorship-card">
 <div class="badge premium">Premium</div>
 <h3>Post-GATE Guidance</h3>
@@ -163,7 +160,6 @@ text-align:center;
 <button class="btn" onclick="openBooking('Post-GATE Guidance',1499)">Book Now</button>
 </div>
 
-<!-- INTERVIEW -->
 <div class="mentorship-card">
 <div class="badge premium">Premium</div>
 <h3>Interview Mentorship</h3>
@@ -172,7 +168,6 @@ text-align:center;
 <button class="btn" onclick="openBooking('Interview Mentorship',1499)">Book Now</button>
 </div>
 
-<!-- VLSI -->
 <div class="mentorship-card">
 <div class="badge premium">Premium</div>
 <h3>VLSI Mentorship</h3>
@@ -181,7 +176,6 @@ text-align:center;
 <button class="btn" onclick="openBooking('VLSI Mentorship',1999)">Book Now</button>
 </div>
 
-<!-- PHD -->
 <div class="mentorship-card">
 <div class="badge premium">Premium</div>
 <h3>PhD Mentorship</h3>
@@ -194,7 +188,7 @@ text-align:center;
 
 </section>
 
-<!-- 🔥 POPUP -->
+<!-- POPUP -->
 <div id="popup" class="popup">
 <div class="popup-box">
 
@@ -222,9 +216,18 @@ text-align:center;
 let selectedType = "";
 let selectedPrice = 0;
 
+// 🔥 Prevent past date
+const today = new Date().toISOString().split("T")[0];
+document.getElementById("date").setAttribute("min", today);
+
 function openBooking(type, price){
 selectedType = type;
 selectedPrice = price;
+
+// reset fields
+document.getElementById("date").value = "";
+document.getElementById("time").value = "";
+
 document.getElementById("popup").style.display = "flex";
 }
 
@@ -242,6 +245,7 @@ alert("Select date & time");
 return;
 }
 
+// 🔥 redirect (FINAL CORRECT)
 window.location.href =
 `payment.html?type=${encodeURIComponent(selectedType)}&price=${selectedPrice}&date=${date}&time=${encodeURIComponent(time)}`;
 
