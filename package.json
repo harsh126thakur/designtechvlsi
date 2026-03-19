@@ -1,27 +1,14 @@
 {
-  "name": "design-tech-vlsi",
+  "name": "razorpay-server",
   "version": "1.0.0",
-  "description": "DesignTech VLSI is an interactive learning platform for VLSI and ECE concepts, featuring animated flowcharts, modern UI, and practical design insights.",
-  "main": "index.js",
+  "type": "module",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/harsh126thakur/designtechvlsi.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/harsh126thakur/designtechvlsi/issues"
-  },
-  "homepage": "https://github.com/harsh126thakur/designtechvlsi#readme",
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
-    "nodemailer": "^8.0.3",
     "razorpay": "^2.9.6"
   }
 }
