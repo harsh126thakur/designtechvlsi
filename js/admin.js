@@ -18,6 +18,59 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
+// ================= YOUTUBE URL HELPERS =================
+function convertToEmbedUrl(url) {
+  if (!url) return "";
+
+  url = url.trim();
+
+  if (url.includes("youtube.com/embed/")) {
+    return url;
+  }
+
+  if (url.includes("youtu.be/")) {
+    const videoId = url.split("youtu.be/")[1].split("?")[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+
+  if (url.includes("youtube.com/watch?v=")) {
+    const videoId = url.split("v=")[1].split("&")[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+
+  if (url.includes("youtube.com/shorts/")) {
+    const videoId = url.split("youtube.com/shorts/")[1].split("?")[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+
+  return url;
+}
+
+function extractYouTubeVideoId(url) {
+  if (!url) return "";
+
+  url = url.trim();
+
+  if (url.includes("youtube.com/embed/")) {
+    return url.split("youtube.com/embed/")[1].split("?")[0];
+  }
+
+  if (url.includes("youtu.be/")) {
+    return url.split("youtu.be/")[1].split("?")[0];
+  }
+
+  if (url.includes("youtube.com/watch?v=")) {
+    return url.split("v=")[1].split("&")[0];
+  }
+
+  if (url.includes("youtube.com/shorts/")) {
+    return url.split("youtube.com/shorts/")[1].split("?")[0];
+  }
+
+  return "";
+}
+
+
 // ================= LOGIN =================
 window.login = async function(){
 
@@ -53,6 +106,7 @@ window.login = async function(){
     loadCourses();
     loadPodcasts();
     loadBookings();
+    loadUsers();
 
   }catch(err){
     console.error(err);
@@ -100,10 +154,13 @@ async function saveNewCourse(){
     lectureDivs.forEach(div=>{
       const inputs = div.querySelectorAll("input");
 
-      if(inputs[0].value && inputs[1].value){
+      const lectureTitle = inputs[0].value.trim();
+      const lectureLink = inputs[1].value.trim();
+
+      if(lectureTitle && lectureLink){
         lectures.push({
-          title: inputs[0].value,
-          link: inputs[1].value
+          title: lectureTitle,
+          link: convertToEmbedUrl(lectureLink)
         });
       }
     });
@@ -235,16 +292,19 @@ window.editCourse = async function(id,title,type,price){
     lectureDivs.forEach(div=>{
       const inputs = div.querySelectorAll("input");
 
-      if(inputs[0].value && inputs[1].value){
+      const lectureTitle = inputs[0].value.trim();
+      const lectureLink = inputs[1].value.trim();
+
+      if(lectureTitle && lectureLink){
         lectures.push({
-          title: inputs[0].value,
-          link: inputs[1].value
+          title: lectureTitle,
+          link: convertToEmbedUrl(lectureLink)
         });
       }
     });
 
     await updateDoc(doc(db,"courses",id),{
-      title: document.getElementById("courseTitle").value,
+      title: document.getElementById("courseTitle").value.trim(),
       type: document.getElementById("courseType").value,
       price: document.getElementById("courseType").value === "paid"
         ? Number(document.getElementById("coursePrice").value)
@@ -273,7 +333,6 @@ async function loadAdminData(){
     let mentorshipRevenue = 0;
     let courseRevenue = 0;
 
-    // Count paid users from users.purchasedCourses
     userSnap.forEach(docSnap=>{
       const data = docSnap.data();
       const purchasedCourses = data.purchasedCourses || [];
@@ -283,7 +342,6 @@ async function loadAdminData(){
       }
     });
 
-    // Mentorship revenue from bookings
     bookingSnap.forEach(docSnap=>{
       const data = docSnap.data();
       const price = Number(data.price || 0);
@@ -293,7 +351,6 @@ async function loadAdminData(){
       }
     });
 
-    // Course revenue from payments collection
     if(!paymentsSnap.empty){
       paymentsSnap.forEach(docSnap=>{
         const data = docSnap.data();
@@ -305,7 +362,6 @@ async function loadAdminData(){
 
         if(isNaN(amount)) amount = 0;
 
-        // If stored in paisa accidentally
         if(amount > 99999){
           amount = amount / 100;
         }
@@ -315,7 +371,6 @@ async function loadAdminData(){
         }else if(source.includes("mentorship") || type.includes("mentorship") || type.includes("booking")){
           mentorshipRevenue += amount;
         }else{
-          // fallback: if source missing, count in course revenue
           courseRevenue += amount;
         }
       });
@@ -392,7 +447,8 @@ if(podcastForm){
 
     const title = document.getElementById("pTitle").value.trim();
     const category = document.getElementById("pCategory").value.trim();
-    const videoUrl = document.getElementById("pUrl").value.trim();
+    const rawVideoUrl = document.getElementById("pUrl").value.trim();
+    const videoUrl = convertToEmbedUrl(rawVideoUrl);
 
     if(!title || !videoUrl){
       alert("Fill required fields");
@@ -438,14 +494,7 @@ async function loadPodcasts(){
       const data = docSnap.data();
       const id = docSnap.id;
 
-      let videoId = "";
-
-      if((data.videoUrl || "").includes("watch?v=")){
-        videoId = data.videoUrl.split("watch?v=")[1].split("&")[0];
-      }else if((data.videoUrl || "").includes("youtu.be/")){
-        videoId = data.videoUrl.split("youtu.be/")[1].split("?")[0];
-      }
-
+      const videoId = extractYouTubeVideoId(data.videoUrl || "");
       const thumbnail = videoId
         ? `https://img.youtube.com/vi/${videoId}/0.jpg`
         : "";
