@@ -23,7 +23,11 @@ if (!user) {
     return;
 }
 
-document.getElementById("welcome").innerText = "Welcome " + user.email;
+const userDoc = await getDoc(doc(db, "users", user.uid));
+const userData = userDoc.exists() ? userDoc.data() : {};
+
+document.getElementById("welcome").innerText =
+  "Welcome " + (userData.name || user.displayName || "Student");
 
 // Loading state
 document.getElementById("courseList").innerHTML = "<p style='padding:20px'>Loading courses...</p>";
@@ -42,7 +46,6 @@ try {
 }
 
 });
-
 
 // ================= LOAD MENTORSHIP BOOKINGS =================
 async function loadMentorshipBookings(user){
