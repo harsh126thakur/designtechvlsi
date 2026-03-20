@@ -1,134 +1,128 @@
-// ================= IMPORTS =================
 import { auth, db } from "./firebase.js";
 
 import {
-signInWithEmailAndPassword,
-signOut
+  signInWithEmailAndPassword,
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
-collection,
-getDocs,
-addDoc,
-doc,
-deleteDoc,
-updateDoc,
-getDoc,
-query,
-orderBy
+  collection,
+  getDocs,
+  addDoc,
+  doc,
+  deleteDoc,
+  updateDoc,
+  getDoc,
+  query,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
 // ================= LOGIN =================
 window.login = async function(){
 
-const email = document.getElementById("email").value.trim();
-const password = document.getElementById("password").value.trim();
-const errorBox = document.getElementById("error");
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const errorBox = document.getElementById("error");
 
-errorBox.innerText = "";
+  errorBox.innerText = "";
 
-if(!email || !password){
-errorBox.innerText = "Enter email & password";
-return;
-}
+  if(!email || !password){
+    errorBox.innerText = "Enter email & password";
+    return;
+  }
 
-try{
+  try{
 
-const userCred = await signInWithEmailAndPassword(auth, email, password);
-const user = userCred.user;
+    const userCred = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCred.user;
 
-// 🔥 ADMIN CHECK
-const adminDoc = await getDoc(doc(db,"admins",user.email));
+    const adminDoc = await getDoc(doc(db,"admins",user.email));
 
-if(!adminDoc.exists()){
-errorBox.innerText = "Access denied (not admin)";
-await signOut(auth);
-return;
-}
+    if(!adminDoc.exists()){
+      errorBox.innerText = "Access denied (not admin)";
+      await signOut(auth);
+      return;
+    }
 
-// ✅ ADMIN VERIFIED
-document.getElementById("loginSection").style.display="none";
-document.getElementById("dashboardSection").style.display="block";
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("dashboardSection").style.display = "block";
 
-// LOAD ALL DATA
-loadAdminData();
-loadCourses();
-loadPodcasts();
-loadBookings();
+    loadAdminData();
+    loadEnquiries();
+    loadCourses();
+    loadPodcasts();
+    loadBookings();
 
-}catch(err){
-console.error(err);
-errorBox.innerText = err.message;
-}
+  }catch(err){
+    console.error(err);
+    errorBox.innerText = err.message;
+  }
 
 };
 
 
 // ================= LOGOUT =================
 window.logout = async function(){
-await signOut(auth);
-location.reload();
+  await signOut(auth);
+  location.reload();
 };
 
 
 // ================= ADD LECTURE =================
 window.addLectureField = function(){
 
-const container = document.getElementById("lectureContainer");
+  const container = document.getElementById("lectureContainer");
+  const div = document.createElement("div");
 
-const div = document.createElement("div");
+  div.innerHTML = `
+    <input type="text" placeholder="Lecture Title">
+    <input type="text" placeholder="Lecture Link">
+    <button onclick="this.parentElement.remove()">❌</button>
+  `;
 
-div.innerHTML = `
-<input type="text" placeholder="Lecture Title">
-<input type="text" placeholder="Lecture Link">
-<button onclick="this.parentElement.remove()">❌</button>
-`;
-
-container.appendChild(div);
+  container.appendChild(div);
 };
 
 
 // ================= SAVE COURSE =================
 async function saveNewCourse(){
 
-try{
+  try{
 
-const title = document.getElementById("courseTitle").value;
-const type = document.getElementById("courseType").value;
-const price = document.getElementById("coursePrice").value;
+    const title = document.getElementById("courseTitle").value.trim();
+    const type = document.getElementById("courseType").value;
+    const price = document.getElementById("coursePrice").value;
 
-const lectureDivs = document.querySelectorAll("#lectureContainer div");
+    const lectureDivs = document.querySelectorAll("#lectureContainer div");
+    let lectures = [];
 
-let lectures = [];
+    lectureDivs.forEach(div=>{
+      const inputs = div.querySelectorAll("input");
 
-lectureDivs.forEach(div=>{
-const inputs = div.querySelectorAll("input");
+      if(inputs[0].value && inputs[1].value){
+        lectures.push({
+          title: inputs[0].value,
+          link: inputs[1].value
+        });
+      }
+    });
 
-if(inputs[0].value && inputs[1].value){
-lectures.push({
-title: inputs[0].value,
-link: inputs[1].value
-});
-}
-});
+    await addDoc(collection(db,"courses"),{
+      title,
+      type,
+      price: type === "paid" ? Number(price) : 0,
+      lectures
+    });
 
-await addDoc(collection(db,"courses"),{
-title,
-type,
-price: type==="paid" ? Number(price) : 0,
-lectures
-});
+    alert("Course Added");
+    resetForm();
+    loadCourses();
 
-alert("Course Added");
-
-resetForm();
-loadCourses();
-
-}catch(err){
-console.error(err);
-alert("Error adding course");
-}
+  }catch(err){
+    console.error(err);
+    alert("Error adding course");
+  }
 
 }
 
@@ -137,195 +131,254 @@ window.saveCourse = saveNewCourse;
 
 // ================= RESET =================
 function resetForm(){
-document.getElementById("courseTitle").value="";
-document.getElementById("coursePrice").value="";
-document.getElementById("lectureContainer").innerHTML="";
-window.saveCourse = saveNewCourse;
+  document.getElementById("courseTitle").value = "";
+  document.getElementById("coursePrice").value = "";
+  document.getElementById("lectureContainer").innerHTML = "";
+  window.saveCourse = saveNewCourse;
 }
 
 
 // ================= LOAD COURSES =================
 async function loadCourses(){
 
-const snap = await getDocs(collection(db,"courses"));
+  const snap = await getDocs(collection(db,"courses"));
+  let html = "";
 
-let html = "";
+  snap.forEach(docSnap=>{
 
-snap.forEach(docSnap=>{
+    const data = docSnap.data();
+    const id = docSnap.id;
 
-const data = docSnap.data();
-const id = docSnap.id;
+    let lectureHTML = "";
 
-let lectureHTML = "";
+    if(data.lectures){
+      data.lectures.forEach(l=>{
+        lectureHTML += `<li><a href="${l.link}" target="_blank">▶ ${l.title}</a></li>`;
+      });
+    }
 
-if(data.lectures){
-data.lectures.forEach(l=>{
-lectureHTML += `<li><a href="${l.link}" target="_blank">▶ ${l.title}</a></li>`;
-});
-}
+    const safeTitle = (data.title || "").replace(/'/g, "\\'");
 
-const safeTitle = data.title.replace(/'/g, "\\'");
+    html += `
+      <div class="course">
+        <h4>${data.title || ""}</h4>
 
-html += `
-<div class="course">
-<h4>${data.title}</h4>
+        <p>
+          ${(data.type || "").toUpperCase()}
+          ${data.type === "paid" ? "₹" + (data.price || 0) : ""}
+          <br>
+          <span style="color:#38bdf8;">
+            ${data.lectures ? data.lectures.length : 0} Lectures
+          </span>
+        </p>
 
-<p>
-${data.type.toUpperCase()} 
-${data.type==="paid" ? "₹"+data.price : ""}
-<br>
-<span style="color:#38bdf8;">
-${data.lectures ? data.lectures.length : 0} Lectures
-</span>
-</p>
+        <ul>${lectureHTML}</ul>
 
-<ul>${lectureHTML}</ul>
+        <button onclick="editCourse('${id}','${safeTitle}','${data.type || "free"}',${Number(data.price || 0)})">Edit</button>
+        <button onclick="deleteCourse('${id}')">Delete</button>
+      </div>
+    `;
 
-<button onclick="editCourse('${id}','${safeTitle}','${data.type}',${data.price})">Edit</button>
-<button onclick="deleteCourse('${id}')">Delete</button>
-</div>
-`;
+  });
 
-});
-
-document.getElementById("courseListAdmin").innerHTML = html;
+  document.getElementById("courseListAdmin").innerHTML = html;
 }
 
 
 // ================= DELETE COURSE =================
 window.deleteCourse = async function(id){
-if(!confirm("Delete course?")) return;
+  if(!confirm("Delete course?")) return;
 
-await deleteDoc(doc(db,"courses",id));
-loadCourses();
+  await deleteDoc(doc(db,"courses",id));
+  loadCourses();
 };
 
 
 // ================= EDIT COURSE =================
 window.editCourse = async function(id,title,type,price){
 
-document.getElementById("courseTitle").value = title;
-document.getElementById("courseType").value = type;
-document.getElementById("coursePrice").value = price;
+  document.getElementById("courseTitle").value = title;
+  document.getElementById("courseType").value = type;
+  document.getElementById("coursePrice").value = price;
 
-const container = document.getElementById("lectureContainer");
-container.innerHTML = "";
+  const container = document.getElementById("lectureContainer");
+  container.innerHTML = "";
 
-const snap = await getDocs(collection(db,"courses"));
+  const snap = await getDocs(collection(db,"courses"));
 
-snap.forEach(docSnap=>{
-if(docSnap.id === id){
+  snap.forEach(docSnap=>{
+    if(docSnap.id === id){
 
-const data = docSnap.data();
+      const data = docSnap.data();
 
-if(data.lectures){
-data.lectures.forEach(l=>{
-const div = document.createElement("div");
+      if(data.lectures){
+        data.lectures.forEach(l=>{
+          const div = document.createElement("div");
 
-div.innerHTML = `
-<input value="${l.title}">
-<input value="${l.link}">
-<button onclick="this.parentElement.remove()">❌</button>
-`;
+          div.innerHTML = `
+            <input value="${l.title}">
+            <input value="${l.link}">
+            <button onclick="this.parentElement.remove()">❌</button>
+          `;
 
-container.appendChild(div);
-});
-}
+          container.appendChild(div);
+        });
+      }
+    }
+  });
 
-}
-});
+  window.saveCourse = async function(){
 
-// override save
-window.saveCourse = async function(){
+    const lectureDivs = document.querySelectorAll("#lectureContainer div");
+    let lectures = [];
 
-const lectureDivs = document.querySelectorAll("#lectureContainer div");
+    lectureDivs.forEach(div=>{
+      const inputs = div.querySelectorAll("input");
 
-let lectures = [];
+      if(inputs[0].value && inputs[1].value){
+        lectures.push({
+          title: inputs[0].value,
+          link: inputs[1].value
+        });
+      }
+    });
 
-lectureDivs.forEach(div=>{
-const inputs = div.querySelectorAll("input");
+    await updateDoc(doc(db,"courses",id),{
+      title: document.getElementById("courseTitle").value,
+      type: document.getElementById("courseType").value,
+      price: document.getElementById("courseType").value === "paid"
+        ? Number(document.getElementById("coursePrice").value)
+        : 0,
+      lectures
+    });
 
-if(inputs[0].value && inputs[1].value){
-lectures.push({
-title: inputs[0].value,
-link: inputs[1].value
-});
-}
-});
-
-await updateDoc(doc(db,"courses",id),{
-title: document.getElementById("courseTitle").value,
-type: document.getElementById("courseType").value,
-price: document.getElementById("courseType").value==="paid"
-? Number(document.getElementById("coursePrice").value)
-: 0,
-lectures
-});
-
-alert("Updated");
-
-resetForm();
-loadCourses();
-};
-
+    alert("Updated");
+    resetForm();
+    loadCourses();
+  };
 };
 
 
 // ================= ADMIN STATS =================
 async function loadAdminData(){
+  try{
+    const [userSnap, enquirySnap, bookingSnap, paymentsSnap] = await Promise.all([
+      getDocs(collection(db,"users")),
+      getDocs(collection(db,"enquiries")),
+      getDocs(collection(db,"bookings")),
+      getDocs(collection(db,"payments")).catch(() => ({ empty: true, forEach: ()=>{}, size: 0 }))
+    ]);
 
-const userSnap = await getDocs(collection(db,"users"));
-const enquirySnap = await getDocs(collection(db,"enquiries"));
+    let paidUsers = 0;
+    let mentorshipRevenue = 0;
+    let courseRevenue = 0;
 
-document.getElementById("totalUsers").innerText = userSnap.size;
-document.getElementById("totalEnquiries").innerText = enquirySnap.size;
+    // Count paid users from users.purchasedCourses
+    userSnap.forEach(docSnap=>{
+      const data = docSnap.data();
+      const purchasedCourses = data.purchasedCourses || [];
 
-};
+      if(Array.isArray(purchasedCourses) && purchasedCourses.length > 0){
+        paidUsers++;
+      }
+    });
+
+    // Mentorship revenue from bookings
+    bookingSnap.forEach(docSnap=>{
+      const data = docSnap.data();
+      const price = Number(data.price || 0);
+
+      if(!isNaN(price)){
+        mentorshipRevenue += price;
+      }
+    });
+
+    // Course revenue from payments collection
+    if(!paymentsSnap.empty){
+      paymentsSnap.forEach(docSnap=>{
+        const data = docSnap.data();
+
+        const source = (data.source || "").toLowerCase();
+        const type = (data.type || "").toLowerCase();
+
+        let amount = Number(data.amount ?? data.price ?? 0);
+
+        if(isNaN(amount)) amount = 0;
+
+        // If stored in paisa accidentally
+        if(amount > 99999){
+          amount = amount / 100;
+        }
+
+        if(source.includes("course") || type.includes("course")){
+          courseRevenue += amount;
+        }else if(source.includes("mentorship") || type.includes("mentorship") || type.includes("booking")){
+          mentorshipRevenue += amount;
+        }else{
+          // fallback: if source missing, count in course revenue
+          courseRevenue += amount;
+        }
+      });
+    }
+
+    const totalRevenue = mentorshipRevenue + courseRevenue;
+
+    document.getElementById("totalUsers").innerText = userSnap.size;
+    document.getElementById("totalEnquiries").innerText = enquirySnap.size;
+    document.getElementById("paidUsers").innerText = paidUsers;
+    document.getElementById("revenue").innerText = `₹${Math.round(totalRevenue)}`;
+    document.getElementById("mentorshipRevenue").innerText = `₹${Math.round(mentorshipRevenue)}`;
+    document.getElementById("courseRevenue").innerText = `₹${Math.round(courseRevenue)}`;
+
+  }catch(err){
+    console.error("Admin stats error:", err);
+  }
+}
 
 
 // ================= USERS =================
 async function loadUsers(){
 
-const userSnap = await getDocs(collection(db,"users"));
+  const userSnap = await getDocs(collection(db,"users"));
+  let html = "";
 
-let html = "";
+  userSnap.forEach(docSnap=>{
+    const data = docSnap.data();
 
-userSnap.forEach(docSnap=>{
-const data = docSnap.data();
+    html += `
+      <tr>
+        <td>${data.name || "User"}</td>
+        <td>${data.email || ""}</td>
+        <td>-</td>
+      </tr>
+    `;
+  });
 
-html += `
-<tr>
-<td>${data.name || "User"}</td>
-<td>${data.email || ""}</td>
-<td>-</td>
-</tr>`;
-});
-
-document.getElementById("userTable").innerHTML = html;
+  const userTable = document.getElementById("userTable");
+  if(userTable) userTable.innerHTML = html;
 }
 
 
 // ================= ENQUIRIES =================
 async function loadEnquiries(){
 
-const snap = await getDocs(collection(db,"enquiries"));
+  const snap = await getDocs(collection(db,"enquiries"));
+  let html = "";
 
-let html = "";
+  snap.forEach(docSnap=>{
+    const d = docSnap.data();
 
-snap.forEach(docSnap=>{
-const d = docSnap.data();
+    html += `
+      <tr>
+        <td>${d.name || ""}</td>
+        <td>${d.email || ""}</td>
+        <td>${d.phone || ""}</td>
+        <td>${d.message || ""}</td>
+      </tr>
+    `;
+  });
 
-html += `
-<tr>
-<td>${d.name||""}</td>
-<td>${d.email||""}</td>
-<td>${d.phone||""}</td>
-<td>${d.message||""}</td>
-<td>${d.status||"new"}</td>
-</tr>`;
-});
-
-document.getElementById("table").innerHTML = html;
+  document.getElementById("table").innerHTML = html;
 }
 
 
@@ -333,151 +386,160 @@ document.getElementById("table").innerHTML = html;
 const podcastForm = document.getElementById("podcastForm");
 
 if(podcastForm){
+  podcastForm.addEventListener("submit", async (e)=>{
 
-podcastForm.addEventListener("submit", async (e)=>{
+    e.preventDefault();
 
-e.preventDefault();
+    const title = document.getElementById("pTitle").value.trim();
+    const category = document.getElementById("pCategory").value.trim();
+    const videoUrl = document.getElementById("pUrl").value.trim();
 
-const title = document.getElementById("pTitle").value.trim();
-const category = document.getElementById("pCategory").value.trim();
-const videoUrl = document.getElementById("pUrl").value.trim();
+    if(!title || !videoUrl){
+      alert("Fill required fields");
+      return;
+    }
 
-if(!title || !videoUrl){
-alert("Fill required fields");
-return;
-}
+    try{
+      await addDoc(collection(db,"podcast"),{
+        title,
+        category,
+        videoUrl,
+        createdAt: new Date()
+      });
 
-try{
+      alert("Podcast added");
+      podcastForm.reset();
+      loadPodcasts();
 
-await addDoc(collection(db,"podcast"),{
-title,
-category,
-videoUrl,
-createdAt: new Date()
-});
+    }catch(err){
+      console.error(err);
+      alert(err.message);
+    }
 
-alert("Podcast added");
-podcastForm.reset();
-
-loadPodcasts();
-
-}catch(err){
-console.error(err);
-alert(err.message);
-}
-
-});
-
+  });
 }
 
 
 // ================= LOAD PODCAST =================
 async function loadPodcasts(){
 
-const container = document.getElementById("podcastContainer");
-if(!container) return;
+  const container = document.getElementById("podcastContainer");
+  if(!container) return;
 
-container.innerHTML = "Loading...";
+  container.innerHTML = "Loading...";
 
-try{
+  try{
+    const q = query(collection(db,"podcast"), orderBy("createdAt","desc"));
+    const snapshot = await getDocs(q);
 
-const q = query(collection(db,"podcast"), orderBy("createdAt","desc"));
-const snapshot = await getDocs(q);
+    container.innerHTML = "";
 
-container.innerHTML = "";
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      const id = docSnap.id;
 
-snapshot.forEach(docSnap => {
+      let videoId = "";
 
-const data = docSnap.data();
-const id = docSnap.id;
+      if((data.videoUrl || "").includes("watch?v=")){
+        videoId = data.videoUrl.split("watch?v=")[1].split("&")[0];
+      }else if((data.videoUrl || "").includes("youtu.be/")){
+        videoId = data.videoUrl.split("youtu.be/")[1].split("?")[0];
+      }
 
-let videoId = "";
+      const thumbnail = videoId
+        ? `https://img.youtube.com/vi/${videoId}/0.jpg`
+        : "";
 
-if(data.videoUrl.includes("watch?v=")){
-videoId = data.videoUrl.split("watch?v=")[1].split("&")[0];
-}
+      container.innerHTML += `
+        <div class="video-card">
+          ${thumbnail ? `<img src="${thumbnail}" onclick="window.open('${data.videoUrl}','_blank')" />` : ""}
+          <p>${data.title}</p>
+          <small>${data.category || ""}</small>
+          <button onclick="deletePodcast('${id}')">Delete</button>
+        </div>
+      `;
+    });
 
-const thumbnail = `https://img.youtube.com/vi/${videoId}/0.jpg`;
-
-container.innerHTML += `
-<div class="video-card">
-<img src="${thumbnail}" onclick="window.open('${data.videoUrl}','_blank')" />
-<p>${data.title}</p>
-<small>${data.category || ""}</small>
-<button onclick="deletePodcast('${id}')">Delete</button>
-</div>
-`;
-
-});
-
-}catch(err){
-console.error(err);
-container.innerHTML = "Error loading podcasts";
-}
-
+  }catch(err){
+    console.error(err);
+    container.innerHTML = "Error loading podcasts";
+  }
 }
 
 
 // ================= DELETE PODCAST =================
 window.deletePodcast = async function(id){
 
-if(!confirm("Delete this podcast?")) return;
+  if(!confirm("Delete this podcast?")) return;
 
-await deleteDoc(doc(db,"podcast",id));
-alert("Deleted");
-loadPodcasts();
-
+  await deleteDoc(doc(db,"podcast",id));
+  alert("Deleted");
+  loadPodcasts();
 };
 
 
-// ================= BOOKINGS =================
+// ================= LOAD BOOKINGS =================
 async function loadBookings(){
 
-const container = document.getElementById("bookingList");
-if(!container) return;
+  const container = document.getElementById("bookingList");
+  if(!container) return;
 
-container.innerHTML = "Loading...";
+  container.innerHTML = "Loading...";
 
-const snapshot = await getDocs(collection(db,"bookings"));
+  const snapshot = await getDocs(collection(db,"bookings"));
+  container.innerHTML = "";
 
-container.innerHTML = "";
+  snapshot.forEach(docSnap => {
 
-snapshot.forEach(docSnap => {
+    const data = docSnap.data();
 
-const data = docSnap.data();
+    const div = document.createElement("div");
+    div.className = "booking-card";
 
-const div = document.createElement("div");
+    div.innerHTML = `
+      <p><b>👤 Name:</b> ${data.name || "N/A"}</p>
+      <p><b>📧 Email:</b> ${data.email || "N/A"}</p>
+      <p><b>📱 Phone:</b> ${data.phone || "N/A"}</p>
 
-div.style.background = "#020617";
-div.style.padding = "15px";
-div.style.margin = "10px";
-div.style.borderRadius = "8px";
+      <hr>
 
-div.innerHTML = `
-<p><b>Email:</b> ${data.email}</p>
-<p><b>Type:</b> ${data.type}</p>
-<p><b>Date:</b> ${data.date}</p>
-<p><b>Time:</b> ${data.time}</p>
-<p><b>Price:</b> ₹${data.price}</p>
-<button onclick="deleteBooking('${docSnap.id}')">Delete</button>
-`;
+      <p><b>📘 Type:</b> ${data.type || "N/A"}</p>
+      <p><b>📅 Date:</b> ${data.date || "N/A"}</p>
+      <p><b>⏰ Time:</b> ${data.time || "N/A"}</p>
+      <p><b>💰 Price:</b> ₹${data.price || 0}</p>
 
-container.appendChild(div);
+      <hr>
 
-});
+      <p><b>💳 Payment ID:</b> ${data.paymentId || "N/A"}</p>
+      <p><b>🕒 Booked At:</b> ${
+        data.createdAt?.seconds
+          ? new Date(data.createdAt.seconds * 1000).toLocaleString()
+          : "N/A"
+      }</p>
 
+      <div class="booking-actions">
+        <button class="delete-booking-btn" onclick="deleteBooking('${docSnap.id}')">Delete</button>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+
+  if(snapshot.empty){
+    container.innerHTML = "No bookings found";
+  }
 }
 
 
 // ================= DELETE BOOKING =================
 window.deleteBooking = async function(id){
 
-if(!confirm("Delete this booking?")) return;
+  if(!confirm("Delete this booking?")) return;
 
-await deleteDoc(doc(db,"bookings",id));
+  await deleteDoc(doc(db,"bookings",id));
 
-alert("Booking deleted");
+  alert("Booking deleted");
 
-loadBookings();
-
+  loadBookings();
+  loadAdminData();
 };

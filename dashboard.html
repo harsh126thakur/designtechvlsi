@@ -6,89 +6,51 @@
 <title>Student Dashboard</title>
 
 <link rel="stylesheet" href="css/dashboard.css">
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-<style>
-
-body{
-margin:0;
-font-family:Poppins;
-background:#0f172a;
-color:white;
-}
-
-/* NAVBAR */
-.navbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#020617;
-padding:15px 30px;
-}
-
-.logo{
-font-size:20px;
-font-weight:bold;
-}
-
-.navbar ul{
-list-style:none;
-display:flex;
-gap:20px;
-}
-
-.navbar ul li a{
-color:white;
-text-decoration:none;
-}
-
-.navbar ul li a:hover{
-color:#38bdf8;
-}
-
-/* HEADER */
-.header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 30px;
-}
-
-.header button{
-background:#38bdf8;
-border:none;
-padding:8px 14px;
-border-radius:6px;
-cursor:pointer;
-}
-
-</style>
-
 </head>
 
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar">
-    <div class="logo">DesignTech VLSI</div>
-    <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="course.html">Courses</a></li>
-        <li><a href="dashboard.html">Dashboard</a></li>
-    </ul>
+  <div class="logo">DesignTech VLSI</div>
+
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="course.html">Courses</a></li>
+    <li><a href="dashboard.html" class="active-link">Dashboard</a></li>
+  </ul>
 </nav>
 
-<!-- HEADER -->
-<div class="header">
-    <h2>Student Dashboard</h2>
-    <button onclick="logout()">Logout</button>
-</div>
+<!-- HERO / HEADER -->
+<section class="dashboard-hero">
+  <div>
+    <p class="hero-tag">Learning Portal</p>
+    <h1>Student Dashboard</h1>
+    <p class="hero-subtext">Track your courses, continue learning, and access purchased content in one place.</p>
+    <h3 id="welcome"></h3>
+  </div>
 
-<h3 id="welcome" style="padding:0 30px;"></h3>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+</section>
+<section class="dashboard-section">
+  <div class="section-heading">
+    <h2>My Mentorship Bookings</h2>
+    <p>Your scheduled mentorship sessions</p>
+  </div>
 
-<!-- COURSE LIST -->
-<div id="courseList"></div>
+  <div id="mentorshipBookings"></div>
+</section>
+
+<!-- COURSE SECTION -->
+<section class="dashboard-section">
+  <div class="section-heading">
+    <h2>My Courses</h2>
+    <p>Your free and purchased learning content</p>
+  </div>
+
+  <div id="courseList"></div>
+</section>
 
 <script type="module" src="js/dashboard.js"></script>
 
