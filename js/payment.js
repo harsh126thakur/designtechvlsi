@@ -86,17 +86,31 @@ alert("Please login first");
 return;
 }
 
-// CREATE ORDER
+// 🔥 WAKE UP RENDER SERVER
+console.log("Waking server...");
+await fetch("https://razorpay-server-ok0j.onrender.com");
+
+// ⏳ small delay (important)
+await new Promise(resolve => setTimeout(resolve, 2000));
+
+
+// ================= CREATE ORDER =================
 const res = await fetch("https://razorpay-server-ok0j.onrender.com/create-order", {
 method: "POST",
 headers: {"Content-Type":"application/json"},
 body: JSON.stringify({ amount: price })
 });
 
+if(!res.ok){
+throw new Error("Server not responding");
+}
+
 const order = await res.json();
 
+console.log("ORDER:", order);
 
-// RAZORPAY
+
+// ================= RAZORPAY =================
 const options = {
 
 key: "rzp_live_ST5Uj4sGNxUAGJ",
@@ -108,7 +122,9 @@ order_id: order.id,
 
 handler: async function(response){
 
-// VERIFY
+try{
+
+// ================= VERIFY =================
 const verifyRes = await fetch("https://razorpay-server-ok0j.onrender.com/verify-payment", {
 method: "POST",
 headers: {"Content-Type":"application/json"},
@@ -124,7 +140,8 @@ return;
 
 alert("Payment Successful 🎉");
 
-// SAVE BOOKING
+
+// ================= SAVE BOOKING =================
 await addDoc(collection(db,"bookings"),{
 userId: currentUser.uid,
 email: currentUser.email,
@@ -136,7 +153,8 @@ paymentId: response.razorpay_payment_id,
 createdAt: new Date()
 });
 
-// SAVE COURSE
+
+// ================= SAVE COURSE =================
 if(courseId){
 
 const userRef = doc(db,"users",currentUser.uid);
@@ -154,16 +172,23 @@ await setDoc(userRef,{ purchasedCourses: courses },{ merge:true });
 
 window.location.href = "success.html";
 
+}catch(err){
+console.error("POST PAYMENT ERROR:", err);
+alert("Error saving data");
+}
+
 }
 
 };
 
+
+// ================= OPEN RAZORPAY =================
 const rzp = new Razorpay(options);
 rzp.open();
 
 }catch(err){
-console.error(err);
-alert("Payment failed ❌");
+console.error("PAY ERROR:", err);
+alert("Server waking up... please try again in 5 seconds");
 }
 
 }
