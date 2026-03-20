@@ -1,58 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
 
-<link rel="stylesheet" href="css/dashboard.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="logo">DesignTech VLSI</div>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">DesignTech VLSI</div>
 
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="course.html">Courses</a></li>
-    <li><a href="dashboard.html" class="active-link">Dashboard</a></li>
-  </ul>
-</nav>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="mentorship.html">Mentorship</a></li>
+      <li><a href="dashboard.html#my-courses" class="active-link">Dashboard</a></li>
+    </ul>
+  </nav>
 
-<!-- HERO / HEADER -->
-<section class="dashboard-hero">
-  <div>
-    <p class="hero-tag">Learning Portal</p>
-    <h1>Student Dashboard</h1>
-    <p class="hero-subtext">Track your courses, continue learning, and access purchased content in one place.</p>
-    <h3 id="welcome"></h3>
-  </div>
+  <!-- HERO / HEADER -->
+  <section class="dashboard-hero">
+    <div>
+      <p class="hero-tag">Learning Portal</p>
+      <h1>Student Dashboard</h1>
+      <p class="hero-subtext">Track your courses, continue learning, and access purchased content in one place.</p>
+      <h3 id="welcome"></h3>
+    </div>
 
-  <button class="logout-btn" onclick="logout()">Logout</button>
-</section>
-<section class="dashboard-section">
-  <div class="section-heading">
-    <h2>My Mentorship Bookings</h2>
-    <p>Your scheduled mentorship sessions</p>
-  </div>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </section>
 
-  <div id="mentorshipBookings"></div>
-</section>
+  <!-- MENTORSHIP SECTION -->
+  <section class="dashboard-section">
+    <div class="section-heading">
+      <h2>My Mentorship Bookings</h2>
+      <p>Your scheduled mentorship sessions</p>
+    </div>
 
-<!-- COURSE SECTION -->
-<section class="dashboard-section">
-  <div class="section-heading">
-    <h2>My Courses</h2>
-    <p>Your free and purchased learning content</p>
-  </div>
+    <div id="mentorshipBookings"></div>
+  </section>
 
-  <div id="courseList"></div>
-</section>
+  <!-- COURSE SECTION -->
+  <section class="dashboard-section" id="my-courses">
+    <div class="section-heading">
+      <h2>My Courses</h2>
+      <p>Your free and purchased learning content</p>
+    </div>
 
-<script type="module" src="js/dashboard.js"></script>
+    <div id="courseList"></div>
+  </section>
+
+  <script type="module" src="js/dashboard.js"></script>
 
 </body>
 </html>
