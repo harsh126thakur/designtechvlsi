@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Student Login</title>
 
 <link rel="stylesheet" href="css/login.css">
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
@@ -15,76 +13,83 @@
 
 <!-- NAVBAR -->
 <nav class="nav">
-    <h2>DesignTech VLSI</h2>
-    <div>
-        <a href="index.html">Home</a>
-        <a href="course.html">Courses</a>
-        <a href="login.html">Login</a>
-    </div>
+  <h2>DesignTech VLSI</h2>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+  </div>
 </nav>
 
 <!-- LOGIN CENTER -->
 <div class="center">
+  <div class="box">
 
-    <div class="box">
+    <h2>Student Login</h2>
+    <p class="small-text" style="margin-top:-8px; margin-bottom:14px;">
+      Access your dashboard and continue learning
+    </p>
 
-        <h2>Student Login</h2>
+    <input type="email" id="email" placeholder="Enter your email" autocomplete="username">
+    <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
 
-        <!-- 🔥 FIXED INPUT -->
-        <input type="email" id="email" placeholder="Email" autocomplete="username">
-        <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+    <button id="loginBtn">Login</button>
 
-        <!-- 🔥 FIXED BUTTON -->
-        <button id="loginBtn">Login</button>
+    <p id="error"></p>
 
-        <p id="error" style="color:red;"></p>
+    <p class="small-text">
+      Don't have an account? <a href="signup.html">Sign up</a>
+    </p>
 
-        <p class="small-text">
-            Don't have an account? <a href="signup.html">Sign up</a>
-        </p>
-
-    </div>
-
+  </div>
 </div>
 
 <!-- SCRIPT -->
 <script type="module">
-
 import { auth } from "./js/firebase.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// 🔥 SAFE LOGIN FUNCTION
-function login(){
+async function login(){
+  const email = document.getElementById("email")?.value?.trim();
+  const password = document.getElementById("password")?.value?.trim();
+  const errorBox = document.getElementById("error");
+  const loginBtn = document.getElementById("loginBtn");
 
-const email = document.getElementById("email")?.value?.trim();
-const password = document.getElementById("password")?.value?.trim();
-const errorBox = document.getElementById("error");
+  errorBox.innerText = "";
 
-errorBox.innerText = "";
+  if(!email || !password){
+    errorBox.innerText = "Please fill all fields";
+    return;
+  }
 
-if(!email || !password){
-errorBox.innerText = "Please fill all fields";
-return;
+  try{
+    loginBtn.innerText = "Logging in...";
+    loginBtn.disabled = true;
+
+    await signInWithEmailAndPassword(auth, email, password);
+    window.location.href = "dashboard.html";
+
+  }catch(err){
+    console.error("LOGIN ERROR:", err);
+    errorBox.innerText = err.message;
+
+    loginBtn.innerText = "Login";
+    loginBtn.disabled = false;
+  }
 }
 
-signInWithEmailAndPassword(auth,email,password)
-
-.then(()=>{
-window.location.href="dashboard.html";
-})
-
-.catch((err)=>{
-console.error("LOGIN ERROR:", err);
-
-// 🔥 SHOW REAL ERROR
-errorBox.innerText = err.message;
-});
-
-}
-
-// 🔥 BUTTON EVENT (MOBILE SAFE)
 document.getElementById("loginBtn").addEventListener("click", login);
 
+document.getElementById("password").addEventListener("keypress", function(e){
+  if(e.key === "Enter"){
+    login();
+  }
+});
+
+document.getElementById("email").addEventListener("keypress", function(e){
+  if(e.key === "Enter"){
+    login();
+  }
+});
 </script>
 
 </body>

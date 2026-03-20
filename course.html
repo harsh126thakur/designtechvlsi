@@ -13,45 +13,49 @@
 
 <!-- NAVBAR -->
 <nav class="navbar">
-    <h2 class="logo">DesignTech VLSI</h2>
-    <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="course.html">Courses</a></li>
-        <li><a href="login.html">Login</a></li>
-    </ul>
+  <h2 class="logo">DesignTech VLSI</h2>
+
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="course.html">Courses</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+  </ul>
 </nav>
 
 <!-- HEADER -->
 <div class="nav">
-    <h2 id="courseTitle">Loading...</h2>
-    <button onclick="goBack()">⬅ Back</button>
+  <h2 id="courseTitle">Loading...</h2>
+  <button onclick="goBack()">⬅ Back</button>
 </div>
 
 <!-- MAIN -->
 <div class="container">
 
-    <!-- PLAYER -->
-    <div class="player">
-        <iframe 
-        id="videoPlayer"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen>
-        </iframe>
-    </div>
+  <!-- PLAYER -->
+  <div class="player">
+    <iframe
+      id="videoPlayer"
+      src=""
+      title="Course Video Player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
 
-    <!-- PLAYLIST -->
-    <div class="playlist" id="playlist">
-        <p>Loading lectures...</p>
-    </div>
+  <!-- PLAYLIST -->
+  <div class="playlist" id="playlist">
+    <p>Loading lectures...</p>
+  </div>
 
 </div>
 
-<!-- ✅ IMPORTANT: MODULE -->
+<!-- MODULE SCRIPT -->
 <script type="module" src="js/course.js"></script>
 
 <script>
 function goBack(){
-    window.location.href = "course.html";
+  window.location.href = "course.html";
 }
 </script>
 
