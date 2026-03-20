@@ -77,40 +77,44 @@ alert("Coupon error");
 // ================= PAYMENT =================
 export async function payNow(){
 
-console.log("PAY CLICKED 🔥");
-
 try{
+
+// 🔥 GET USER INPUT
+const name = document.getElementById("name").value.trim();
+const phone = document.getElementById("phone").value.trim();
+
+if(!name || !phone){
+alert("Please enter name and phone");
+return;
+}
+
+if(phone.length < 10){
+alert("Enter valid phone number");
+return;
+}
 
 if(!currentUser){
 alert("Please login first");
 return;
 }
 
-// 🔥 WAKE UP RENDER SERVER
-console.log("Waking server...");
+
+// 🔥 WAKE SERVER
 await fetch("https://razorpay-server-ok0j.onrender.com");
-
-// ⏳ small delay (important)
-await new Promise(resolve => setTimeout(resolve, 2000));
+await new Promise(res => setTimeout(res, 2000));
 
 
-// ================= CREATE ORDER =================
+// CREATE ORDER
 const res = await fetch("https://razorpay-server-ok0j.onrender.com/create-order", {
 method: "POST",
 headers: {"Content-Type":"application/json"},
 body: JSON.stringify({ amount: price })
 });
 
-if(!res.ok){
-throw new Error("Server not responding");
-}
-
 const order = await res.json();
 
-console.log("ORDER:", order);
 
-
-// ================= RAZORPAY =================
+// RAZORPAY
 const options = {
 
 key: "rzp_live_ST5Uj4sGNxUAGJ",
@@ -122,9 +126,7 @@ order_id: order.id,
 
 handler: async function(response){
 
-try{
-
-// ================= VERIFY =================
+// VERIFY
 const verifyRes = await fetch("https://razorpay-server-ok0j.onrender.com/verify-payment", {
 method: "POST",
 headers: {"Content-Type":"application/json"},
@@ -141,9 +143,11 @@ return;
 alert("Payment Successful 🎉");
 
 
-// ================= SAVE BOOKING =================
+// SAVE BOOKING
 await addDoc(collection(db,"bookings"),{
 userId: currentUser.uid,
+name,
+phone,
 email: currentUser.email,
 type,
 date,
@@ -154,7 +158,14 @@ createdAt: new Date()
 });
 
 
-// ================= SAVE COURSE =================
+// SAVE USER PROFILE
+await setDoc(doc(db,"users",currentUser.uid),{
+name,
+phone
+},{merge:true});
+
+
+// SAVE COURSE
 if(courseId){
 
 const userRef = doc(db,"users",currentUser.uid);
@@ -172,23 +183,16 @@ await setDoc(userRef,{ purchasedCourses: courses },{ merge:true });
 
 window.location.href = "success.html";
 
-}catch(err){
-console.error("POST PAYMENT ERROR:", err);
-alert("Error saving data");
-}
-
 }
 
 };
 
-
-// ================= OPEN RAZORPAY =================
 const rzp = new Razorpay(options);
 rzp.open();
 
 }catch(err){
-console.error("PAY ERROR:", err);
-alert("Server waking up... please try again in 5 seconds");
+console.error(err);
+alert("Payment failed ❌");
 }
 
 }

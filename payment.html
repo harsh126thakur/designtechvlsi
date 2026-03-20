@@ -65,6 +65,10 @@ button{
 <p id="title"></p>
 <p id="amount"></p>
 
+<!-- 🔥 NEW FIELDS -->
+<input id="name" placeholder="Enter Your Name">
+<input id="phone" placeholder="Enter Phone Number">
+
 <input id="coupon" placeholder="Enter Coupon Code">
 <button id="couponBtn">Apply Coupon</button>
 
@@ -78,14 +82,13 @@ button{
 
 import { payNow, applyCoupon } from "./js/payment.js";
 
-// ✅ Coupon button
+// coupon
 document.getElementById("couponBtn").addEventListener("click", applyCoupon);
 
-// ✅ Pay button
+// payment
 document.getElementById("payBtn").addEventListener("click", async () => {
 
 const btn = document.getElementById("payBtn");
-
 btn.innerText = "Processing...";
 btn.disabled = true;
 
