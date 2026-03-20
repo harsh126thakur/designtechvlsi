@@ -30,13 +30,13 @@ const type = params.get("type") || "Course Purchase";
 const date = params.get("date");
 const time = params.get("time");
 
-// UI SET
+// UI
 document.getElementById("amount").innerText = "Amount: ₹ " + price;
 document.getElementById("title").innerText = type;
 
 
 // ================= APPLY COUPON =================
-window.applyCoupon = async function(){
+export async function applyCoupon(){
 
 const code = document.getElementById("coupon").value.toUpperCase();
 
@@ -71,11 +71,13 @@ console.error(err);
 alert("Coupon error");
 }
 
-};
+}
 
 
 // ================= PAYMENT =================
 export async function payNow(){
+
+console.log("PAY CLICKED 🔥");
 
 try{
 
@@ -84,39 +86,29 @@ alert("Please login first");
 return;
 }
 
-// ================= CREATE ORDER =================
+// CREATE ORDER
 const res = await fetch("https://razorpay-server-ok0j.onrender.com/create-order", {
 method: "POST",
 headers: {"Content-Type":"application/json"},
 body: JSON.stringify({ amount: price })
 });
 
-if(!res.ok){
-throw new Error("Order creation failed");
-}
-
 const order = await res.json();
 
 
-// ================= RAZORPAY =================
+// RAZORPAY
 const options = {
 
 key: "rzp_live_ST5Uj4sGNxUAGJ",
-
 amount: order.amount,
 currency: "INR",
-
 name: "Design Tech VLSI",
 description: type,
-
 order_id: order.id,
-
 
 handler: async function(response){
 
-try{
-
-// ================= VERIFY =================
+// VERIFY
 const verifyRes = await fetch("https://razorpay-server-ok0j.onrender.com/verify-payment", {
 method: "POST",
 headers: {"Content-Type":"application/json"},
@@ -132,19 +124,19 @@ return;
 
 alert("Payment Successful 🎉");
 
-// ================= SAVE BOOKING =================
+// SAVE BOOKING
 await addDoc(collection(db,"bookings"),{
 userId: currentUser.uid,
 email: currentUser.email,
 type,
-date: date || "Not Selected",
-time: time || "Not Selected",
-price: Number(price),
+date,
+time,
+price,
 paymentId: response.razorpay_payment_id,
 createdAt: new Date()
 });
 
-// ================= SAVE COURSE =================
+// SAVE COURSE
 if(courseId){
 
 const userRef = doc(db,"users",currentUser.uid);
@@ -162,11 +154,6 @@ await setDoc(userRef,{ purchasedCourses: courses },{ merge:true });
 
 window.location.href = "success.html";
 
-}catch(err){
-console.error("Post-payment error:", err);
-alert("Error saving data");
-}
-
 }
 
 };
@@ -179,15 +166,4 @@ console.error(err);
 alert("Payment failed ❌");
 }
 
-}
-
-// prevent multiple ₹1 usage
-if(price === 1){
-const userRef = doc(db,"users",currentUser.uid);
-const snap = await getDoc(userRef);
-
-if(snap.exists() && snap.data().usedTrial){
-alert("You already used ₹1 trial ❌");
-return;
-}
 }
