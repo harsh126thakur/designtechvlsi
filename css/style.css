@@ -382,9 +382,9 @@ color:#38bdf8;
 
 .faculty-grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+grid-template-columns:repeat(4, 1fr);
 gap:25px;
-max-width:1000px;
+max-width:1400px;
 margin:auto;
 }
 
@@ -397,6 +397,9 @@ border-radius:18px;
 transition:0.3s;
 box-shadow:0 12px 32px rgba(0,0,0,0.28);
 border:1px solid rgba(255,255,255,0.08);
+display:flex;
+flex-direction:column;
+height:100%;
 }
 
 .faculty-card:hover{
@@ -409,11 +412,15 @@ border-color:rgba(56,189,248,0.22);
 
 .faculty-card img{
 width:100%;
-height:180px;
+height:220px;
 object-fit:cover;
 object-position:top;
 border-radius:12px;
 margin-bottom:15px;
+}
+
+.faculty-card p{
+flex-grow:1;
 }
 
 /* ================= PODCAST ================= */
@@ -767,6 +774,13 @@ transform:scale(1.15);
 text-shadow:0 0 12px rgba(56,189,248,0.35);
 }
 
+/* ================= TABLET ================= */
+@media (max-width:1024px){
+.faculty-grid{
+grid-template-columns:repeat(2, 1fr);
+}
+}
+
 /* ================= MOBILE ================= */
 @media (max-width:768px){
 .hero h1{
@@ -824,5 +838,9 @@ min-width:220px;
 
 .flow{
 grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+}
+
+.faculty-grid{
+grid-template-columns:1fr;
 }
 }
