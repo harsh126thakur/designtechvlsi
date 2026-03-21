@@ -1,108 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Payment</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment | DesignTech VLSI</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-<style>
-body{
-  background:#0f172a;
-  font-family:Poppins;
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  margin:0;
-}
-
-.payment-box{
-  background:#020617;
-  padding:40px;
-  border-radius:12px;
-  width:350px;
-  text-align:center;
-  border:1px solid #1e293b;
-}
-
-input{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-  border:none;
-  border-radius:8px;
-}
-
-button{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:8px;
-  background:#38bdf8;
-  color:black;
-  font-weight:600;
-  cursor:pointer;
-}
-
-#amount{
-  font-size:20px;
-  color:#22c55e;
-}
-</style>
-
+  <link rel="stylesheet" href="css/payment.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 
 <body>
 
-<div class="payment-box">
+  <nav class="navbar">
+    <div class="logo">DesignTech VLSI</div>
 
-<h2>💳 Complete Payment</h2>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="mentorship.html">Mentorship</a></li>
+    </ul>
+  </nav>
 
-<p id="title"></p>
-<p id="amount"></p>
+  <main class="payment-page">
+    <section class="payment-layout">
 
-<!-- 🔥 NEW FIELDS -->
-<input id="name" placeholder="Enter Your Name">
-<input id="phone" placeholder="Enter Phone Number">
+      <div class="payment-left">
+        <span class="page-badge">Secure Checkout</span>
+        <h1>Complete Your Payment</h1>
+        <p class="page-subtext">
+          Continue securely to unlock your course or confirm your mentorship booking.
+        </p>
 
-<input id="coupon" placeholder="Enter Coupon Code">
-<button id="couponBtn">Apply Coupon</button>
+        <div class="info-grid">
+          <div class="info-card">
+            <h3>Instant Access</h3>
+            <p>Courses are unlocked after successful payment verification.</p>
+          </div>
 
-<button id="payBtn">Pay Now</button>
+          <div class="info-card">
+            <h3>Coupon Support</h3>
+            <p>Apply admin-created coupons before making the payment.</p>
+          </div>
 
-</div>
+          <div class="info-card">
+            <h3>Verified Payment</h3>
+            <p>Payment is verified before booking or course enrollment is confirmed.</p>
+          </div>
+        </div>
+      </div>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+      <div class="payment-right">
+        <div class="payment-box">
+          <div class="payment-head">
+            <h2>💳 Checkout</h2>
+            <p>Review your details and continue</p>
+          </div>
 
-<script type="module">
+          <div class="payment-summary">
+            <div class="summary-row">
+              <span>Item</span>
+              <strong id="title">Loading...</strong>
+            </div>
 
-import { payNow, applyCoupon } from "./js/payment.js";
+            <div class="summary-row total-row">
+              <span>Total Amount</span>
+              <strong id="amount">₹0</strong>
+            </div>
+          </div>
 
-// coupon
-document.getElementById("couponBtn").addEventListener("click", applyCoupon);
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input id="name" type="text" placeholder="Enter your full name" />
+          </div>
 
-// payment
-document.getElementById("payBtn").addEventListener("click", async () => {
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input id="phone" type="tel" placeholder="Enter your phone number" />
+          </div>
 
-const btn = document.getElementById("payBtn");
-btn.innerText = "Processing...";
-btn.disabled = true;
+          <div class="coupon-section">
+            <div class="form-group coupon-group">
+              <label for="coupon">Coupon Code</label>
+              <input id="coupon" type="text" placeholder="Enter coupon code" />
+            </div>
+            <button id="couponBtn" class="secondary-btn" type="button">Apply Coupon</button>
+          </div>
 
-try{
-  await payNow();
-}catch(e){
-  console.error(e);
-  btn.innerText = "Pay Now";
-  btn.disabled = false;
-}
+          <button id="payBtn" class="primary-btn" type="button">Pay Now</button>
 
-});
+          <p class="payment-note">
+            By continuing, you confirm your booking or purchase details are correct.
+          </p>
+        </div>
+      </div>
 
-</script>
+    </section>
+  </main>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script type="module">
+    import { payNow, applyCoupon } from "./js/payment.js";
+
+    document.getElementById("couponBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("couponBtn");
+      btn.innerText = "Applying...";
+      btn.disabled = true;
+
+      try {
+        await applyCoupon();
+      } catch (e) {
+        console.error(e);
+      }
+
+      btn.innerText = "Apply Coupon";
+      btn.disabled = false;
+    });
+
+    document.getElementById("payBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("payBtn");
+      btn.innerText = "Processing...";
+      btn.disabled = true;
+
+      try {
+        await payNow();
+      } catch (e) {
+        console.error(e);
+      }
+
+      btn.innerText = "Pay Now";
+      btn.disabled = false;
+    });
+  </script>
 
 </body>
 </html>

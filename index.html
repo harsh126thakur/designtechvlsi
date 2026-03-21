@@ -1,471 +1,538 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DesignTech VLSI | Premium Semiconductor Learning Platform</title>
 
-<title>Design Tech VLSI</title>
-
-<link rel="stylesheet" href="css/style.css">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
 </head>
-
 <body>
 
-<!-- STARS -->
-<div class="stars" id="stars"></div>
-
-<!-- ================= NAVBAR ================= -->
-<header class="navbar">
-
-  <div class="logo">DesignTech VLSI</div>
-
-  <nav>
-    <div class="nav-left">
-      <a href="#">Home</a>
-      <a href="#flows">Career Flows</a>
-      <a href="mentorship.html">Mentorship</a>
-      <a href="#faculty">Faculty</a>
-      <a href="#faq">FAQ</a>
-      <a href="#contact">Contact</a>
-    </div>
-
-    <div class="nav-right">
-      <a href="login.html">Login</a>
-      <a href="signup.html" class="signup-btn">Sign Up</a>
-      <button onclick="openAdmin()" class="admin-btn">Admin</button>
-    </div>
-  </nav>
-
-</header>
-
-<!-- ================= HERO ================= -->
-<section class="hero" data-aos="fade-up">
-
-  <h1>Design Your Career in Semiconductor Industry</h1>
-
-  <p>
-    RTL • Physical Design • Verification • Analog • FPGA • Research
-  </p>
-
-  <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
-    <button class="btn" onclick="window.location.href='login.html'">
-      Start Learning
-    </button>
-
-    <a href="mentorship.html" class="btn" style="background:#1e293b; color:white;">
-      Book Mentorship
-    </a>
-  </div>
-
-</section>
-
-<!-- ================= FLOWS ================= -->
-<section id="flows" class="flows">
-
-  <h2 data-aos="fade-up">VLSI Career Paths</h2>
-
-  <div class="flow-box" data-aos="fade-right">
-    <h3>Semiconductor Devices</h3>
-    <div class="flow">
-      <div class="step">Semiconductor Basics<span class="tooltip">Crystal structure</span></div>
-      <div class="step">Carrier Transport<span class="tooltip">Drift & diffusion</span></div>
-      <div class="step">PN Junction<span class="tooltip">Depletion region</span></div>
-      <div class="step">Diodes<span class="tooltip">Zener & breakdown</span></div>
-      <div class="step">BJT<span class="tooltip">Current gain</span></div>
-      <div class="step">MOSFET<span class="tooltip">Threshold & IV</span></div>
-    </div>
-  </div>
-
-  <div class="flow-box" data-aos="fade-left">
-    <h3>RTL / Digital Design</h3>
-    <div class="flow">
-      <div class="step">Basics</div>
-      <div class="step">Digital Design</div>
-      <div class="step">Verilog</div>
-      <div class="step">RTL</div>
-      <div class="step">RTL Engineer</div>
-    </div>
-  </div>
-
-  <div class="flow-box" data-aos="fade-right">
-    <h3>Physical Design</h3>
-    <div class="flow">
-      <div class="step">Synthesis</div>
-      <div class="step">Floorplan</div>
-      <div class="step">Placement</div>
-      <div class="step">CTS</div>
-      <div class="step">Routing</div>
-    </div>
-  </div>
-
-  <div class="flow-box" data-aos="fade-left">
-    <h3>Verification</h3>
-    <div class="flow">
-      <div class="step">Verilog</div>
-      <div class="step">SystemVerilog</div>
-      <div class="step">UVM</div>
-      <div class="step">DV Engineer</div>
-    </div>
-  </div>
-
-  <div class="flow-box" data-aos="fade-right">
-    <h3>Analog Design</h3>
-    <div class="flow">
-      <div class="step">MOSFET</div>
-      <div class="step">Circuit Design</div>
-      <div class="step">Simulation</div>
-      <div class="step">Analog Engineer</div>
-    </div>
-  </div>
-
-</section>
-
-<!-- ================= FOUNDER ================= -->
-<section class="founder" data-aos="zoom-in">
-
-  <h2>Founder</h2>
-
-  <div class="founder-card">
-    <img src="images/FOUNDER.JPG" alt="Founder">
-
-    <div>
-      <h3>Harsh Raj Thakur</h3>
-      <p>
-  Semiconductor researcher building industry-ready VLSI education, practical training,
-  and career-focused mentorship for aspiring engineers. Dedicated to bridging the gap
-  between academic knowledge and industry requirements through research, innovation,
-  and skill-driven learning. Focused on empowering students with the technical
-  foundation, confidence, and guidance needed to excel in semiconductor and chip design careers.
-</p>
-    </div>
-  </div>
-
-</section>
-<!-- ================= FACULTY ================= -->
-<section id="faculty" class="faculty">
-
-  <h2 data-aos="fade-up">OUR TEAM</h2>
-
-  <div class="faculty-grid">
-
-    <div class="faculty-card" data-aos="fade-up">
-      <img src="images/kaja.jpg" alt="Corporate Mentor">
-      <h3>Corporate Mentors</h3>
-      <p>
-       Kajal Kumari is a corporate mentor who helps students develop practical skills,
-  gain industry insights, and prepare for successful professional careers. With
-  experience in communication, mentoring, and professional development, she guides
-  learners in strengthening confidence, improving soft skills, and understanding
-  workplace culture. Her mentorship focuses on career readiness, personal growth,
-  and helping students align their potential with industry opportunities. She is
-  committed to supporting students in building a strong professional foundation
-  for long-term success in their careers.
-      </p>
-    </div>
-
-    <div class="faculty-card" data-aos="fade-up" data-aos-delay="100">
-      <img src="images/ASHU.PNG.png" alt="Academic Mentor">
-      <h3>Academic Mentors</h3>
-      <p>
-        Ashutosh Tripathi is an experienced academic mentor with a strong foundation in electronics and VLSI.
-        He is dedicated to helping students build deep conceptual understanding and problem-solving skills,
-        guiding them toward excellence in semiconductor and chip design domains. Currently he is pursuing
-        his research from IIT Roorkee.
-      </p>
-    </div>
-
-    <div class="faculty-card" data-aos="fade-up" data-aos-delay="200">
-      <img src="images/harsh.jpeg" alt="Interview Mentor">
-<p>
-  Harsh Raj Thakur, an IITian currently pursuing research at IIT Roorkee, is an aspiring digital
-  domain research scientist. A former Placement Coordinator, he has trained students at Assam Rifles DGAR
-  and worked in EdTech, preparing learners for top chip design careers. With expertise in VLSI, research,
-  mentoring, and technical education, he is passionate about guiding students toward academic excellence,
-  industry readiness, and professional success. His mentorship emphasizes practical learning, interview
-  preparation, problem-solving skills, and building a strong foundation for careers in semiconductor,
-  chip design, and advanced technology domains.
-</p>
-    </div>
-
-    <div class="faculty-card" data-aos="fade-up" data-aos-delay="300">
-      <img src="images/IMG_9012.jpg" alt="Semiconductor Research Mentor">
-      <h3>Semiconductor Research Mentors</h3>
-      <p>
-        Dr. Dariskhem Pyngrope is a Postdoctoral Researcher at IIT Roorkee, specializing in semiconductor
-        device modeling, microelectronics, and advanced device research. With expertise in compact modeling,
-        gallium-based power devices, and next-generation semiconductor technologies, she mentors students in
-        VLSI, semiconductor devices, and research-driven learning for academic and industry growth.
-      </p>
-    </div>
-
-  </div>
-</section>
-<!-- ================= PLACEMENT SUPPORT ================= -->
-<section id="placement" class="placement-support">
-  <h2 data-aos="fade-up">100% Placement Support</h2>
-  <p class="placement-subtitle" data-aos="fade-up" data-aos-delay="100">
-    We provide complete career assistance through mentorship, interview preparation,
-    resume building, and strong industry connections to help students become
-    confidently job-ready.
-  </p>
-
-  <div class="placement-grid">
-
-    <div class="placement-card" data-aos="fade-up" data-aos-delay="100">
-      <div class="placement-icon">📄</div>
-      <h3>Resume Building</h3>
-      <p>
-        Build professional resumes that highlight your technical strengths, projects,
-        research work, and career potential in a clear and impactful way.
-      </p>
-    </div>
-
-    <div class="placement-card" data-aos="fade-up" data-aos-delay="200">
-      <div class="placement-icon">🎯</div>
-      <h3>Interview Preparation</h3>
-      <p>
-        Get guided support for technical interviews, HR discussions, confidence building,
-        and domain-specific preparation for VLSI and semiconductor opportunities.
-      </p>
-    </div>
-
-    <div class="placement-card" data-aos="fade-up" data-aos-delay="300">
-      <div class="placement-icon">🤝</div>
-      <h3>Industry Connections</h3>
-      <p>
-        Benefit from our professional network and industry connections that help
-        students discover relevant opportunities and gain valuable exposure.
-      </p>
-    </div>
-
-    <div class="placement-card" data-aos="fade-up" data-aos-delay="400">
-      <div class="placement-icon">🚀</div>
-      <h3>Career Mentorship</h3>
-      <p>
-        Receive continuous mentorship to improve your profile, align your skills with
-        industry needs, and move forward with clarity in your placement journey.
-      </p>
-    </div>
-
-  </div>
-
-  <div class="placement-note" data-aos="fade-up" data-aos-delay="500">
-    <p>
-      <strong>Note:</strong> We provide 100% placement support to every learner. Final selection depends on
-      individual performance, skill level, interview outcomes, and company requirements.
-    </p>
-  </div>
-</section>
-<div class="company-showcase" data-aos="fade-up" data-aos-delay="150">
- <p class="company-title">
-    Our learners prepare for career opportunities in leading semiconductor, chip design, and technology companies
-  </p>
-
-  <div class="company-logos">
-    <div class="company-logo"><img src="images/Intel.png" alt="Intel"></div>
-    <div class="company-logo"><img src="images/qualcom.png" alt="Qualcomm"></div>
-    <div class="company-logo"><img src="images/cadence.png" alt="Cadence"></div>
-    <div class="company-logo"><img src="images/synopsys.png" alt="Synopsys"></div>
-    <div class="company-logo"><img src="images/Nvidia.png" alt="NVIDIA"></div>
-    <div class="company-logo"><img src="images/ti.png" alt="Texas Instruments"></div>
-  </div>
-</div>
-
-<!-- ================= PODCAST ================= -->
-<section class="podcast">
-  <h2>🎙️ Podcasts & Expert Talks</h2>
-
-  <p>
-    Conversations with researchers, professors, and industry professionals.
-  </p>
-
-  <div id="podcastContainerFront" class="video-scroll"></div>
-</section>
-
-<!-- ================= MENTORSHIP PREVIEW ================= -->
-<section class="mentorship" data-aos="fade-up">
-  <h2>🚀 1:1 Mentorship</h2>
-  <p>
-    Personalized sessions for CV building, internships, GATE, interviews, VLSI, and PhD guidance.
-  </p>
-
-  <div class="mentorship-grid">
-    <div class="mentorship-card" onclick="window.location.href='mentorship.html'">
-      <h3>CV Building</h3>
-      <p>Build a stronger resume and present your profile better.</p>
-    </div>
-
-    <div class="mentorship-card" onclick="window.location.href='mentorship.html'">
-      <h3>GATE Mentorship</h3>
-      <p>Plan your preparation strategy and improve exam direction.</p>
-    </div>
-
-    <div class="mentorship-card" onclick="window.location.href='mentorship.html'">
-      <h3>VLSI Mentorship</h3>
-      <p>Get roadmap guidance for projects, tools, and VLSI careers.</p>
-    </div>
-
-    <div class="mentorship-card" onclick="window.location.href='mentorship.html'">
-      <h3>Interview Mentorship</h3>
-      <p>Prepare smarter for technical and career-focused interviews.</p>
-    </div>
-  </div>
-
-  <div style="margin-top:28px;">
-    <a href="mentorship.html" class="btn">Explore Mentorship</a>
-  </div>
-</section>
-
-<!-- ================= FAQ ================= -->
-<section id="faq" class="faq">
-
-  <h2>❓ Frequently Asked Questions</h2>
-
-  <div class="faq-container">
-
-    <div class="faq-item">
-      <div class="faq-question">
-        <span>What is VLSI?</span>
-        <span class="icon">+</span>
-      </div>
-      <div class="faq-answer">
-        <p>VLSI involves designing integrated circuits by combining millions of transistors into a single chip.</p>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-question">
-        <span>Is VLSI a good career in 2026?</span>
-        <span class="icon">+</span>
-      </div>
-      <div class="faq-answer">
-        <p>Yes, VLSI is a high-demand field with strong growth in semiconductor industries globally.</p>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-question">
-        <span>What skills are required?</span>
-        <span class="icon">+</span>
-      </div>
-      <div class="faq-answer">
-        <p>Digital design, Verilog/SystemVerilog, CMOS concepts, and problem-solving are key skills.</p>
-      </div>
-    </div>
-
-    <div class="faq-item">
-      <div class="faq-question">
-        <span>Can beginners start VLSI?</span>
-        <span class="icon">+</span>
-      </div>
-      <div class="faq-answer">
-        <p>Yes, with structured learning and mentorship, beginners can enter VLSI successfully.</p>
-      </div>
-    </div>
-
-  </div>
-
-</section>
-
-<!-- ================= ENQUIRY ================= -->
-<section class="enquiry" data-aos="fade-up">
-
-  <h2>📩 Course Enquiry</h2>
-
-  <form id="enquiryForm">
-    <input type="text" id="name" placeholder="Name">
-    <input type="email" id="email" placeholder="Email">
-    <input type="text" id="phone" placeholder="Phone">
-    <textarea id="message" placeholder="Message"></textarea>
-    <button type="submit" class="btn">Submit</button>
-  </form>
-
-</section>
-
-<!-- ================= CONTACT ================= -->
-<section id="contact" class="contact" data-aos="fade-up">
-
-  <h2>📞 Contact Us</h2>
-
-  <p style="color:#94a3b8; margin-bottom:25px;">
-    We’d love to hear from you. Reach out for courses, mentorship, or collaborations.
-  </p>
-
-  <div class="contact-box">
-
-    <p>
-      📧 Email:
-      <a href="mailto:harsh.thakur@designtechvlsi.com">
-        harsh.thakur@designtechvlsi.com
+  <!-- BACKGROUND -->
+  <div class="bg-grid"></div>
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="navbar">
+    <div class="container nav-wrap">
+      <a href="#" class="brand">
+        <span class="brand-mark">DT</span>
+        <span class="brand-text">DesignTech VLSI</span>
       </a>
-    </p>
 
-    <p>
-      🎥 YouTube:
-      <a href="https://www.youtube.com/@DesignTechVLSI" target="_blank">
-        DesignTech VLSI Channel
-      </a>
-    </p>
+      <nav class="nav-menu" id="navMenu">
+        <a href="#home">Home</a>
+        <a href="#courses">Courses</a>
+        <a href="#tracks">Career Tracks</a>
+        <a href="mentorship.html">Mentorship</a>
+        <a href="#faculty">Faculty</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
 
-    <p>
-      💼 LinkedIn:
-      <a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/" target="_blank">
-        Connect with us
-      </a>
-    </p>
+      <div class="nav-actions">
+        <a href="login.html" class="nav-login">Login</a>
+        <a href="signup.html" class="btn btn-primary">Get Started</a>
+        <button class="menu-toggle" id="menuToggle">☰</button>
+      </div>
+    </div>
+  </header>
 
+  <!-- ================= HERO ================= -->
+  <section class="hero" id="home">
+    <div class="container hero-grid">
+      <div class="hero-left" data-aos="fade-right">
+        <span class="pill">Semiconductor • VLSI • Mentorship • Career Growth</span>
+
+        <h1>
+          Build an industry-ready career in
+          <span>VLSI & Semiconductor Design</span>
+        </h1>
+
+        <p>
+          Learn through structured courses, expert mentorship, practical roadmaps,
+          notes, quizzes, and career-focused guidance designed for real chip design roles.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#courses" class="btn btn-primary">Explore Courses</a>
+          <a href="mentorship.html" class="btn btn-secondary">Book Mentorship</a>
+        </div>
+
+        <div class="hero-mini-stats">
+          <div class="mini-stat">
+            <h3>1 Year</h3>
+            <p>Course validity</p>
+          </div>
+          <div class="mini-stat">
+            <h3>Notes</h3>
+            <p>Structured resources</p>
+          </div>
+          <div class="mini-stat">
+            <h3>Quizzes</h3>
+            <p>Revision support</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right" data-aos="fade-left">
+        <div class="hero-card main-dashboard-card">
+          <div class="card-top">
+            <span class="card-badge">Student Dashboard</span>
+            <span class="card-status">Active Access</span>
+          </div>
+
+          <h3>Career Track Progress</h3>
+
+          <div class="progress-block">
+            <div class="progress-label">
+              <span>RTL Design Track</span>
+              <span>72%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill fill-72"></div>
+            </div>
+          </div>
+
+          <div class="dashboard-list">
+            <div class="dash-item">
+              <span class="dash-dot"></span>
+              <div>
+                <h4>Course Access</h4>
+                <p>Lectures, resources, and guided learning path</p>
+              </div>
+            </div>
+
+            <div class="dash-item">
+              <span class="dash-dot"></span>
+              <div>
+                <h4>Notes & Material</h4>
+                <p>Drive resources and topic-wise quick revision</p>
+              </div>
+            </div>
+
+            <div class="dash-item">
+              <span class="dash-dot"></span>
+              <div>
+                <h4>Assessment Support</h4>
+                <p>Quiz-based preparation and concept reinforcement</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="floating-card card-course">
+          <small>Featured Track</small>
+          <strong>Physical Design</strong>
+          <span>Placement → CTS → Routing</span>
+        </div>
+
+        <div class="floating-card card-mentor">
+          <small>Live Support</small>
+          <strong>1:1 Mentorship</strong>
+          <span>Roadmap • CV • Interviews</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TRUST STRIP ================= -->
+  <section class="trust-strip">
+    <div class="container trust-grid">
+      <div class="trust-card" data-aos="fade-up">
+        <h3>Premium Learning</h3>
+        <p>Built for semiconductor and VLSI careers</p>
+      </div>
+
+      <div class="trust-card" data-aos="fade-up" data-aos-delay="100">
+        <h3>Admin-Controlled Platform</h3>
+        <p>Secure courses, access flow, and backend-driven updates</p>
+      </div>
+
+      <div class="trust-card" data-aos="fade-up" data-aos-delay="200">
+        <h3>Career-Focused Content</h3>
+        <p>Roadmaps, notes, guidance, and interview prep</p>
+      </div>
+
+      <div class="trust-card" data-aos="fade-up" data-aos-delay="300">
+        <h3>Mentorship + Support</h3>
+        <p>Structured support for learning and placements</p>
+      </div>
+    </div>
+  </section>
+
+ <!-- ================= FEATURED COURSES ================= -->
+<section class="section" id="courses">
+  <div class="container">
+    <div class="section-head" data-aos="fade-up">
+      <span class="section-tag">Featured Learning</span>
+      <h2>Popular Courses & Learning Programs</h2>
+      <p>
+        Premium VLSI-focused courses designed for strong conceptual learning,
+        hands-on direction, and career readiness.
+      </p>
+    </div>
+
+    <div id="featuredCourses" class="course-grid">
+      <div class="course-loading-card">Loading active courses...</div>
+    </div>
   </div>
-
 </section>
 
-<!-- ================= FOOTER ================= -->
-<footer>
-  © 2026 Design Tech VLSI
-</footer>
+  <!-- ================= WHY CHOOSE US ================= -->
+  <section class="section alt-section">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-tag">Why DesignTech VLSI</span>
+        <h2>A modern edtech platform built for serious learners</h2>
+      </div>
 
-<!-- ================= POPUPS ================= -->
-<div id="loginPopup" class="popup">
-  <div class="popup-content">
-    <span class="close" onclick="closeLogin()">×</span>
-    <h2>User Login</h2>
-    <input type="email" placeholder="Email">
-    <input type="password" placeholder="Password">
-    <button class="btn">Login</button>
-  </div>
-</div>
+      <div class="feature-grid">
+        <div class="feature-card" data-aos="zoom-in">
+          <div class="feature-icon">📘</div>
+          <h3>Structured Learning</h3>
+          <p>Clear topic progression from fundamentals to career-ready technical tracks.</p>
+        </div>
 
-<div id="signupPopup" class="popup">
-  <div class="popup-content">
-    <span class="close" onclick="closeSignup()">×</span>
-    <h2>Create Account</h2>
-    <input type="text" placeholder="Full Name">
-    <input type="email" placeholder="Email">
-    <input type="password" placeholder="Password">
-    <button class="btn">Signup</button>
-  </div>
-</div>
+        <div class="feature-card" data-aos="zoom-in" data-aos-delay="100">
+          <div class="feature-icon">🧠</div>
+          <h3>Concept + Application</h3>
+          <p>Focus on strong basics, domain understanding, and practical industry alignment.</p>
+        </div>
 
-<div id="adminPopup" class="popup">
-  <div class="popup-content">
-    <span class="close" onclick="closeAdmin()">×</span>
-    <h2>Admin Panel</h2>
-    <p>Go to Admin Dashboard</p>
-    <a href="admin.html">
-      <button class="btn">Open Admin</button>
-    </a>
-  </div>
-</div>
+        <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
+          <div class="feature-icon">📝</div>
+          <h3>Notes & Resources</h3>
+          <p>Topic-wise notes, learning resources, and revision-friendly study support.</p>
+        </div>
 
-<!-- SCRIPTS -->
-<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-<script>
-AOS.init();
-</script>
+        <div class="feature-card" data-aos="zoom-in" data-aos-delay="300">
+          <div class="feature-icon">🎯</div>
+          <h3>Placement Support</h3>
+          <p>Career guidance, interview preparation, resume improvement, and mentorship.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<script type="module" src="js/script.js"></script>
+  <!-- ================= CAREER TRACKS ================= -->
+  <section class="section" id="tracks">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-tag">Career Paths</span>
+        <h2>Choose your VLSI direction</h2>
+        <p>Explore roadmap-based learning tracks aligned with real roles in the semiconductor ecosystem.</p>
+      </div>
 
+      <div class="track-grid">
+        <div class="track-card" data-aos="fade-up">
+          <h3>RTL Design</h3>
+          <p>Digital design → Verilog → RTL flow → projects</p>
+        </div>
+
+        <div class="track-card" data-aos="fade-up" data-aos-delay="80">
+          <h3>Physical Design</h3>
+          <p>Synthesis → Floorplan → Placement → CTS → Routing</p>
+        </div>
+
+        <div class="track-card" data-aos="fade-up" data-aos-delay="160">
+          <h3>Verification</h3>
+          <p>Verilog → SystemVerilog → UVM → DV engineering</p>
+        </div>
+
+        <div class="track-card" data-aos="fade-up" data-aos-delay="240">
+          <h3>Analog Design</h3>
+          <p>MOSFET → Circuits → Simulation → Analog engineering</p>
+        </div>
+
+        <div class="track-card" data-aos="fade-up" data-aos-delay="320">
+          <h3>Semiconductor Devices</h3>
+          <p>Basics → carrier transport → PN junction → MOSFET</p>
+        </div>
+
+        <div class="track-card" data-aos="fade-up" data-aos-delay="400">
+          <h3>Research & Higher Studies</h3>
+          <p>Projects, publications, PhD direction, and advanced technical growth</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MENTORSHIP ================= -->
+  <section class="section alt-section">
+    <div class="container mentorship-wrap">
+      <div class="mentorship-left" data-aos="fade-right">
+        <span class="section-tag">1:1 Guidance</span>
+        <h2>Personalized mentorship for academics, career, and VLSI growth</h2>
+        <p>
+          Book one-on-one mentorship for VLSI roadmap guidance, GATE preparation,
+          resume building, interview prep, higher studies, and career strategy.
+        </p>
+
+        <div class="mentorship-points">
+          <div class="point">CV and profile building</div>
+          <div class="point">Internship and interview direction</div>
+          <div class="point">VLSI learning roadmap</div>
+          <div class="point">PhD and research guidance</div>
+        </div>
+
+        <a href="mentorship.html" class="btn btn-primary">Explore Mentorship</a>
+      </div>
+
+      <div class="mentorship-right" data-aos="fade-left">
+        <div class="mentor-panel">
+          <div class="mentor-box">
+            <span>Career</span>
+            <strong>Interview & Placement Support</strong>
+          </div>
+          <div class="mentor-box">
+            <span>Academic</span>
+            <strong>Research, concepts, and higher studies</strong>
+          </div>
+          <div class="mentor-box">
+            <span>Technical</span>
+            <strong>RTL, PD, DV, devices, and roadmap planning</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FACULTY ================= -->
+  <section class="section" id="faculty">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-tag">Mentors & Experts</span>
+        <h2>Learn from guided mentors and domain-focused educators</h2>
+      </div>
+
+      <div class="faculty-grid">
+        <div class="faculty-card" data-aos="fade-up">
+          <img src="images/FOUNDER.JPG" alt="Founder" />
+          <h3>Harsh Raj Thakur</h3>
+          <span>Founder • Research • VLSI Guidance</span>
+          <p>Focused on building industry-aligned semiconductor education and practical technical mentorship.</p>
+        </div>
+
+        <div class="faculty-card" data-aos="fade-up" data-aos-delay="100">
+          <img src="images/kaja.jpg" alt="Corporate Mentor" />
+          <h3>Kajal Kumari</h3>
+          <span>Corporate Mentor</span>
+          <p>Supports learners in professional development, workplace readiness, and confidence building.</p>
+        </div>
+
+        <div class="faculty-card" data-aos="fade-up" data-aos-delay="200">
+          <img src="images/ASHU.PNG.png" alt="Academic Mentor" />
+          <h3>Ashutosh Tripathi</h3>
+          <span>Academic Mentor</span>
+          <p>Guides students on core electronics and VLSI understanding with strong academic depth.</p>
+        </div>
+
+        <div class="faculty-card" data-aos="fade-up" data-aos-delay="300">
+          <img src="images/IMG_9012.jpg" alt="Research Mentor" />
+          <h3>Dr. Dariskhem Pyngrope</h3>
+          <span>Semiconductor Research Mentor</span>
+          <p>Mentors in semiconductor devices, microelectronics, and research-driven technical growth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PLACEMENT SUPPORT ================= -->
+  <section class="section alt-section">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-tag">Career Support</span>
+        <h2>Placement support designed for job-readiness</h2>
+        <p>We help learners build confidence, strengthen profiles, and prepare smarter for real opportunities.</p>
+      </div>
+
+      <div class="placement-grid">
+        <div class="placement-card" data-aos="fade-up">
+          <div class="placement-icon">📄</div>
+          <h3>Resume Building</h3>
+          <p>Create a stronger, cleaner, and more technical profile for applications.</p>
+        </div>
+
+        <div class="placement-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="placement-icon">🎤</div>
+          <h3>Interview Prep</h3>
+          <p>Get guidance for technical interviews, HR rounds, and communication confidence.</p>
+        </div>
+
+        <div class="placement-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="placement-icon">🧭</div>
+          <h3>Career Direction</h3>
+          <p>Choose the right learning path based on your target role and background.</p>
+        </div>
+
+        <div class="placement-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="placement-icon">🚀</div>
+          <h3>Growth Support</h3>
+          <p>Stay focused with long-term mentorship and preparation support.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PODCAST ================= -->
+  <section class="section" id="podcastSection">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-tag">Expert Conversations</span>
+        <h2>Podcasts & talks from researchers and professionals</h2>
+        <p>Insights from researchers, professors, and industry professionals to expand your perspective.</p>
+      </div>
+
+      <div id="podcastContainerFront" class="podcast-grid"></div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section class="section alt-section" id="faq">
+    <div class="container">
+      <div class="section-head" data-aos="fade-up">
+        <span class="section-tag">FAQ</span>
+        <h2>Frequently asked questions</h2>
+      </div>
+
+      <div class="faq-wrap">
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>What is VLSI?</span>
+            <span>+</span>
+          </button>
+          <div class="faq-answer">
+            <p>VLSI is the process of designing integrated circuits by placing a very large number of transistors on a single chip.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Can beginners start learning VLSI?</span>
+            <span>+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes. With a structured roadmap, concept clarity, and guided mentorship, beginners can build a strong foundation.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Will courses include notes and resources?</span>
+            <span>+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes. Your learning flow can include topic-wise notes, linked resources, and revision support materials.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>Do you provide mentorship and placement support?</span>
+            <span>+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes. We support learners through mentorship, career planning, interview preparation, and professional guidance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ENQUIRY ================= -->
+  <section class="section" id="contact">
+    <div class="container enquiry-section">
+      <div class="enquiry-left" data-aos="fade-right">
+        <span class="section-tag">Get in touch</span>
+        <h2>Have questions about courses, mentorship, or career direction?</h2>
+        <p>
+          Reach out to us for course selection help, mentorship guidance,
+          and collaboration opportunities.
+        </p>
+
+        <div class="contact-list">
+          <a href="mailto:harsh.thakur@designtechvlsi.com">harsh.thakur@designtechvlsi.com</a>
+          <a href="https://www.youtube.com/@DesignTechVLSI" target="_blank">YouTube Channel</a>
+          <a href="https://www.linkedin.com/in/harsh-raj-thakur-a52790114/" target="_blank">LinkedIn Profile</a>
+        </div>
+      </div>
+
+      <div class="enquiry-right" data-aos="fade-left">
+        <form id="enquiryForm" class="enquiry-form">
+          <input type="text" id="name" placeholder="Your Name" />
+          <input type="email" id="email" placeholder="Your Email" />
+          <input type="text" id="phone" placeholder="Phone Number" />
+          <textarea id="message" placeholder="Tell us what you need"></textarea>
+          <button type="submit" class="btn btn-primary full-btn">Submit Enquiry</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FINAL CTA ================= -->
+  <section class="final-cta">
+    <div class="container final-cta-box" data-aos="zoom-in">
+      <div>
+        <span class="section-tag">Start your journey</span>
+        <h2>Learn semiconductor skills with structure, mentorship, and direction</h2>
+      </div>
+      <div class="final-cta-actions">
+        <a href="signup.html" class="btn btn-primary">Create Account</a>
+        <a href="login.html" class="btn btn-secondary">Student Login</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="container footer-wrap">
+      <div>
+        <h3>DesignTech VLSI</h3>
+        <p>Career-focused semiconductor learning platform for ambitious engineers.</p>
+      </div>
+
+      <div class="footer-links">
+        <a href="#courses">Courses</a>
+        <a href="mentorship.html">Mentorship</a>
+        <a href="#faculty">Faculty</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+
+    <p class="footer-copy">© 2026 DesignTech VLSI. All rights reserved.</p>
+  </footer>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 900, once: true });
+
+    const menuToggle = document.getElementById("menuToggle");
+    const navMenu = document.getElementById("navMenu");
+
+    if (menuToggle) {
+      menuToggle.addEventListener("click", () => {
+        navMenu.classList.toggle("show");
+      });
+    }
+
+    const faqItems = document.querySelectorAll(".faq-item");
+
+    faqItems.forEach(item => {
+      const btn = item.querySelector(".faq-question");
+      btn.addEventListener("click", () => {
+        faqItems.forEach(other => {
+          if (other !== item) other.classList.remove("active");
+        });
+        item.classList.toggle("active");
+      });
+    });
+  </script>
+
+  <script type="module" src="js/script.js"></script>
 </body>
 </html>

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard | DesignTech VLSI</title>
 
-  <link rel="stylesheet" href="css/dashboard.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 
 <body>
@@ -18,23 +18,56 @@
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="mentorship.html">Mentorship</a></li>
-      <li><a href="dashboard.html#my-courses" class="active-link">Dashboard</a></li>
+      <li><a href="#my-courses" class="active-link">Dashboard</a></li>
     </ul>
   </nav>
 
-  <!-- HERO / HEADER -->
+  <!-- HERO -->
   <section class="dashboard-hero">
     <div>
       <p class="hero-tag">Learning Portal</p>
       <h1>Student Dashboard</h1>
-      <p class="hero-subtext">Track your courses, continue learning, and access purchased content in one place.</p>
+      <p class="hero-subtext">
+        Track your courses, practice quizzes, attempt test series, and manage your learning journey from one place.
+      </p>
+      <p class="dashboard-validity">Course Access Validity: 12 Months</p>
       <h3 id="welcome"></h3>
     </div>
 
     <button class="logout-btn" onclick="logout()">Logout</button>
   </section>
 
-  <!-- MENTORSHIP SECTION -->
+  <!-- STATS -->
+  <section class="dashboard-section">
+    <div class="section-heading">
+      <h2>Learning Overview</h2>
+      <p>Your learning summary at a glance</p>
+    </div>
+
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <p>Total Courses</p>
+        <h3 id="totalCoursesCount">0</h3>
+      </div>
+
+      <div class="stat-card">
+        <p>Unlocked Courses</p>
+        <h3 id="unlockedCoursesCount">0</h3>
+      </div>
+
+      <div class="stat-card">
+        <p>Available Quizzes</p>
+        <h3 id="availableQuizzesCount">0</h3>
+      </div>
+
+      <div class="stat-card">
+        <p>Available Test Series</p>
+        <h3 id="availableTestSeriesCount">0</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENTORSHIP -->
   <section class="dashboard-section">
     <div class="section-heading">
       <h2>My Mentorship Bookings</h2>
@@ -44,17 +77,37 @@
     <div id="mentorshipBookings"></div>
   </section>
 
-  <!-- COURSE SECTION -->
+  <!-- COURSES -->
   <section class="dashboard-section" id="my-courses">
     <div class="section-heading">
       <h2>My Courses</h2>
       <p>Your free and purchased learning content</p>
+      <p class="dashboard-validity">All purchased courses come with 12 Months access validity.</p>
     </div>
 
     <div id="courseList"></div>
   </section>
 
-  <script type="module" src="js/dashboard.js"></script>
+  <!-- QUIZZES -->
+  <section class="dashboard-section" id="my-quizzes">
+    <div class="section-heading">
+      <h2>Practice Quizzes</h2>
+      <p>Chapter-wise quizzes available for your courses</p>
+    </div>
 
+    <div id="quizList"></div>
+  </section>
+
+  <!-- TEST SERIES -->
+  <section class="dashboard-section" id="my-testseries">
+    <div class="section-heading">
+      <h2>Test Series</h2>
+      <p>Attempt full-length tests and track your preparation</p>
+    </div>
+
+    <div id="testSeriesList"></div>
+  </section>
+
+  <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>

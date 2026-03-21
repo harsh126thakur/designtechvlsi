@@ -1,66 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Course Player</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Player | DesignTech VLSI</title>
 
-<link rel="stylesheet" href="css/course.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/course.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 </head>
 
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <h2 class="logo">DesignTech VLSI</h2>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <h2 class="logo">DesignTech VLSI</h2>
 
-  <ul>
-    <li><a href="index.html">Home</a></li>
-    <li><a href="course.html">Courses</a></li>
-    <li><a href="dashboard.html">Dashboard</a></li>
-  </ul>
-</nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="dashboard.html#my-courses">My Courses</a></li>
+    </ul>
+  </nav>
 
-<!-- HEADER -->
-<div class="nav">
-  <div class="course-header-info">
-    <h2 id="courseTitle">Loading...</h2>
-    <p class="course-validity">Validity: 12 Months</p>
-  </div>
-  <button onclick="goBack()">⬅ Back</button>
-</div>
-
-<!-- MAIN -->
-<div class="container">
-
-  <!-- PLAYER -->
-  <div class="player">
-    <iframe
-      id="videoPlayer"
-      src=""
-      title="Course Video Player"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
+  <!-- HEADER -->
+  <div class="nav">
+    <div class="course-header-info">
+      <h2 id="courseTitle">Loading...</h2>
+      <p class="course-validity" id="courseValidity">Validity: 12 Months</p>
+    </div>
+    <button onclick="goBack()">⬅ Back</button>
   </div>
 
-  <!-- PLAYLIST -->
-  <div class="playlist" id="playlist">
-    <p>Loading lectures...</p>
+  <!-- MAIN -->
+  <div class="container">
+
+    <!-- LEFT -->
+    <div class="player-section">
+      <div class="player">
+        <iframe
+          id="videoPlayer"
+          src=""
+          title="Course Video Player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <div class="content-card">
+        <div class="section-head">
+          <h3>Lecture Resources</h3>
+          <p>Access notes and supporting material for this course.</p>
+        </div>
+        <div id="notesSection"></div>
+      </div>
+
+      <div class="content-card">
+        <div class="section-head">
+          <h3>Practice Quizzes</h3>
+          <p>Attempt chapter-wise quizzes linked to this course.</p>
+        </div>
+        <div id="courseQuizList"></div>
+      </div>
+
+      <div class="content-card">
+        <div class="section-head">
+          <h3>Test Series</h3>
+          <p>Attempt full tests to evaluate your preparation.</p>
+        </div>
+        <div id="courseTestSeriesList"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="playlist-section">
+      <div class="playlist-card">
+        <div class="section-head">
+          <h3>Course Lectures</h3>
+          <p>Select a lecture to continue learning</p>
+        </div>
+        <div class="playlist" id="playlist">
+          <p>Loading lectures...</p>
+        </div>
+      </div>
+    </div>
+
   </div>
 
-</div>
+  <script type="module" src="js/course.js"></script>
 
-<!-- MODULE SCRIPT -->
-<script type="module" src="js/course.js"></script>
-
-<script>
-function goBack(){
-  window.location.href = "course.html";
-}
-</script>
+  <script>
+    function goBack(){
+      window.location.href = "dashboard.html";
+    }
+  </script>
 
 </body>
 </html>

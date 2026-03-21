@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel | DesignTech VLSI</title>
+  <title>Super Admin Panel | DesignTech VLSI</title>
 
   <link rel="stylesheet" href="css/admin.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -12,12 +12,13 @@
 
   <div class="admin-shell">
 
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="brand">
-        <div class="brand-logo">DT</div>
+        <div class="brand-logo">SA</div>
         <div>
           <h2>DesignTech VLSI</h2>
-          <p>Premium Admin Panel</p>
+          <p>Super Admin Control</p>
         </div>
       </div>
 
@@ -36,11 +37,13 @@
       </nav>
     </aside>
 
+    <!-- MAIN CONTENT -->
     <main class="main-content">
 
+      <!-- TOPBAR -->
       <header class="topbar">
         <div>
-          <p class="topbar-tag">Admin Workspace</p>
+          <p class="topbar-tag">Super Admin Workspace</p>
           <h1 id="pageTitle">Overview</h1>
         </div>
 
@@ -121,13 +124,13 @@
 
             <h4 class="sub-title">Lectures</h4>
             <div id="lectureContainer"></div>
-            <button class="secondary-btn" id="addLectureBtn">+ Add Lecture</button>
+            <button class="secondary-btn" id="addLectureBtn" type="button">+ Add Lecture</button>
 
             <h4 class="sub-title">Notes</h4>
             <div id="notesContainer"></div>
-            <button class="secondary-btn" id="addNoteBtn">+ Add Note</button>
+            <button class="secondary-btn" id="addNoteBtn" type="button">+ Add Note</button>
 
-            <button class="primary-btn full-btn" id="saveCourseBtn">Save Course</button>
+            <button class="primary-btn full-btn" id="saveCourseBtn" type="button">Save Course</button>
           </div>
 
           <div class="panel-card">
@@ -162,7 +165,7 @@
               <span>Active Quiz</span>
             </label>
 
-            <button class="primary-btn full-btn" id="saveQuizBtn">Create Quiz</button>
+            <button class="primary-btn full-btn" id="saveQuizBtn" type="button">Create Quiz</button>
           </div>
 
           <div class="panel-card">
@@ -214,10 +217,18 @@
             <textarea id="questionText" placeholder="Enter Question"></textarea>
 
             <div id="questionOptionsBox">
-              <div class="option-row"><input type="text" id="option1" placeholder="Option 1" /></div>
-              <div class="option-row"><input type="text" id="option2" placeholder="Option 2" /></div>
-              <div class="option-row"><input type="text" id="option3" placeholder="Option 3" /></div>
-              <div class="option-row"><input type="text" id="option4" placeholder="Option 4" /></div>
+              <div class="option-row">
+                <input type="text" id="option1" placeholder="Option 1" />
+              </div>
+              <div class="option-row">
+                <input type="text" id="option2" placeholder="Option 2" />
+              </div>
+              <div class="option-row">
+                <input type="text" id="option3" placeholder="Option 3" />
+              </div>
+              <div class="option-row">
+                <input type="text" id="option4" placeholder="Option 4" />
+              </div>
             </div>
 
             <input type="text" id="questionCorrectAnswer" placeholder="Correct Answer (for multicorrect use comma separated)" />
@@ -227,7 +238,7 @@
               <span>Active Question</span>
             </label>
 
-            <button class="primary-btn full-btn" id="saveQuestionBtn">Add Question</button>
+            <button class="primary-btn full-btn" id="saveQuestionBtn" type="button">Add Question</button>
           </div>
 
           <div class="panel-card">
@@ -265,7 +276,7 @@
               <span>Active Test Series</span>
             </label>
 
-            <button class="primary-btn full-btn" id="saveTestSeriesBtn">Create Test Series</button>
+            <button class="primary-btn full-btn" id="saveTestSeriesBtn" type="button">Create Test Series</button>
           </div>
 
           <div class="panel-card">
@@ -301,7 +312,7 @@
               <span>Active Coupon</span>
             </label>
 
-            <button class="primary-btn full-btn" id="saveCouponBtn">Create Coupon</button>
+            <button class="primary-btn full-btn" id="saveCouponBtn" type="button">Create Coupon</button>
           </div>
 
           <div class="panel-card">
@@ -334,7 +345,7 @@
               <span>Active Podcast</span>
             </label>
 
-            <button class="primary-btn full-btn" id="savePodcastBtn">Add Podcast</button>
+            <button class="primary-btn full-btn" id="savePodcastBtn" type="button">Add Podcast</button>
           </div>
 
           <div class="panel-card">

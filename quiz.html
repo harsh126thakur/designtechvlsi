@@ -1,19 +1,205 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Quiz</title>
-</head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Attempt | DesignTech VLSI</title>
 
+  <link rel="stylesheet" href="css/quiz.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
 <body>
 
-<h2 id="quizTitle"></h2>
-<h3 id="timer">Time Left: 60s</h3>
+  <!-- NAVBAR -->
+  <nav class="quiz-navbar">
+    <div class="quiz-brand">
+      <a href="index.html" class="brand-link">DesignTech VLSI</a>
+      <span class="brand-badge">Assessment Portal</span>
+    </div>
 
-<div id="quizContainer"></div>
+    <div class="quiz-navbar-right">
+      <a href="dashboard.html" class="nav-link">Dashboard</a>
+      <button id="submitTopBtn" class="submit-btn" type="button">Submit Test</button>
+    </div>
+  </nav>
 
-<button onclick="submitQuiz()">Submit</button>
+  <!-- HEADER -->
+  <header class="quiz-header">
+    <div class="quiz-header-left">
+      <p class="quiz-tag" id="quizModeTag">Loading Assessment...</p>
+      <h1 id="quizTitle">Please wait...</h1>
+      <p id="quizDescription" class="quiz-description">Fetching test details...</p>
 
-<script type="module" src="js/quiz.js"></script>
+      <div class="quiz-meta">
+        <span class="meta-pill" id="quizTypePill">Type: --</span>
+        <span class="meta-pill" id="quizQuestionCount">Questions: 0</span>
+        <span class="meta-pill" id="quizMarks">Marks: 0</span>
+      </div>
+    </div>
 
+    <div class="quiz-header-right">
+      <div class="timer-card">
+        <p>Time Left</p>
+        <h2 id="quizTimer">00:00</h2>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="quiz-layout">
+
+    <!-- LEFT PANEL -->
+    <section class="question-panel">
+      <div class="question-card">
+
+        <div class="question-topbar">
+          <span id="questionNumberBadge" class="question-count">Question 1</span>
+          <span id="questionTypeBadge" class="question-type">MCQ</span>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <p id="progressText">0% completed</p>
+        </div>
+
+        <div class="question-body">
+          <h2 id="questionText">Loading question...</h2>
+          <p id="questionMeta" class="question-meta">Marks: 0 | Negative: 0</p>
+        </div>
+
+        <!-- OPTIONS -->
+        <div id="optionsContainer" class="options-container"></div>
+
+        <!-- NUMERICAL -->
+        <div id="numericalBox" class="numerical-box" style="display:none;">
+          <label for="numericalAnswer">Enter your answer</label>
+          <input type="text" id="numericalAnswer" placeholder="Type numerical answer" />
+        </div>
+
+        <div class="question-actions">
+          <button id="clearAnswerBtn" class="secondary-btn" type="button">Clear Answer</button>
+          <button id="prevBtn" class="ghost-btn" type="button">Previous</button>
+          <button id="nextBtn" class="primary-btn" type="button">Next</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL -->
+    <aside class="sidebar-panel">
+      <div class="palette-card">
+        <div class="palette-head">
+          <h3>Question Palette</h3>
+          <p>Jump to any question</p>
+        </div>
+
+        <div id="questionPalette" class="question-palette"></div>
+
+        <div class="palette-legend">
+          <div class="legend-item">
+            <span class="legend-box current-box"></span>
+            <span>Current</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-box answered-box"></span>
+            <span>Answered</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-box unanswered-box"></span>
+            <span>Unanswered</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <h3>Attempt Summary</h3>
+        <div class="summary-row">
+          <span>Total Questions</span>
+          <strong id="summaryTotal">0</strong>
+        </div>
+        <div class="summary-row">
+          <span>Answered</span>
+          <strong id="summaryAnswered">0</strong>
+        </div>
+        <div class="summary-row">
+          <span>Unanswered</span>
+          <strong id="summaryUnanswered">0</strong>
+        </div>
+
+        <button id="submitBottomBtn" class="submit-btn full-btn" type="button">Submit Test</button>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- SUBMIT MODAL -->
+  <div id="submitModal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+      <h3>Submit Assessment?</h3>
+      <p>You are about to submit your test. Make sure you have reviewed all questions.</p>
+
+      <div class="modal-summary">
+        <div class="summary-row">
+          <span>Total Questions</span>
+          <strong id="modalTotalQuestions">0</strong>
+        </div>
+        <div class="summary-row">
+          <span>Answered</span>
+          <strong id="modalAnsweredQuestions">0</strong>
+        </div>
+        <div class="summary-row">
+          <span>Unanswered</span>
+          <strong id="modalUnansweredQuestions">0</strong>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="cancelSubmitBtn" class="ghost-btn" type="button">Cancel</button>
+        <button id="confirmSubmitBtn" class="primary-btn" type="button">Yes, Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT MODAL -->
+  <div id="resultModal" class="modal-overlay" style="display:none;">
+    <div class="modal-box result-box">
+      <p class="result-tag">Assessment Submitted</p>
+      <h2 id="resultTitle">Your Result</h2>
+
+      <div class="result-grid">
+        <div class="result-stat">
+          <span>Score</span>
+          <strong id="resultScore">0</strong>
+        </div>
+        <div class="result-stat">
+          <span>Total Marks</span>
+          <strong id="resultTotalMarks">0</strong>
+        </div>
+        <div class="result-stat">
+          <span>Correct</span>
+          <strong id="resultCorrect">0</strong>
+        </div>
+        <div class="result-stat">
+          <span>Wrong</span>
+          <strong id="resultWrong">0</strong>
+        </div>
+        <div class="result-stat">
+          <span>Attempted</span>
+          <strong id="resultAttempted">0</strong>
+        </div>
+        <div class="result-stat">
+          <span>Accuracy</span>
+          <strong id="resultAccuracy">0%</strong>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <a href="dashboard.html" class="primary-link-btn">Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/quiz.js"></script>
 </body>
 </html>

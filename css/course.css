@@ -263,3 +263,169 @@ button{
 width:100%;
 }
 }
+.player-section{
+flex:3;
+display:flex;
+flex-direction:column;
+gap:18px;
+min-width:0;
+}
+
+.playlist-section{
+flex:1.1;
+min-width:280px;
+}
+
+.playlist-card,
+.content-card{
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(16px);
+-webkit-backdrop-filter:blur(16px);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:20px;
+padding:18px;
+box-shadow:0 12px 32px rgba(0,0,0,0.28);
+}
+
+.section-head{
+margin-bottom:14px;
+}
+
+.section-head h3{
+font-size:20px;
+color:#f8fafc;
+margin-bottom:6px;
+}
+
+.section-head p{
+font-size:14px;
+color:#94a3b8;
+line-height:1.6;
+}
+
+.lecture-top{
+display:flex;
+gap:12px;
+align-items:flex-start;
+}
+
+.lecture-top h4{
+font-size:15px;
+font-weight:600;
+color:inherit;
+margin-bottom:4px;
+}
+
+.lecture-top p{
+font-size:12px;
+opacity:0.8;
+}
+
+.lecture-index{
+min-width:30px;
+height:30px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:rgba(56,189,248,0.14);
+font-size:13px;
+font-weight:700;
+}
+
+.resource-card,
+.assessment-card{
+background:rgba(15,23,42,0.72);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:16px;
+padding:16px;
+margin-bottom:14px;
+}
+
+.resource-card h4,
+.assessment-card h4{
+font-size:17px;
+color:#f8fafc;
+margin-bottom:8px;
+}
+
+.resource-card p,
+.assessment-card p{
+font-size:14px;
+color:#cbd5e1;
+line-height:1.6;
+margin-bottom:10px;
+}
+
+.resource-btn{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:10px 14px;
+border-radius:10px;
+text-decoration:none;
+font-weight:700;
+background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+color:#001018;
+}
+
+.assessment-badge{
+display:inline-block;
+padding:6px 10px;
+border-radius:999px;
+font-size:12px;
+font-weight:700;
+margin-bottom:10px;
+}
+
+.quiz-badge{
+background:rgba(34,197,94,0.14);
+color:#22c55e;
+border:1px solid rgba(34,197,94,0.25);
+}
+
+.test-badge{
+background:rgba(249,115,22,0.14);
+color:#fb923c;
+border:1px solid rgba(249,115,22,0.25);
+}
+
+.assessment-meta{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin:10px 0 14px;
+}
+
+.assessment-meta span{
+font-size:12px;
+padding:6px 10px;
+border-radius:999px;
+background:rgba(56,189,248,0.08);
+color:#cbd5e1;
+border:1px solid rgba(56,189,248,0.12);
+}
+
+.empty-state{
+padding:16px;
+border-radius:14px;
+background:rgba(15,23,42,0.58);
+border:1px dashed rgba(148,163,184,0.18);
+}
+
+.empty-state p{
+color:#94a3b8;
+font-size:14px;
+}
+
+@media (max-width:768px){
+.player-section,
+.playlist-section{
+width:100%;
+}
+
+.assessment-meta{
+flex-direction:column;
+align-items:flex-start;
+}
+}

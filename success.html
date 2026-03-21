@@ -1,56 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Success</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Success | DesignTech VLSI</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
-<style>
-body{
-  background:#0f172a;
-  font-family:Poppins;
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  margin:0;
-}
-
-.box{
-  background:#020617;
-  padding:40px;
-  border-radius:12px;
-  text-align:center;
-  border:1px solid #1e293b;
-}
-
-h1{
-  color:#22c55e;
-}
-
-p{
-  color:#94a3b8;
-}
-</style>
-
+  <link rel="stylesheet" href="css/success.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-
 <body>
 
-<div class="box">
-<h1>✅ Payment Successful</h1>
-<p>Your booking/course is confirmed</p>
-<p>Redirecting...</p>
-</div>
+  <nav class="navbar">
+    <div class="logo">DesignTech VLSI</div>
 
-<script>
-setTimeout(()=>{
-  window.location.href = "index.html"; // change if needed
-}, 3000);
-</script>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="mentorship.html">Mentorship</a></li>
+    </ul>
+  </nav>
+
+  <main class="success-page">
+    <section class="success-card">
+      <div class="success-icon">✅</div>
+
+      <span class="success-badge">Payment Confirmed</span>
+
+      <h1>Payment Successful</h1>
+      <p class="success-text">
+        Your booking or course purchase has been confirmed successfully.
+        You can now continue from your dashboard.
+      </p>
+
+      <div class="success-points">
+        <div class="point-card">
+          <h3>Course Access</h3>
+          <p>Purchased courses are available from your student dashboard.</p>
+        </div>
+
+        <div class="point-card">
+          <h3>Mentorship Booking</h3>
+          <p>Your mentorship booking details are saved after successful payment.</p>
+        </div>
+      </div>
+
+      <div class="success-actions">
+        <a href="dashboard.html" class="btn-primary">Go to Dashboard</a>
+        <a href="index.html" class="btn-secondary">Back to Home</a>
+      </div>
+
+      <p class="redirect-text">
+        Redirecting to dashboard in <span id="countdown">5</span> seconds...
+      </p>
+    </section>
+  </main>
+
+  <script>
+    let seconds = 5;
+    const countdownEl = document.getElementById("countdown");
+
+    const timer = setInterval(() => {
+      seconds -= 1;
+      if (countdownEl) {
+        countdownEl.innerText = seconds;
+      }
+
+      if (seconds <= 0) {
+        clearInterval(timer);
+        window.location.href = "dashboard.html";
+      }
+    }, 1000);
+  </script>
 
 </body>
 </html>
