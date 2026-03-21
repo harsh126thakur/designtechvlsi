@@ -73,10 +73,28 @@ align-items:center;
 border-bottom:1px solid rgba(148,163,184,0.10);
 }
 
+.course-header-info{
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
 .nav h2{
 font-size:24px;
 font-weight:700;
 color:#f8fafc;
+}
+
+.course-validity{
+font-size:14px;
+color:#38bdf8;
+background:rgba(56,189,248,0.10);
+border:1px solid rgba(56,189,248,0.25);
+padding:6px 12px;
+border-radius:999px;
+display:inline-block;
+width:fit-content;
+font-weight:500;
 }
 
 /* ================= LAYOUT ================= */
@@ -207,6 +225,14 @@ flex-direction:column;
 gap:10px;
 text-align:center;
 padding:14px 16px;
+}
+
+.course-header-info{
+align-items:center;
+}
+
+.course-validity{
+margin:0 auto;
 }
 
 .container{
