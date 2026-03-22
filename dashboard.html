@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="css/dashboard.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 </head>
-
 <body>
 
   <!-- NAVBAR -->
@@ -24,46 +23,41 @@
 
   <!-- HERO -->
   <section class="dashboard-hero">
-    <div>
+    <div class="hero-left">
       <p class="hero-tag">Learning Portal</p>
       <h1>Student Dashboard</h1>
       <p class="hero-subtext">
-        Track your courses, practice quizzes, attempt test series, and manage your learning journey from one place.
+        Track your courses, continue learning, attempt quizzes, and manage your mentorship journey in one place.
       </p>
-      <p class="dashboard-validity">Course Access Validity: 12 Months</p>
-      <h3 id="welcome"></h3>
+      <p class="dashboard-validity">Purchased Course Access Validity: 12 Months</p>
+      <h3 id="welcome">Welcome Student</h3>
     </div>
 
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div class="hero-right">
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
   </section>
 
   <!-- STATS -->
-  <section class="dashboard-section">
-    <div class="section-heading">
-      <h2>Learning Overview</h2>
-      <p>Your learning summary at a glance</p>
+  <section class="dashboard-stats">
+    <div class="stat-card">
+      <p>Total Courses</p>
+      <h3 id="totalCoursesCount">0</h3>
     </div>
 
-    <div class="dashboard-stats">
-      <div class="stat-card">
-        <p>Total Courses</p>
-        <h3 id="totalCoursesCount">0</h3>
-      </div>
+    <div class="stat-card">
+      <p>Unlocked Courses</p>
+      <h3 id="unlockedCoursesCount">0</h3>
+    </div>
 
-      <div class="stat-card">
-        <p>Unlocked Courses</p>
-        <h3 id="unlockedCoursesCount">0</h3>
-      </div>
+    <div class="stat-card">
+      <p>Available Quizzes</p>
+      <h3 id="availableQuizzesCount">0</h3>
+    </div>
 
-      <div class="stat-card">
-        <p>Available Quizzes</p>
-        <h3 id="availableQuizzesCount">0</h3>
-      </div>
-
-      <div class="stat-card">
-        <p>Available Test Series</p>
-        <h3 id="availableTestSeriesCount">0</h3>
-      </div>
+    <div class="stat-card">
+      <p>Available Test Series</p>
+      <h3 id="availableTestSeriesCount">0</h3>
     </div>
   </section>
 
@@ -71,43 +65,44 @@
   <section class="dashboard-section">
     <div class="section-heading">
       <h2>My Mentorship Bookings</h2>
-      <p>Your scheduled mentorship sessions</p>
+      <p>Your scheduled mentorship sessions and booking details</p>
     </div>
 
-    <div id="mentorshipBookings"></div>
+    <div id="mentorshipBookings" class="dashboard-grid"></div>
   </section>
 
   <!-- COURSES -->
   <section class="dashboard-section" id="my-courses">
     <div class="section-heading">
       <h2>My Courses</h2>
-      <p>Your free and purchased learning content</p>
+      <p>Your free and purchased VLSI learning programs</p>
       <p class="dashboard-validity">All purchased courses come with 12 Months access validity.</p>
     </div>
 
-    <div id="courseList"></div>
+    <div id="courseList" class="dashboard-grid courses-grid"></div>
   </section>
 
   <!-- QUIZZES -->
   <section class="dashboard-section" id="my-quizzes">
     <div class="section-heading">
       <h2>Practice Quizzes</h2>
-      <p>Chapter-wise quizzes available for your courses</p>
+      <p>Chapter-wise quizzes to test your concepts and improve retention</p>
     </div>
 
-    <div id="quizList"></div>
+    <div id="quizList" class="dashboard-grid courses-grid"></div>
   </section>
 
   <!-- TEST SERIES -->
-  <section class="dashboard-section" id="my-testseries">
+  <section class="dashboard-section" id="my-test-series">
     <div class="section-heading">
       <h2>Test Series</h2>
-      <p>Attempt full-length tests and track your preparation</p>
+      <p>Attempt full-length assessments and measure your preparation level</p>
     </div>
 
-    <div id="testSeriesList"></div>
+    <div id="testSeriesList" class="dashboard-grid courses-grid"></div>
   </section>
 
   <script type="module" src="js/dashboard.js"></script>
+
 </body>
 </html>

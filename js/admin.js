@@ -24,25 +24,32 @@ import {
 let currentUser = null;
 let currentAdminData = null;
 
-// ================= SIDEBAR =================
+/* ================= ELEMENTS ================= */
 const navItems = document.querySelectorAll(".nav-item");
 const sections = document.querySelectorAll(".section-panel");
 const pageTitle = document.getElementById("pageTitle");
 const sidebar = document.getElementById("sidebar");
 const menuToggle = document.getElementById("menuToggle");
+const logoutBtn = document.getElementById("logoutBtn");
 
-navItems.forEach(btn => {
+const lectureContainer = document.getElementById("lectureContainer");
+const notesContainer = document.getElementById("notesContainer");
+
+/* ================= SIDEBAR ================= */
+navItems.forEach((btn) => {
   btn.addEventListener("click", () => {
     const section = btn.dataset.section;
 
-    navItems.forEach(item => item.classList.remove("active"));
+    navItems.forEach((item) => item.classList.remove("active"));
     btn.classList.add("active");
 
-    sections.forEach(sec => sec.classList.remove("active"));
+    sections.forEach((sec) => sec.classList.remove("active"));
     const target = document.getElementById(`section-${section}`);
     if (target) target.classList.add("active");
 
-    if (pageTitle) pageTitle.innerText = btn.innerText;
+    if (pageTitle) {
+      pageTitle.innerText = btn.innerText.trim();
+    }
 
     if (window.innerWidth <= 960 && sidebar) {
       sidebar.classList.remove("open");
@@ -56,9 +63,26 @@ if (menuToggle) {
   });
 }
 
-// ================= HELPERS =================
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      window.location.href = "login.html";
+    } catch (error) {
+      console.error("Logout error:", error);
+      alert("Error while logging out");
+    }
+  });
+}
+
+/* ================= HELPERS ================= */
 function safeText(value) {
-  return value ?? "";
+  if (value === null || value === undefined) return "";
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 function formatCurrency(value) {
@@ -68,7 +92,7 @@ function formatCurrency(value) {
 function formatDate(value) {
   try {
     if (!value) return "-";
-    if (value.toDate) return value.toDate().toLocaleString();
+    if (typeof value?.toDate === "function") return value.toDate().toLocaleString();
     return new Date(value).toLocaleString();
   } catch {
     return "-";
@@ -76,12 +100,13 @@ function formatDate(value) {
 }
 
 function createBadge(text, type = "blue") {
-  return `<span class="badge ${type}">${text}</span>`;
+  return `<span class="badge ${type}">${safeText(text)}</span>`;
 }
 
 function showAdminName(userData) {
   const el = document.getElementById("adminWelcome");
   if (!el) return;
+
   const name = userData?.name || "Admin";
   const role = userData?.role || "admin";
   el.innerText = `${name} • ${role}`;
@@ -106,7 +131,17 @@ function getYouTubeId(url = "") {
   return "";
 }
 
-// ================= AUTH =================
+function setValue(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.value = value;
+}
+
+function setChecked(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.checked = value;
+}
+
+/* ================= AUTH / ROLE CHECK ================= */
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "login.html";
@@ -127,7 +162,7 @@ onAuthStateChanged(auth, async (user) => {
 
       if (!adminEmailSnap.empty) {
         userData = adminEmailSnap.docs[0].data();
-        role = (userData.role || "").toLowerCase();
+        role = String(userData.role || "").toLowerCase();
         isActive = userData.isActive !== false;
       }
     }
@@ -135,9 +170,10 @@ onAuthStateChanged(auth, async (user) => {
     if (!userData) {
       const adminRef = doc(db, "admins", user.uid);
       const adminSnap = await getDoc(adminRef);
+
       if (adminSnap.exists()) {
         userData = adminSnap.data();
-        role = (userData.role || "").toLowerCase();
+        role = String(userData.role || "").toLowerCase();
         isActive = userData.isActive !== false;
       }
     }
@@ -145,9 +181,10 @@ onAuthStateChanged(auth, async (user) => {
     if (!userData) {
       const userRef = doc(db, "users", user.uid);
       const userSnap = await getDoc(userRef);
+
       if (userSnap.exists()) {
         userData = userSnap.data();
-        role = (userData.role || "").toLowerCase();
+        role = String(userData.role || "").toLowerCase();
         isActive = userData.isActive !== false;
       }
     }
@@ -185,7 +222,6 @@ onAuthStateChanged(auth, async (user) => {
       loadPayments(),
       loadUsers()
     ]);
-
   } catch (error) {
     console.error("Admin auth error:", error);
     alert("Error loading admin panel");
@@ -194,16 +230,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// ================= LOGOUT =================
-const logoutBtn = document.getElementById("logoutBtn");
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
-}
-
-// ================= OVERVIEW =================
+/* ================= OVERVIEW ================= */
 async function loadOverview() {
   try {
     const [
@@ -212,14 +239,16 @@ async function loadOverview() {
       quizzesSnap,
       testSeriesSnap,
       enquiriesSnap,
-      paymentsSnap
+      paymentsSnap,
+      bookingsSnap
     ] = await Promise.all([
       getDocs(collection(db, "users")),
       getDocs(collection(db, "courses")),
       getDocs(collection(db, "quizzes")),
       getDocs(collection(db, "testseries")),
       getDocs(collection(db, "enquiries")),
-      getDocs(collection(db, "payments"))
+      getDocs(collection(db, "payments")),
+      getDocs(collection(db, "bookings"))
     ]);
 
     const totalUsers = document.getElementById("totalUsers");
@@ -233,22 +262,30 @@ async function loadOverview() {
     if (totalCourses) totalCourses.innerText = coursesSnap.size;
     if (totalQuizzes) totalQuizzes.innerText = quizzesSnap.size;
     if (totalTestSeries) totalTestSeries.innerText = testSeriesSnap.size;
-    if (totalPayments) totalPayments.innerText = paymentsSnap.size;
+    if (totalPayments) totalPayments.innerText = paymentsSnap.size + bookingsSnap.size;
 
     let revenue = 0;
-    paymentsSnap.forEach(docSnap => {
+
+    paymentsSnap.forEach((docSnap) => {
       const data = docSnap.data();
       revenue += Number(data.finalAmount || data.amount || 0);
+    });
+
+    bookingsSnap.forEach((docSnap) => {
+      const data = docSnap.data();
+      revenue += Number(data.price || data.amount || 0);
     });
 
     if (totalRevenue) totalRevenue.innerText = formatCurrency(revenue);
 
     const enquiryQuery = query(collection(db, "enquiries"), orderBy("createdAt", "desc"), limit(5));
     const paymentQuery = query(collection(db, "payments"), orderBy("createdAt", "desc"), limit(5));
+    const bookingQuery = query(collection(db, "bookings"), orderBy("createdAt", "desc"), limit(5));
 
-    const [recentEnquirySnap, recentPaymentSnap] = await Promise.all([
+    const [recentEnquirySnap, recentPaymentSnap, recentBookingSnap] = await Promise.all([
       getDocs(enquiryQuery),
-      getDocs(paymentQuery)
+      getDocs(paymentQuery),
+      getDocs(bookingQuery)
     ]);
 
     const recentEnquiries = document.getElementById("recentEnquiries");
@@ -256,10 +293,11 @@ async function loadOverview() {
 
     if (recentEnquiries) {
       recentEnquiries.innerHTML = "";
+
       if (recentEnquirySnap.empty) {
         recentEnquiries.innerHTML = `<div class="data-card"><p>No recent enquiries</p></div>`;
       } else {
-        recentEnquirySnap.forEach(item => {
+        recentEnquirySnap.forEach((item) => {
           const d = item.data();
           recentEnquiries.innerHTML += `
             <div class="data-card">
@@ -274,53 +312,81 @@ async function loadOverview() {
 
     if (recentPayments) {
       recentPayments.innerHTML = "";
-      if (recentPaymentSnap.empty) {
+
+      const recentItems = [];
+
+      recentPaymentSnap.forEach((item) => {
+        const d = item.data();
+        recentItems.push({
+          title: d.courseTitle || d.purchaseType || d.source || "Payment",
+          name: d.userName || d.name || d.userEmail || "",
+          amount: d.finalAmount || d.amount || 0,
+          createdAt: d.createdAt
+        });
+      });
+
+      recentBookingSnap.forEach((item) => {
+        const d = item.data();
+        recentItems.push({
+          title: d.type || "Booking",
+          name: d.name || d.email || "",
+          amount: d.price || d.amount || 0,
+          createdAt: d.createdAt
+        });
+      });
+
+      recentItems.sort((a, b) => {
+        const aTime = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : new Date(a.createdAt || 0).getTime();
+        const bTime = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : new Date(b.createdAt || 0).getTime();
+        return bTime - aTime;
+      });
+
+      if (!recentItems.length) {
         recentPayments.innerHTML = `<div class="data-card"><p>No recent payments</p></div>`;
       } else {
-        recentPaymentSnap.forEach(item => {
-          const d = item.data();
+        recentItems.slice(0, 5).forEach((item) => {
           recentPayments.innerHTML += `
             <div class="data-card">
-              <h4>${safeText(d.courseTitle || d.purchaseType || d.source || "Payment")}</h4>
-              <p>${safeText(d.userName || d.name || d.userEmail || "")}</p>
-              <p>${formatCurrency(d.finalAmount || d.amount || 0)}</p>
+              <h4>${safeText(item.title)}</h4>
+              <p>${safeText(item.name)}</p>
+              <p>${formatCurrency(item.amount)}</p>
             </div>
           `;
         });
       }
     }
-
   } catch (error) {
     console.error("Overview load error:", error);
   }
 }
 
-// ================= COURSES =================
-const lectureContainer = document.getElementById("lectureContainer");
-const notesContainer = document.getElementById("notesContainer");
-
+/* ================= COURSES ================= */
 function addLectureField(title = "", link = "") {
   if (!lectureContainer) return;
+
   const row = document.createElement("div");
   row.className = "lecture-row";
   row.innerHTML = `
-    <input type="text" class="lecture-title" placeholder="Lecture Title" value="${title}">
-    <input type="text" class="lecture-link" placeholder="YouTube Link" value="${link}">
+    <input type="text" class="lecture-title" placeholder="Lecture Title" value="${safeText(title)}">
+    <input type="text" class="lecture-link" placeholder="YouTube Link" value="${safeText(link)}">
     <button type="button" class="small-btn remove-row-btn">Remove</button>
   `;
+
   row.querySelector(".remove-row-btn").addEventListener("click", () => row.remove());
   lectureContainer.appendChild(row);
 }
 
 function addNoteField(title = "", link = "") {
   if (!notesContainer) return;
+
   const row = document.createElement("div");
   row.className = "note-row";
   row.innerHTML = `
-    <input type="text" class="note-title" placeholder="Note Title" value="${title}">
-    <input type="text" class="note-link" placeholder="Google Drive / PDF Link" value="${link}">
+    <input type="text" class="note-title" placeholder="Note Title" value="${safeText(title)}">
+    <input type="text" class="note-link" placeholder="Google Drive / PDF Link" value="${safeText(link)}">
     <button type="button" class="small-btn remove-row-btn">Remove</button>
   `;
+
   row.querySelector(".remove-row-btn").addEventListener("click", () => row.remove());
   notesContainer.appendChild(row);
 }
@@ -344,15 +410,19 @@ async function saveCourse() {
     return;
   }
 
-  const lectures = [...document.querySelectorAll(".lecture-row")].map(row => ({
-    title: row.querySelector(".lecture-title")?.value.trim(),
-    link: row.querySelector(".lecture-link")?.value.trim()
-  })).filter(item => item.title && item.link);
+  const lectures = [...document.querySelectorAll(".lecture-row")]
+    .map((row) => ({
+      title: row.querySelector(".lecture-title")?.value.trim(),
+      link: row.querySelector(".lecture-link")?.value.trim()
+    }))
+    .filter((item) => item.title && item.link);
 
-  const notes = [...document.querySelectorAll(".note-row")].map(row => ({
-    title: row.querySelector(".note-title")?.value.trim(),
-    link: row.querySelector(".note-link")?.value.trim()
-  })).filter(item => item.title && item.link);
+  const notes = [...document.querySelectorAll(".note-row")]
+    .map((row) => ({
+      title: row.querySelector(".note-title")?.value.trim(),
+      link: row.querySelector(".note-link")?.value.trim()
+    }))
+    .filter((item) => item.title && item.link);
 
   try {
     await addDoc(collection(db, "courses"), {
@@ -374,23 +444,24 @@ async function saveCourse() {
 
     alert("Course created successfully");
 
-    document.getElementById("courseTitle").value = "";
-    document.getElementById("courseCategory").value = "";
-    document.getElementById("courseLevel").value = "";
-    document.getElementById("courseType").value = "paid";
-    document.getElementById("coursePrice").value = "";
-    document.getElementById("courseValidity").value = "12";
-    document.getElementById("courseImage").value = "";
-    document.getElementById("courseDescription").value = "";
+    setValue("courseTitle", "");
+    setValue("courseCategory", "");
+    setValue("courseLevel", "");
+    setValue("courseType", "paid");
+    setValue("coursePrice", "");
+    setValue("courseValidity", "12");
+    setValue("courseImage", "");
+    setValue("courseDescription", "");
+
     if (lectureContainer) lectureContainer.innerHTML = "";
     if (notesContainer) notesContainer.innerHTML = "";
+
     addLectureField();
     addNoteField();
 
     await loadCourses();
     await loadCourseDropdowns();
     await loadOverview();
-
   } catch (error) {
     console.error("Save course error:", error);
     alert("Error creating course");
@@ -400,6 +471,7 @@ async function saveCourse() {
 async function loadCourses() {
   const list = document.getElementById("courseListAdmin");
   if (!list) return;
+
   list.innerHTML = "";
 
   try {
@@ -410,15 +482,16 @@ async function loadCourses() {
       return;
     }
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
+
       const card = document.createElement("div");
       card.className = "data-card";
       card.innerHTML = `
         <h4>${safeText(d.title)}</h4>
         <p>${safeText(d.category)} • ${safeText(d.level)}</p>
         <p>${safeText(d.type)} • ${formatCurrency(d.price || 0)} • ${d.validityMonths || 12} months</p>
-        <p>${d.isActive ? createBadge("Active","green") : createBadge("Inactive","red")}</p>
+        <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
         <div class="data-actions">
           <button class="small-btn toggle-course-btn">${d.isActive ? "Deactivate" : "Activate"}</button>
           <button class="small-btn delete-course-btn">Delete</button>
@@ -443,7 +516,6 @@ async function loadCourses() {
 
       list.appendChild(card);
     });
-
   } catch (error) {
     console.error("Load courses error:", error);
     list.innerHTML = `<div class="data-card"><p>Error loading courses</p></div>`;
@@ -452,30 +524,29 @@ async function loadCourses() {
 
 async function loadCourseDropdowns() {
   const dropdownIds = ["quizCourseId", "questionCourseId", "testSeriesCourseId"];
-  const selects = dropdownIds.map(id => document.getElementById(id)).filter(Boolean);
+  const selects = dropdownIds.map((id) => document.getElementById(id)).filter(Boolean);
 
   try {
     const snap = await getDocs(query(collection(db, "courses"), orderBy("title", "asc")));
 
-    selects.forEach(select => {
+    selects.forEach((select) => {
       const firstOption = select.querySelector("option")?.outerHTML || `<option value="">Select Course</option>`;
       select.innerHTML = firstOption;
     });
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
       const option = `<option value="${item.id}">${safeText(d.title)}</option>`;
-      selects.forEach(select => {
+      selects.forEach((select) => {
         select.innerHTML += option;
       });
     });
-
   } catch (error) {
     console.error("Load course dropdown error:", error);
   }
 }
 
-// ================= QUIZZES =================
+/* ================= QUIZZES ================= */
 document.getElementById("saveQuizBtn")?.addEventListener("click", saveQuiz);
 
 async function saveQuiz() {
@@ -505,17 +576,16 @@ async function saveQuiz() {
 
     alert("Quiz created successfully");
 
-    document.getElementById("quizTitle").value = "";
-    document.getElementById("quizCourseId").value = "";
-    document.getElementById("quizChapterId").value = "";
-    document.getElementById("quizDescription").value = "";
-    document.getElementById("quizTotalQuestions").value = "";
-    document.getElementById("quizIsActive").checked = true;
+    setValue("quizTitle", "");
+    setValue("quizCourseId", "");
+    setValue("quizChapterId", "");
+    setValue("quizDescription", "");
+    setValue("quizTotalQuestions", "");
+    setChecked("quizIsActive", true);
 
     await loadQuizzes();
     await loadQuizDropdowns();
     await loadOverview();
-
   } catch (error) {
     console.error("Save quiz error:", error);
     alert("Error creating quiz");
@@ -525,6 +595,7 @@ async function saveQuiz() {
 async function loadQuizzes() {
   const list = document.getElementById("quizListAdmin");
   if (!list) return;
+
   list.innerHTML = "";
 
   try {
@@ -535,8 +606,9 @@ async function loadQuizzes() {
       return;
     }
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
+
       const card = document.createElement("div");
       card.className = "data-card";
       card.innerHTML = `
@@ -544,7 +616,7 @@ async function loadQuizzes() {
         <p>Course ID: ${safeText(d.courseId)}</p>
         <p>Chapter: ${safeText(d.chapterId || "-")}</p>
         <p>Total Questions: ${d.totalQuestions || 0}</p>
-        <p>${d.isActive ? createBadge("Active","green") : createBadge("Inactive","red")}</p>
+        <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
         <div class="data-actions">
           <button class="small-btn toggle-quiz-btn">${d.isActive ? "Deactivate" : "Activate"}</button>
           <button class="small-btn delete-quiz-btn">Delete</button>
@@ -569,7 +641,6 @@ async function loadQuizzes() {
 
       list.appendChild(card);
     });
-
   } catch (error) {
     console.error("Load quizzes error:", error);
     list.innerHTML = `<div class="data-card"><p>Error loading quizzes</p></div>`;
@@ -584,17 +655,16 @@ async function loadQuizDropdowns() {
     const snap = await getDocs(query(collection(db, "quizzes"), orderBy("title", "asc")));
     quizSelect.innerHTML = `<option value="">Select Quiz</option>`;
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
       quizSelect.innerHTML += `<option value="${item.id}">${safeText(d.title)}</option>`;
     });
-
   } catch (error) {
     console.error("Load quiz dropdown error:", error);
   }
 }
 
-// ================= TEST SERIES =================
+/* ================= TEST SERIES ================= */
 document.getElementById("saveTestSeriesBtn")?.addEventListener("click", saveTestSeries);
 
 async function saveTestSeries() {
@@ -630,20 +700,19 @@ async function saveTestSeries() {
 
     alert("Test series created successfully");
 
-    document.getElementById("testSeriesTitle").value = "";
-    document.getElementById("testSeriesCourseId").value = "";
-    document.getElementById("testSeriesCategory").value = "";
-    document.getElementById("testSeriesDescription").value = "";
-    document.getElementById("testSeriesDuration").value = "";
-    document.getElementById("testSeriesTotalQuestions").value = "";
-    document.getElementById("testSeriesTotalMarks").value = "";
-    document.getElementById("testSeriesNegativeMarks").value = "0";
-    document.getElementById("testSeriesIsActive").checked = true;
+    setValue("testSeriesTitle", "");
+    setValue("testSeriesCourseId", "");
+    setValue("testSeriesCategory", "");
+    setValue("testSeriesDescription", "");
+    setValue("testSeriesDuration", "");
+    setValue("testSeriesTotalQuestions", "");
+    setValue("testSeriesTotalMarks", "");
+    setValue("testSeriesNegativeMarks", "0");
+    setChecked("testSeriesIsActive", true);
 
     await loadTestSeries();
     await loadTestSeriesDropdowns();
     await loadOverview();
-
   } catch (error) {
     console.error("Save test series error:", error);
     alert("Error creating test series");
@@ -653,6 +722,7 @@ async function saveTestSeries() {
 async function loadTestSeries() {
   const list = document.getElementById("testSeriesListAdmin");
   if (!list) return;
+
   list.innerHTML = "";
 
   try {
@@ -663,8 +733,9 @@ async function loadTestSeries() {
       return;
     }
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
+
       const card = document.createElement("div");
       card.className = "data-card";
       card.innerHTML = `
@@ -672,7 +743,7 @@ async function loadTestSeries() {
         <p>Course ID: ${safeText(d.courseId || "-")}</p>
         <p>Category: ${safeText(d.category || "-")}</p>
         <p>Duration: ${d.durationMinutes || 0} min | Questions: ${d.totalQuestions || 0} | Marks: ${d.totalMarks || 0}</p>
-        <p>${d.isActive ? createBadge("Active","green") : createBadge("Inactive","red")}</p>
+        <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
         <div class="data-actions">
           <button class="small-btn toggle-testseries-btn">${d.isActive ? "Deactivate" : "Activate"}</button>
           <button class="small-btn delete-testseries-btn">Delete</button>
@@ -697,7 +768,6 @@ async function loadTestSeries() {
 
       list.appendChild(card);
     });
-
   } catch (error) {
     console.error("Load test series error:", error);
     list.innerHTML = `<div class="data-card"><p>Error loading test series</p></div>`;
@@ -712,17 +782,16 @@ async function loadTestSeriesDropdowns() {
     const snap = await getDocs(query(collection(db, "testseries"), orderBy("title", "asc")));
     testSeriesSelect.innerHTML = `<option value="">Select Test Series</option>`;
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
       testSeriesSelect.innerHTML += `<option value="${item.id}">${safeText(d.title)}</option>`;
     });
-
   } catch (error) {
     console.error("Load test series dropdown error:", error);
   }
 }
 
-// ================= QUESTIONS =================
+/* ================= QUESTIONS ================= */
 document.getElementById("saveQuestionBtn")?.addEventListener("click", saveQuestion);
 document.getElementById("questionExamType")?.addEventListener("change", toggleQuestionTargetFields);
 document.getElementById("questionType")?.addEventListener("change", toggleQuestionOptionFields);
@@ -829,27 +898,26 @@ async function saveQuestion() {
 
     alert("Question added successfully");
 
-    document.getElementById("questionExamType").value = "quiz";
-    document.getElementById("questionQuizId").value = "";
-    document.getElementById("questionTestSeriesId").value = "";
-    document.getElementById("questionCourseId").value = "";
-    document.getElementById("questionType").value = "mcq";
-    document.getElementById("questionOrder").value = "";
-    document.getElementById("questionMarks").value = "1";
-    document.getElementById("questionNegativeMarks").value = "0";
-    document.getElementById("questionText").value = "";
-    document.getElementById("option1").value = "";
-    document.getElementById("option2").value = "";
-    document.getElementById("option3").value = "";
-    document.getElementById("option4").value = "";
-    document.getElementById("questionCorrectAnswer").value = "";
-    document.getElementById("questionIsActive").checked = true;
+    setValue("questionExamType", "quiz");
+    setValue("questionQuizId", "");
+    setValue("questionTestSeriesId", "");
+    setValue("questionCourseId", "");
+    setValue("questionType", "mcq");
+    setValue("questionOrder", "");
+    setValue("questionMarks", "1");
+    setValue("questionNegativeMarks", "0");
+    setValue("questionText", "");
+    setValue("option1", "");
+    setValue("option2", "");
+    setValue("option3", "");
+    setValue("option4", "");
+    setValue("questionCorrectAnswer", "");
+    setChecked("questionIsActive", true);
 
     toggleQuestionTargetFields();
     toggleQuestionOptionFields();
 
     await loadQuestions();
-
   } catch (error) {
     console.error("Save question error:", error);
     alert("Error adding question");
@@ -859,6 +927,7 @@ async function saveQuestion() {
 async function loadQuestions() {
   const list = document.getElementById("questionListAdmin");
   if (!list) return;
+
   list.innerHTML = "";
 
   try {
@@ -869,7 +938,7 @@ async function loadQuestions() {
       return;
     }
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
 
       const card = document.createElement("div");
@@ -880,7 +949,7 @@ async function loadQuestions() {
         <p>Question Type: ${safeText(d.questionType)}</p>
         <p>Quiz ID: ${safeText(d.quizId || "-")} | Test Series ID: ${safeText(d.testSeriesId || "-")}</p>
         <p>Marks: ${d.marks || 1} | Negative: ${d.negativeMarks || 0} | Order: ${d.order || 0}</p>
-        <p>${d.isActive ? createBadge("Active","green") : createBadge("Inactive","red")}</p>
+        <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
         <div class="data-actions">
           <button class="small-btn toggle-question-btn">${d.isActive ? "Deactivate" : "Activate"}</button>
           <button class="small-btn delete-question-btn">Delete</button>
@@ -903,19 +972,18 @@ async function loadQuestions() {
 
       list.appendChild(card);
     });
-
   } catch (error) {
     console.error("Load questions error:", error);
     list.innerHTML = `<div class="data-card"><p>Error loading questions</p></div>`;
   }
 }
 
-// ================= COUPONS =================
+/* ================= COUPONS ================= */
 document.getElementById("saveCouponBtn")?.addEventListener("click", saveCoupon);
 
 async function saveCoupon() {
   const code = document.getElementById("couponCode")?.value.trim().toUpperCase();
-  const discountType = document.getElementById("couponDiscountType")?.value || "flat";
+  const discountType = document.getElementById("couponDiscountType")?.value || "percent";
   const discountValue = Number(document.getElementById("couponDiscountValue")?.value || 0);
   const usageLimit = Number(document.getElementById("couponUsageLimit")?.value || 0);
   const expiryRaw = document.getElementById("couponExpiryDate")?.value;
@@ -927,29 +995,33 @@ async function saveCoupon() {
   }
 
   try {
-    await setDoc(doc(db, "coupons", code), {
-      code,
-      discountType,
-      discountValue,
-      usageLimit,
-      usedCount: 0,
-      isActive,
-      expiryDate: expiryRaw ? new Date(expiryRaw) : null,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    }, { merge: true });
+    await setDoc(
+      doc(db, "coupons", code),
+      {
+        code,
+        discountType,
+        discountValue,
+        discount: discountType === "percent" ? discountValue : discountValue,
+        usageLimit,
+        usedCount: 0,
+        isActive,
+        expiryDate: expiryRaw ? new Date(expiryRaw).toISOString() : null,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
 
     alert("Coupon created successfully");
 
-    document.getElementById("couponCode").value = "";
-    document.getElementById("couponDiscountValue").value = "";
-    document.getElementById("couponUsageLimit").value = "";
-    document.getElementById("couponExpiryDate").value = "";
-    document.getElementById("couponDiscountType").value = "flat";
-    document.getElementById("couponIsActive").checked = true;
+    setValue("couponCode", "");
+    setValue("couponDiscountType", "percent");
+    setValue("couponDiscountValue", "");
+    setValue("couponUsageLimit", "");
+    setValue("couponExpiryDate", "");
+    setChecked("couponIsActive", true);
 
     await loadCoupons();
-
   } catch (error) {
     console.error("Save coupon error:", error);
     alert("Error creating coupon");
@@ -959,6 +1031,7 @@ async function saveCoupon() {
 async function loadCoupons() {
   const list = document.getElementById("couponListAdmin");
   if (!list) return;
+
   list.innerHTML = "";
 
   try {
@@ -969,14 +1042,19 @@ async function loadCoupons() {
       return;
     }
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
+
+      const discountLabel =
+        d.discountType === "flat"
+          ? `${formatCurrency(d.discountValue || d.discount || 0)} off`
+          : `${d.discountValue || d.discount || 0}% off`;
 
       const card = document.createElement("div");
       card.className = "data-card";
       card.innerHTML = `
         <h4>${safeText(d.code || item.id)}</h4>
-        <p>${safeText(d.discountType)} • ${d.discountValue || 0}</p>
+        <p>${safeText(discountLabel)}</p>
         <p>Used: ${d.usedCount || 0} / ${d.usageLimit || 0}</p>
         <p>Expiry: ${formatDate(d.expiryDate)}</p>
         <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
@@ -1002,14 +1080,13 @@ async function loadCoupons() {
 
       list.appendChild(card);
     });
-
   } catch (error) {
     console.error("Load coupons error:", error);
     list.innerHTML = `<div class="data-card"><p>Error loading coupons</p></div>`;
   }
 }
 
-// ================= PODCASTS =================
+/* ================= PODCASTS ================= */
 document.getElementById("savePodcastBtn")?.addEventListener("click", savePodcast);
 
 async function savePodcast() {
@@ -1039,15 +1116,14 @@ async function savePodcast() {
 
     alert("Podcast added successfully");
 
-    document.getElementById("podcastTitle").value = "";
-    document.getElementById("podcastCategory").value = "";
-    document.getElementById("podcastImage").value = "";
-    document.getElementById("podcastVideoUrl").value = "";
-    document.getElementById("podcastDescription").value = "";
-    document.getElementById("podcastIsActive").checked = true;
+    setValue("podcastTitle", "");
+    setValue("podcastCategory", "");
+    setValue("podcastImage", "");
+    setValue("podcastVideoUrl", "");
+    setValue("podcastDescription", "");
+    setChecked("podcastIsActive", true);
 
     await loadPodcasts();
-
   } catch (error) {
     console.error("Save podcast error:", error);
     alert("Error adding podcast");
@@ -1057,6 +1133,7 @@ async function savePodcast() {
 async function loadPodcasts() {
   const list = document.getElementById("podcastListAdmin");
   if (!list) return;
+
   list.innerHTML = "";
 
   try {
@@ -1067,7 +1144,7 @@ async function loadPodcasts() {
       return;
     }
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
       const videoId = getYouTubeId(d.videoUrl || "");
 
@@ -1079,7 +1156,11 @@ async function loadPodcasts() {
         <p>${safeText(d.description)}</p>
         <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
         <div class="data-actions">
-          ${videoId ? `<a class="small-btn" href="https://www.youtube.com/watch?v=${videoId}" target="_blank" style="text-decoration:none;display:inline-flex;align-items:center;">Open</a>` : ""}
+          ${
+            videoId
+              ? `<a class="small-btn" href="https://www.youtube.com/watch?v=${videoId}" target="_blank" style="text-decoration:none;display:inline-flex;align-items:center;">Open</a>`
+              : ""
+          }
           <button class="small-btn toggle-podcast-btn">${d.isActive ? "Deactivate" : "Activate"}</button>
           <button class="small-btn delete-podcast-btn">Delete</button>
         </div>
@@ -1101,17 +1182,17 @@ async function loadPodcasts() {
 
       list.appendChild(card);
     });
-
   } catch (error) {
     console.error("Load podcasts error:", error);
     list.innerHTML = `<div class="data-card"><p>Error loading podcasts</p></div>`;
   }
 }
 
-// ================= ENQUIRIES =================
+/* ================= ENQUIRIES ================= */
 async function loadEnquiries() {
   const tbody = document.getElementById("enquiryTable");
   if (!tbody) return;
+
   tbody.innerHTML = "";
 
   try {
@@ -1122,29 +1203,30 @@ async function loadEnquiries() {
       return;
     }
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
+
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${safeText(d.name)}</td>
         <td>${safeText(d.email)}</td>
         <td>${safeText(d.phone)}</td>
         <td>${safeText(d.message)}</td>
-        <td>${d.status === "new" ? createBadge("New", "blue") : createBadge(safeText(d.status || "Seen"), "green")}</td>
+        <td>${d.status === "new" ? createBadge("New", "blue") : createBadge(d.status || "Seen", "green")}</td>
       `;
       tbody.appendChild(tr);
     });
-
   } catch (error) {
     console.error("Load enquiries error:", error);
     tbody.innerHTML = `<tr><td colspan="5">Error loading enquiries</td></tr>`;
   }
 }
 
-// ================= BOOKINGS =================
+/* ================= BOOKINGS ================= */
 async function loadBookings() {
   const list = document.getElementById("bookingList");
   if (!list) return;
+
   list.innerHTML = "";
 
   try {
@@ -1155,66 +1237,105 @@ async function loadBookings() {
       return;
     }
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
+
       const card = document.createElement("div");
       card.className = "data-card";
       card.innerHTML = `
         <h4>${safeText(d.name)} • ${safeText(d.type || d.sessionType || "Mentorship")}</h4>
         <p>${safeText(d.email)} • ${safeText(d.phone)}</p>
         <p>Date: ${safeText(d.date)} | Time: ${safeText(d.time)}</p>
-        <p>Price: ${formatCurrency(d.price || 0)}</p>
+        <p>Price: ${formatCurrency(d.price || d.amount || 0)}</p>
         <p>Status: ${safeText(d.status || "booked")}</p>
       `;
       list.appendChild(card);
     });
-
   } catch (error) {
     console.error("Load bookings error:", error);
     list.innerHTML = `<div class="data-card"><p>Error loading bookings</p></div>`;
   }
 }
 
-// ================= PAYMENTS =================
+/* ================= PAYMENTS ================= */
 async function loadPayments() {
   const list = document.getElementById("paymentList");
   if (!list) return;
+
   list.innerHTML = "";
 
   try {
-    const snap = await getDocs(query(collection(db, "payments"), orderBy("createdAt", "desc")));
+    const [paymentsSnap, bookingsSnap] = await Promise.all([
+      getDocs(query(collection(db, "payments"), orderBy("createdAt", "desc"))),
+      getDocs(query(collection(db, "bookings"), orderBy("createdAt", "desc")))
+    ]);
 
-    if (snap.empty) {
+    const items = [];
+
+    paymentsSnap.forEach((item) => {
+      const d = item.data();
+      items.push({
+        title: d.courseTitle || d.purchaseType || d.source || "Payment",
+        name: d.userName || d.name || "-",
+        email: d.userEmail || d.email || "-",
+        amount: d.finalAmount || d.amount || 0,
+        couponCode: d.couponCode || "-",
+        status: d.paymentStatus || d.status || "paid",
+        transactionId: d.transactionId || d.paymentId || "-",
+        createdAt: d.createdAt
+      });
+    });
+
+    bookingsSnap.forEach((item) => {
+      const d = item.data();
+      items.push({
+        title: d.type || "Booking Payment",
+        name: d.name || "-",
+        email: d.email || "-",
+        amount: d.price || d.amount || 0,
+        couponCode: d.couponCode || "-",
+        status: d.status || "paid",
+        transactionId: d.paymentId || d.orderId || "-",
+        createdAt: d.createdAt
+      });
+    });
+
+    items.sort((a, b) => {
+      const aTime = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : new Date(a.createdAt || 0).getTime();
+      const bTime = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : new Date(b.createdAt || 0).getTime();
+      return bTime - aTime;
+    });
+
+    if (!items.length) {
       list.innerHTML = `<div class="data-card"><p>No payments found</p></div>`;
       return;
     }
 
-    snap.forEach(item => {
-      const d = item.data();
+    items.forEach((d) => {
       const card = document.createElement("div");
       card.className = "data-card";
       card.innerHTML = `
-        <h4>${safeText(d.courseTitle || d.purchaseType || d.source || "Payment")}</h4>
-        <p>${safeText(d.userName || d.name || "-")}</p>
-        <p>${safeText(d.userEmail || d.email || "-")}</p>
-        <p>Amount: ${formatCurrency(d.finalAmount || d.amount || 0)}</p>
-        <p>Coupon: ${safeText(d.couponCode || "-")}</p>
-        <p>Status: ${safeText(d.paymentStatus || d.status || "paid")}</p>
-        <p>Transaction ID: ${safeText(d.transactionId || d.paymentId || "-")}</p>
+        <h4>${safeText(d.title)}</h4>
+        <p>${safeText(d.name)}</p>
+        <p>${safeText(d.email)}</p>
+        <p>Amount: ${formatCurrency(d.amount)}</p>
+        <p>Coupon: ${safeText(d.couponCode)}</p>
+        <p>Status: ${safeText(d.status)}</p>
+        <p>Transaction ID: ${safeText(d.transactionId)}</p>
       `;
       list.appendChild(card);
     });
-
   } catch (error) {
     console.error("Load payments error:", error);
     list.innerHTML = `<div class="data-card"><p>Error loading payments</p></div>`;
   }
 }
 
-// ================= USERS =================
+/* ================= USERS ================= */
 async function loadUsers() {
   const list = document.getElementById("userList");
   if (!list) return;
+
   list.innerHTML = "";
 
   try {
@@ -1225,8 +1346,9 @@ async function loadUsers() {
       return;
     }
 
-    snap.forEach(item => {
+    snap.forEach((item) => {
       const d = item.data();
+
       const card = document.createElement("div");
       card.className = "data-card";
       card.innerHTML = `
@@ -1251,13 +1373,13 @@ async function loadUsers() {
 
       list.appendChild(card);
     });
-
   } catch (error) {
     console.error("Load users error:", error);
     list.innerHTML = `<div class="data-card"><p>Error loading users</p></div>`;
   }
 }
 
+/* ================= INIT ================= */
 addLectureField();
 addNoteField();
 toggleQuestionTargetFields();

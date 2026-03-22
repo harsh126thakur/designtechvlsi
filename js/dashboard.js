@@ -11,7 +11,8 @@ import {
   doc,
   getDoc,
   query,
-  where
+  where,
+  orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ================= AUTH =================
@@ -52,24 +53,28 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
 
-    document.getElementById("welcome").innerText =
-      "Welcome " + (userData.name || user.displayName || "Student");
-
-    document.getElementById("courseList").innerHTML =
-      "<p style='padding:20px'>Loading courses...</p>";
-
+    const welcomeEl = document.getElementById("welcome");
+    const courseListEl = document.getElementById("courseList");
     const mentorshipBox = document.getElementById("mentorshipBookings");
-    if (mentorshipBox) {
-      mentorshipBox.innerHTML =
-        "<p style='padding:10px'>Loading mentorship bookings...</p>";
+    const quizList = document.getElementById("quizList");
+    const testSeriesList = document.getElementById("testSeriesList");
+
+    if (welcomeEl) {
+      welcomeEl.innerText = "Welcome " + (userData.name || user.displayName || "Student");
     }
 
-    const quizList = document.getElementById("quizList");
+    if (courseListEl) {
+      courseListEl.innerHTML = "<p style='padding:20px'>Loading courses...</p>";
+    }
+
+    if (mentorshipBox) {
+      mentorshipBox.innerHTML = "<p style='padding:10px'>Loading mentorship bookings...</p>";
+    }
+
     if (quizList) {
       quizList.innerHTML = "<p style='padding:20px'>Loading quizzes...</p>";
     }
 
-    const testSeriesList = document.getElementById("testSeriesList");
     if (testSeriesList) {
       testSeriesList.innerHTML = "<p style='padding:20px'>Loading test series...</p>";
     }
@@ -91,12 +96,21 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // ================= HELPERS =================
+function safeText(value) {
+  if (value === null || value === undefined) return "";
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 function getPurchasedCoursesMap(userData) {
   if (!userData?.purchasedCourses) return {};
 
   if (Array.isArray(userData.purchasedCourses)) {
     const mapped = {};
-    userData.purchasedCourses.forEach(id => {
+    userData.purchasedCourses.forEach((id) => {
       mapped[id] = { legacy: true };
     });
     return mapped;
@@ -128,6 +142,16 @@ function canAccessAssessment(courseId, purchasedCoursesMap) {
   return !!purchasedCoursesMap[courseId];
 }
 
+function formatDate(value) {
+  try {
+    if (!value) return "-";
+    if (typeof value?.toDate === "function") return value.toDate().toLocaleString();
+    return new Date(value).toLocaleString();
+  } catch {
+    return "-";
+  }
+}
+
 // ================= LOAD MENTORSHIP BOOKINGS =================
 async function loadMentorshipBookings(user) {
   const container = document.getElementById("mentorshipBookings");
@@ -139,16 +163,17 @@ async function loadMentorshipBookings(user) {
 
     let html = "";
 
-    snap.forEach(docSnap => {
+    snap.forEach((docSnap) => {
       const data = docSnap.data();
 
       html += `
         <div class="mentorship-booking-card">
-          <h3>🚀 ${data.type || "Mentorship Session"}</h3>
-          <p><b>Date:</b> ${data.date || "Not selected"}</p>
-          <p><b>Time:</b> ${data.time || "Not selected"}</p>
-          <p><b>Price:</b> ₹${data.price || 0}</p>
-          <p><b>Payment ID:</b> ${data.paymentId || "N/A"}</p>
+          <h3>🚀 ${safeText(data.type || "Mentorship Session")}</h3>
+          <p><b>Date:</b> ${safeText(data.date || "Not selected")}</p>
+          <p><b>Time:</b> ${safeText(data.time || "Not selected")}</p>
+          <p><b>Price:</b> ₹${Number(data.price || 0).toLocaleString("en-IN")}</p>
+          <p><b>Payment ID:</b> ${safeText(data.paymentId || "N/A")}</p>
+          <p><b>Booked On:</b> ${formatDate(data.createdAt)}</p>
           <span class="booking-status">Booked</span>
         </div>
       `;
@@ -172,7 +197,7 @@ async function loadCourses(user, cachedUserData = null) {
   if (!courseList) return;
 
   try {
-    const courseSnap = await getDocs(collection(db, "courses"));
+    const courseSnap = await getDocs(query(collection(db, "courses"), orderBy("createdAt", "desc")));
 
     let userData = cachedUserData;
     if (!userData) {
@@ -186,7 +211,6 @@ async function loadCourses(user, cachedUserData = null) {
     let totalCourses = 0;
     let unlockedCourses = 0;
 
-    // MENTORSHIP CARD
     html += `
       <div class="course-card mentorship-card-special" onclick="goToMentorship()">
         <h3>🚀 1:1 Mentorship</h3>
@@ -209,7 +233,7 @@ async function loadCourses(user, cachedUserData = null) {
       </div>
     `;
 
-    courseSnap.forEach(docSnap => {
+    courseSnap.forEach((docSnap) => {
       const c = docSnap.data();
       const id = docSnap.id;
 
@@ -227,34 +251,38 @@ async function loadCourses(user, cachedUserData = null) {
 
       html += `
         <div class="course-card ${unlocked ? "" : "locked-card"}">
-          <h3>${c.title || "Untitled Course"}</h3>
+          <h3>${safeText(c.title || "Untitled Course")}</h3>
 
-          <p class="${c.type || "paid"}">
-            ${c.type === "free" ? "FREE" : "PAID ₹" + (c.price || 0)}
+          <p class="${safeText(c.type || "paid")}">
+            ${c.type === "free" ? "FREE" : "PAID ₹" + Number(c.price || 0).toLocaleString("en-IN")}
           </p>
 
-          <p>${c.description || "Structured learning program for skill development."}</p>
-          <p class="course-validity">Validity: ${c.validityMonths || 12} Months</p>
+          <p>${safeText(c.description || "Structured learning program for skill development.")}</p>
+          <p class="course-validity">Validity: ${safeText(c.validityMonths || 12)} Months</p>
 
-          ${unlocked ? `
-            <div class="progress-bar">
-              <div class="progress" style="width:${progress.percent}%"></div>
-            </div>
+          ${
+            unlocked
+              ? `
+                <div class="progress-bar">
+                  <div class="progress" style="width:${progress.percent}%"></div>
+                </div>
 
-            <p style="color:#38bdf8;font-weight:bold">
-              ${progress.percent}% Completed (${progress.completedCount}/${totalLectures})
-            </p>
+                <p style="color:#38bdf8;font-weight:bold">
+                  ${progress.percent}% Completed (${progress.completedCount}/${totalLectures})
+                </p>
 
-            <button onclick="continueCourse('${id}')">
-              ▶ Continue
-            </button>
-          ` : `
-            <p class="locked">🔒 Locked</p>
+                <button onclick="continueCourse('${id}')">
+                  ▶ Continue
+                </button>
+              `
+              : `
+                <p class="locked">🔒 Locked</p>
 
-            <button onclick="goToPayment('${id}', ${c.price || 0}, '${(c.title || "").replace(/'/g, "\\'")}')">
-              💳 Buy Now
-            </button>
-          `}
+                <button onclick="goToPayment('${id}', ${Number(c.price || 0)}, '${safeText((c.title || "").replace(/'/g, "\\'"))}')">
+                  💳 Buy Now
+                </button>
+              `
+          }
         </div>
       `;
     });
@@ -285,13 +313,13 @@ async function loadQuizzes(userData) {
   if (!quizList) return;
 
   try {
-    const quizSnap = await getDocs(collection(db, "quizzes"));
+    const quizSnap = await getDocs(query(collection(db, "quizzes"), orderBy("createdAt", "desc")));
     const purchasedCoursesMap = getPurchasedCoursesMap(userData);
 
     let html = "";
     let count = 0;
 
-    quizSnap.forEach(docSnap => {
+    quizSnap.forEach((docSnap) => {
       const q = docSnap.data();
       const id = docSnap.id;
 
@@ -304,13 +332,13 @@ async function loadQuizzes(userData) {
 
       html += `
         <div class="course-card">
-          <h3>${q.title || "Practice Quiz"}</h3>
+          <h3>${safeText(q.title || "Practice Quiz")}</h3>
           <p class="free">QUIZ</p>
-          <p>${q.description || "Chapter-wise practice quiz to test your understanding."}</p>
+          <p>${safeText(q.description || "Chapter-wise practice quiz to test your understanding.")}</p>
 
           <div class="course-meta">
-            <span>Questions: ${q.totalQuestions || 0}</span>
-            <span>Chapter: ${q.chapterId || "General"}</span>
+            <span>Questions: ${safeText(q.totalQuestions || 0)}</span>
+            <span>Chapter: ${safeText(q.chapterId || "General")}</span>
           </div>
 
           <button onclick="startQuiz('quiz','${id}')">
@@ -341,13 +369,13 @@ async function loadTestSeries(userData) {
   if (!testSeriesList) return;
 
   try {
-    const testSnap = await getDocs(collection(db, "testseries"));
+    const testSnap = await getDocs(query(collection(db, "testseries"), orderBy("createdAt", "desc")));
     const purchasedCoursesMap = getPurchasedCoursesMap(userData);
 
     let html = "";
     let count = 0;
 
-    testSnap.forEach(docSnap => {
+    testSnap.forEach((docSnap) => {
       const t = docSnap.data();
       const id = docSnap.id;
 
@@ -360,18 +388,18 @@ async function loadTestSeries(userData) {
 
       html += `
         <div class="course-card">
-          <h3>${t.title || "Test Series"}</h3>
+          <h3>${safeText(t.title || "Test Series")}</h3>
           <p class="paid">TEST SERIES</p>
-          <p>${t.description || "Full-length test series for performance evaluation."}</p>
+          <p>${safeText(t.description || "Full-length test series for performance evaluation.")}</p>
 
           <div class="course-meta">
-            <span>${t.totalQuestions || 0} Questions</span>
-            <span>${t.durationMinutes || 0} Minutes</span>
+            <span>${safeText(t.totalQuestions || 0)} Questions</span>
+            <span>${safeText(t.durationMinutes || 0)} Minutes</span>
           </div>
 
           <div class="course-meta">
-            <span>Total Marks: ${t.totalMarks || 0}</span>
-            <span>Negative: ${t.negativeMarks || 0}</span>
+            <span>Total Marks: ${safeText(t.totalMarks || 0)}</span>
+            <span>Negative: ${safeText(t.negativeMarks || 0)}</span>
           </div>
 
           <button onclick="startQuiz('testseries','${id}')">
@@ -400,8 +428,8 @@ window.continueCourse = function (id) {
 };
 
 window.goToPayment = function (id, price, title = "") {
-  const encodedTitle = encodeURIComponent(title);
-  window.location.href = `payment.html?id=${id}&price=${price}&type=${encodedTitle || "Course Purchase"}`;
+  const encodedTitle = encodeURIComponent(title || "Course Purchase");
+  window.location.href = `payment.html?id=${id}&price=${price}&type=${encodedTitle}`;
 };
 
 window.goToMentorship = function () {
@@ -414,6 +442,11 @@ window.startQuiz = function (type, id) {
 
 // ================= LOGOUT =================
 window.logout = async function () {
-  await signOut(auth);
-  window.location.href = "login.html";
+  try {
+    await signOut(auth);
+    window.location.href = "login.html";
+  } catch (error) {
+    console.error("Logout error:", error);
+    alert("Error while logging out");
+  }
 };
