@@ -10,7 +10,6 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
   <nav class="quiz-navbar">
     <div class="quiz-brand">
       <a href="index.html" class="brand-link">DesignTech VLSI</a>
@@ -23,7 +22,6 @@
     </div>
   </nav>
 
-  <!-- HEADER -->
   <header class="quiz-header">
     <div class="quiz-header-left">
       <p class="quiz-tag" id="quizModeTag">Loading Assessment...</p>
@@ -45,10 +43,8 @@
     </div>
   </header>
 
-  <!-- MAIN -->
   <main class="quiz-layout">
 
-    <!-- LEFT PANEL -->
     <section class="question-panel">
       <div class="question-card">
 
@@ -78,13 +74,13 @@
 
         <div class="question-actions">
           <button id="clearAnswerBtn" class="secondary-btn" type="button">Clear Answer</button>
+          <button id="markReviewBtn" class="secondary-btn" type="button">Mark for Review</button>
           <button id="prevBtn" class="ghost-btn" type="button">Previous</button>
           <button id="nextBtn" class="primary-btn" type="button">Next</button>
         </div>
       </div>
     </section>
 
-    <!-- RIGHT PANEL -->
     <aside class="sidebar-panel">
       <div class="palette-card">
         <div class="palette-head">
@@ -104,8 +100,20 @@
             <span>Answered</span>
           </div>
           <div class="legend-item">
+            <span class="legend-box review-box"></span>
+            <span>Marked for Review</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-box answered-review-box"></span>
+            <span>Answered + Review</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-box visited-box"></span>
+            <span>Visited but not answered</span>
+          </div>
+          <div class="legend-item">
             <span class="legend-box unanswered-box"></span>
-            <span>Unanswered</span>
+            <span>Not Visited</span>
           </div>
         </div>
       </div>
@@ -128,13 +136,17 @@
           <strong id="summaryUnanswered">0</strong>
         </div>
 
+        <div class="summary-row">
+          <span>Marked for Review</span>
+          <strong id="summaryReview">0</strong>
+        </div>
+
         <button id="submitBottomBtn" class="submit-btn full-btn" type="button">Submit Test</button>
       </div>
     </aside>
 
   </main>
 
-  <!-- SUBMIT MODAL -->
   <div id="submitModal" class="modal-overlay" style="display:none;">
     <div class="modal-box">
       <h3>Submit Assessment?</h3>
@@ -153,6 +165,10 @@
           <span>Unanswered</span>
           <strong id="modalUnansweredQuestions">0</strong>
         </div>
+        <div class="summary-row">
+          <span>Marked for Review</span>
+          <strong id="modalReviewQuestions">0</strong>
+        </div>
       </div>
 
       <div class="modal-actions">
@@ -162,7 +178,6 @@
     </div>
   </div>
 
-  <!-- RESULT MODAL -->
   <div id="resultModal" class="modal-overlay" style="display:none;">
     <div class="modal-box result-box">
       <p class="result-tag">Assessment Submitted</p>

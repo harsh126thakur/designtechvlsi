@@ -391,9 +391,68 @@ function addNoteField(title = "", link = "") {
   notesContainer.appendChild(row);
 }
 
+function fillCourseFormForEdit(courseId, data) {
+  setValue("courseTitle", data.title || "");
+  setValue("courseCategory", data.category || "");
+  setValue("courseLevel", data.level || "");
+  setValue("courseType", data.type || "paid");
+  setValue("coursePrice", data.price ?? "");
+  setValue("courseValidity", data.validityMonths ?? 12);
+  setValue("courseImage", data.image || "");
+  setValue("courseDescription", data.description || "");
+
+  if (lectureContainer) lectureContainer.innerHTML = "";
+  if (notesContainer) notesContainer.innerHTML = "";
+
+  if (Array.isArray(data.lectures) && data.lectures.length) {
+    data.lectures.forEach((lecture) => addLectureField(lecture.title || "", lecture.link || ""));
+  } else {
+    addLectureField();
+  }
+
+  if (Array.isArray(data.notes) && data.notes.length) {
+    data.notes.forEach((note) => addNoteField(note.title || "", note.link || ""));
+  } else {
+    addNoteField();
+  }
+
+  const saveBtn = document.getElementById("saveCourseBtn");
+  if (saveBtn) {
+    saveBtn.dataset.editId = courseId;
+    saveBtn.innerText = "Update Course";
+  }
+
+  const section = document.getElementById("section-courses");
+  if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function resetCourseForm() {
+  setValue("courseTitle", "");
+  setValue("courseCategory", "");
+  setValue("courseLevel", "");
+  setValue("courseType", "paid");
+  setValue("coursePrice", "");
+  setValue("courseValidity", "12");
+  setValue("courseImage", "");
+  setValue("courseDescription", "");
+
+  if (lectureContainer) lectureContainer.innerHTML = "";
+  if (notesContainer) notesContainer.innerHTML = "";
+
+  addLectureField();
+  addNoteField();
+
+  const saveBtn = document.getElementById("saveCourseBtn");
+  if (saveBtn) {
+    delete saveBtn.dataset.editId;
+    saveBtn.innerText = "Save Course";
+  }
+}
+
 document.getElementById("addLectureBtn")?.addEventListener("click", () => addLectureField());
 document.getElementById("addNoteBtn")?.addEventListener("click", () => addNoteField());
 document.getElementById("saveCourseBtn")?.addEventListener("click", saveCourse);
+document.getElementById("cancelCourseEditBtn")?.addEventListener("click", resetCourseForm);
 
 async function saveCourse() {
   const title = document.getElementById("courseTitle")?.value.trim();
@@ -404,6 +463,8 @@ async function saveCourse() {
   const validityMonths = Number(document.getElementById("courseValidity")?.value || 12);
   const image = document.getElementById("courseImage")?.value.trim();
   const description = document.getElementById("courseDescription")?.value.trim();
+  const saveBtn = document.getElementById("saveCourseBtn");
+  const editId = saveBtn?.dataset.editId || "";
 
   if (!title || !description) {
     alert("Please fill course title and description");
@@ -424,47 +485,42 @@ async function saveCourse() {
     }))
     .filter((item) => item.title && item.link);
 
+  const payload = {
+    title,
+    category: category || "",
+    level: level || "",
+    type,
+    price,
+    validityMonths,
+    image: image || "",
+    description,
+    lectures,
+    notes,
+    updatedAt: serverTimestamp()
+  };
+
   try {
-    await addDoc(collection(db, "courses"), {
-      title,
-      category: category || "",
-      level: level || "",
-      type,
-      price,
-      validityMonths,
-      image: image || "",
-      description,
-      lectures,
-      notes,
-      isActive: true,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-      createdBy: currentAdminData?.name || currentUser?.email || "Admin"
-    });
+    if (editId) {
+      await updateDoc(doc(db, "courses", editId), payload);
+      alert("Course updated successfully");
+    } else {
+      await addDoc(collection(db, "courses"), {
+        ...payload,
+        isActive: true,
+        createdAt: serverTimestamp(),
+        createdBy: currentAdminData?.name || currentUser?.email || "Admin"
+      });
+      alert("Course created successfully");
+    }
 
-    alert("Course created successfully");
-
-    setValue("courseTitle", "");
-    setValue("courseCategory", "");
-    setValue("courseLevel", "");
-    setValue("courseType", "paid");
-    setValue("coursePrice", "");
-    setValue("courseValidity", "12");
-    setValue("courseImage", "");
-    setValue("courseDescription", "");
-
-    if (lectureContainer) lectureContainer.innerHTML = "";
-    if (notesContainer) notesContainer.innerHTML = "";
-
-    addLectureField();
-    addNoteField();
+    resetCourseForm();
 
     await loadCourses();
     await loadCourseDropdowns();
     await loadOverview();
   } catch (error) {
     console.error("Save course error:", error);
-    alert("Error creating course");
+    alert(editId ? "Error updating course" : "Error creating course");
   }
 }
 
@@ -493,10 +549,15 @@ async function loadCourses() {
         <p>${safeText(d.type)} • ${formatCurrency(d.price || 0)} • ${d.validityMonths || 12} months</p>
         <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
         <div class="data-actions">
+          <button class="small-btn edit-course-btn">Edit</button>
           <button class="small-btn toggle-course-btn">${d.isActive ? "Deactivate" : "Activate"}</button>
           <button class="small-btn delete-course-btn">Delete</button>
         </div>
       `;
+
+      card.querySelector(".edit-course-btn").addEventListener("click", () => {
+        fillCourseFormForEdit(item.id, d);
+      });
 
       card.querySelector(".toggle-course-btn").addEventListener("click", async () => {
         await updateDoc(doc(db, "courses", item.id), {
@@ -509,6 +570,7 @@ async function loadCourses() {
       card.querySelector(".delete-course-btn").addEventListener("click", async () => {
         if (!confirm(`Delete course "${d.title}"?`)) return;
         await deleteDoc(doc(db, "courses", item.id));
+        resetCourseForm();
         await loadCourses();
         await loadCourseDropdowns();
         await loadOverview();
@@ -795,6 +857,7 @@ async function loadTestSeriesDropdowns() {
 document.getElementById("saveQuestionBtn")?.addEventListener("click", saveQuestion);
 document.getElementById("questionExamType")?.addEventListener("change", toggleQuestionTargetFields);
 document.getElementById("questionType")?.addEventListener("change", toggleQuestionOptionFields);
+document.getElementById("cancelQuestionEditBtn")?.addEventListener("click", resetQuestionForm);
 
 function toggleQuestionTargetFields() {
   const examType = document.getElementById("questionExamType")?.value;
@@ -833,6 +896,66 @@ function toggleQuestionOptionFields() {
   }
 }
 
+function fillQuestionFormForEdit(questionId, data) {
+  setValue("questionExamType", data.examType || "quiz");
+  toggleQuestionTargetFields();
+
+  setValue("questionQuizId", data.quizId || "");
+  setValue("questionTestSeriesId", data.testSeriesId || "");
+  setValue("questionCourseId", data.courseId || "");
+  setValue("questionType", data.questionType || "mcq");
+  setValue("questionOrder", data.order ?? "");
+  setValue("questionMarks", data.marks ?? 1);
+  setValue("questionNegativeMarks", data.negativeMarks ?? 0);
+  setValue("questionText", data.question || "");
+  setValue("questionCorrectAnswer", data.correctAnswer || "");
+  setChecked("questionIsActive", data.isActive !== false);
+
+  const options = Array.isArray(data.options) ? data.options : [];
+  setValue("option1", options[0] || "");
+  setValue("option2", options[1] || "");
+  setValue("option3", options[2] || "");
+  setValue("option4", options[3] || "");
+
+  toggleQuestionOptionFields();
+
+  const saveBtn = document.getElementById("saveQuestionBtn");
+  if (saveBtn) {
+    saveBtn.dataset.editId = questionId;
+    saveBtn.innerText = "Update Question";
+  }
+
+  const section = document.getElementById("section-questions");
+  if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function resetQuestionForm() {
+  setValue("questionExamType", "quiz");
+  setValue("questionQuizId", "");
+  setValue("questionTestSeriesId", "");
+  setValue("questionCourseId", "");
+  setValue("questionType", "mcq");
+  setValue("questionOrder", "");
+  setValue("questionMarks", "1");
+  setValue("questionNegativeMarks", "0");
+  setValue("questionText", "");
+  setValue("option1", "");
+  setValue("option2", "");
+  setValue("option3", "");
+  setValue("option4", "");
+  setValue("questionCorrectAnswer", "");
+  setChecked("questionIsActive", true);
+
+  const saveBtn = document.getElementById("saveQuestionBtn");
+  if (saveBtn) {
+    delete saveBtn.dataset.editId;
+    saveBtn.innerText = "Add Question";
+  }
+
+  toggleQuestionTargetFields();
+  toggleQuestionOptionFields();
+}
+
 async function saveQuestion() {
   const examType = document.getElementById("questionExamType")?.value || "quiz";
   const quizId = document.getElementById("questionQuizId")?.value || "";
@@ -845,6 +968,9 @@ async function saveQuestion() {
   const question = document.getElementById("questionText")?.value.trim();
   const correctAnswer = document.getElementById("questionCorrectAnswer")?.value.trim();
   const isActive = document.getElementById("questionIsActive")?.checked ?? true;
+
+  const saveBtn = document.getElementById("saveQuestionBtn");
+  const editId = saveBtn?.dataset.editId || "";
 
   const options = [
     document.getElementById("option1")?.value.trim(),
@@ -878,49 +1004,39 @@ async function saveQuestion() {
     return;
   }
 
+  const payload = {
+    examType,
+    quizId: examType === "quiz" ? quizId : "",
+    testSeriesId: examType === "testseries" ? testSeriesId : "",
+    courseId,
+    questionType,
+    question,
+    options: questionType === "numerical" ? [] : options,
+    correctAnswer,
+    marks,
+    negativeMarks,
+    order,
+    isActive,
+    updatedAt: serverTimestamp()
+  };
+
   try {
-    await addDoc(collection(db, "questions"), {
-      examType,
-      quizId: examType === "quiz" ? quizId : "",
-      testSeriesId: examType === "testseries" ? testSeriesId : "",
-      courseId,
-      questionType,
-      question,
-      options,
-      correctAnswer,
-      marks,
-      negativeMarks,
-      order,
-      isActive,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
+    if (editId) {
+      await updateDoc(doc(db, "questions", editId), payload);
+      alert("Question updated successfully");
+    } else {
+      await addDoc(collection(db, "questions"), {
+        ...payload,
+        createdAt: serverTimestamp()
+      });
+      alert("Question added successfully");
+    }
 
-    alert("Question added successfully");
-
-    setValue("questionExamType", "quiz");
-    setValue("questionQuizId", "");
-    setValue("questionTestSeriesId", "");
-    setValue("questionCourseId", "");
-    setValue("questionType", "mcq");
-    setValue("questionOrder", "");
-    setValue("questionMarks", "1");
-    setValue("questionNegativeMarks", "0");
-    setValue("questionText", "");
-    setValue("option1", "");
-    setValue("option2", "");
-    setValue("option3", "");
-    setValue("option4", "");
-    setValue("questionCorrectAnswer", "");
-    setChecked("questionIsActive", true);
-
-    toggleQuestionTargetFields();
-    toggleQuestionOptionFields();
-
+    resetQuestionForm();
     await loadQuestions();
   } catch (error) {
     console.error("Save question error:", error);
-    alert("Error adding question");
+    alert(editId ? "Error updating question" : "Error adding question");
   }
 }
 
@@ -951,10 +1067,15 @@ async function loadQuestions() {
         <p>Marks: ${d.marks || 1} | Negative: ${d.negativeMarks || 0} | Order: ${d.order || 0}</p>
         <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
         <div class="data-actions">
+          <button class="small-btn edit-question-btn">Edit</button>
           <button class="small-btn toggle-question-btn">${d.isActive ? "Deactivate" : "Activate"}</button>
           <button class="small-btn delete-question-btn">Delete</button>
         </div>
       `;
+
+      card.querySelector(".edit-question-btn").addEventListener("click", () => {
+        fillQuestionFormForEdit(item.id, d);
+      });
 
       card.querySelector(".toggle-question-btn").addEventListener("click", async () => {
         await updateDoc(doc(db, "questions", item.id), {
@@ -967,6 +1088,7 @@ async function loadQuestions() {
       card.querySelector(".delete-question-btn").addEventListener("click", async () => {
         if (!confirm("Delete this question?")) return;
         await deleteDoc(doc(db, "questions", item.id));
+        resetQuestionForm();
         await loadQuestions();
       });
 

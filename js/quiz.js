@@ -25,6 +25,7 @@ let assessmentData = null;
 let questions = [];
 let currentQuestionIndex = 0;
 let answers = {};
+let questionStates = {};
 let timerInterval = null;
 let timeLeft = 0;
 let submitted = false;
@@ -56,11 +57,13 @@ const numericalAnswer = document.getElementById("numericalAnswer");
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const clearAnswerBtn = document.getElementById("clearAnswerBtn");
+const markReviewBtn = document.getElementById("markReviewBtn");
 
 const questionPalette = document.getElementById("questionPalette");
 const summaryTotal = document.getElementById("summaryTotal");
 const summaryAnswered = document.getElementById("summaryAnswered");
 const summaryUnanswered = document.getElementById("summaryUnanswered");
+const summaryReview = document.getElementById("summaryReview");
 
 const submitTopBtn = document.getElementById("submitTopBtn");
 const submitBottomBtn = document.getElementById("submitBottomBtn");
@@ -71,6 +74,7 @@ const confirmSubmitBtn = document.getElementById("confirmSubmitBtn");
 const modalTotalQuestions = document.getElementById("modalTotalQuestions");
 const modalAnsweredQuestions = document.getElementById("modalAnsweredQuestions");
 const modalUnansweredQuestions = document.getElementById("modalUnansweredQuestions");
+const modalReviewQuestions = document.getElementById("modalReviewQuestions");
 
 const resultModal = document.getElementById("resultModal");
 const resultTitle = document.getElementById("resultTitle");
@@ -94,10 +98,35 @@ function normalizeString(value) {
   return String(value || "").trim().toLowerCase();
 }
 
+function normalizePurchasedCourses(data) {
+  if (!data) return {};
+
+  if (Array.isArray(data)) {
+    const mapped = {};
+    data.forEach((id) => {
+      mapped[id] = true;
+    });
+    return mapped;
+  }
+
+  if (typeof data === "object") {
+    return data;
+  }
+
+  return {};
+}
+
 function parseMultiAnswer(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => String(item).trim().toLowerCase())
+      .filter(Boolean)
+      .sort();
+  }
+
   return String(value || "")
     .split(",")
-    .map(item => item.trim().toLowerCase())
+    .map((item) => item.trim().toLowerCase())
     .filter(Boolean)
     .sort();
 }
@@ -126,26 +155,55 @@ function getQuestionTypeLabel(type) {
   return "MCQ";
 }
 
+function ensureQuestionState(index) {
+  if (!questionStates[index]) {
+    questionStates[index] = {
+      visited: false,
+      markedForReview: false
+    };
+  }
+  return questionStates[index];
+}
+
 function getAnsweredCount() {
   return questions.filter((q, index) => isAnswered(answers[index], q.questionType)).length;
+}
+
+function getReviewCount() {
+  return questions.filter((q, index) => questionStates[index]?.markedForReview).length;
 }
 
 function updateSummary() {
   const total = questions.length;
   const answered = getAnsweredCount();
+  const review = getReviewCount();
   const unanswered = total - answered;
 
   summaryTotal.innerText = total;
   summaryAnswered.innerText = answered;
   summaryUnanswered.innerText = unanswered;
+  if (summaryReview) summaryReview.innerText = review;
 
   modalTotalQuestions.innerText = total;
   modalAnsweredQuestions.innerText = answered;
   modalUnansweredQuestions.innerText = unanswered;
+  if (modalReviewQuestions) modalReviewQuestions.innerText = review;
 
   const percentage = total > 0 ? Math.round((answered / total) * 100) : 0;
   progressFill.style.width = `${percentage}%`;
   progressText.innerText = `${percentage}% completed`;
+}
+
+function getPaletteStatus(index) {
+  const q = questions[index];
+  const state = ensureQuestionState(index);
+  const answered = isAnswered(answers[index], q.questionType);
+
+  if (answered && state.markedForReview) return "answered-review";
+  if (state.markedForReview) return "review";
+  if (answered) return "answered";
+  if (state.visited) return "visited";
+  return "not-visited";
 }
 
 function updatePalette() {
@@ -156,12 +214,15 @@ function updatePalette() {
     btn.type = "button";
     btn.className = "palette-btn";
 
+    const status = getPaletteStatus(index);
+
+    if (status === "answered") btn.classList.add("answered");
+    if (status === "review") btn.classList.add("review");
+    if (status === "answered-review") btn.classList.add("answered-review");
+    if (status === "visited") btn.classList.add("visited");
+
     if (index === currentQuestionIndex) {
       btn.classList.add("current");
-    }
-
-    if (isAnswered(answers[index], q.questionType)) {
-      btn.classList.add("answered");
     }
 
     btn.innerText = index + 1;
@@ -177,11 +238,13 @@ function updatePalette() {
 
 function updateNavButtons() {
   prevBtn.disabled = currentQuestionIndex === 0;
+  nextBtn.innerText = currentQuestionIndex === questions.length - 1 ? "Review" : "Next";
 
-  if (currentQuestionIndex === questions.length - 1) {
-    nextBtn.innerText = "Review";
-  } else {
-    nextBtn.innerText = "Next";
+  const currentState = ensureQuestionState(currentQuestionIndex);
+  if (markReviewBtn) {
+    markReviewBtn.innerText = currentState.markedForReview
+      ? "Unmark Review"
+      : "Mark for Review";
   }
 }
 
@@ -189,16 +252,16 @@ function updateNavButtons() {
 function hasAssessmentAccess() {
   if (!currentUserData) return false;
 
-  if (currentUserData.role === "admin" || currentUserData.role === "superadmin") {
+  const role = String(currentUserData.role || "user").toLowerCase();
+
+  if (role === "admin" || role === "superadmin") {
     return true;
   }
 
-  const purchasedCourses = currentUserData.purchasedCourses || {};
+  const purchasedCourses = normalizePurchasedCourses(currentUserData.purchasedCourses);
   const linkedCourseId = assessmentData?.courseId || "";
 
-  if (!linkedCourseId) {
-    return true;
-  }
+  if (!linkedCourseId) return true;
 
   return !!purchasedCourses[linkedCourseId];
 }
@@ -231,7 +294,6 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     await loadAssessment();
-
   } catch (error) {
     console.error("Quiz auth error:", error);
     showAlert("Error loading assessment");
@@ -273,7 +335,6 @@ async function loadAssessment() {
     setupAssessmentUI();
     renderQuestion();
     startTimer();
-
   } catch (error) {
     console.error("Load assessment error:", error);
     showAlert("Error loading assessment");
@@ -284,27 +345,35 @@ async function loadAssessment() {
 // ================= LOAD QUESTIONS =================
 async function loadQuestions() {
   try {
+    const fieldName = assessmentType === "testseries" ? "testSeriesId" : "quizId";
+
     const q = query(
       collection(db, "questions"),
-      where(assessmentType === "testseries" ? "testSeriesId" : "quizId", "==", assessmentId)
+      where(fieldName, "==", assessmentId)
     );
 
     const snap = await getDocs(q);
 
     questions = snap.docs
-      .map(docSnap => ({
+      .map((docSnap) => ({
         id: docSnap.id,
         ...docSnap.data()
       }))
-      .filter(item => item.isActive !== false)
+      .filter((item) => item.isActive !== false)
       .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+
+    questionStates = {};
+    questions.forEach((_, index) => {
+      questionStates[index] = {
+        visited: false,
+        markedForReview: false
+      };
+    });
 
     if (!questions.length) {
       showAlert("No questions found in this assessment");
       window.location.href = "dashboard.html";
-      return;
     }
-
   } catch (error) {
     console.error("Load questions error:", error);
     throw error;
@@ -319,7 +388,10 @@ function setupAssessmentUI() {
 
   quizModeTag.innerText = isTestSeries ? "Test Series" : "Quiz";
   quizTitle.innerText = safeValue(assessmentData.title, "Assessment");
-  quizDescription.innerText = safeValue(assessmentData.description, "Solve the questions carefully and submit before time ends.");
+  quizDescription.innerText = safeValue(
+    assessmentData.description,
+    "Solve the questions carefully and submit before time ends."
+  );
   quizTypePill.innerText = `Type: ${isTestSeries ? "Test Series" : "Quiz"}`;
   quizQuestionCount.innerText = `Questions: ${totalQuestions}`;
   quizMarks.innerText = `Marks: ${totalMarksValue}`;
@@ -339,6 +411,8 @@ function setupAssessmentUI() {
 function renderQuestion() {
   const currentQuestion = questions[currentQuestionIndex];
   if (!currentQuestion) return;
+
+  ensureQuestionState(currentQuestionIndex).visited = true;
 
   questionNumberBadge.innerText = `Question ${currentQuestionIndex + 1}`;
   questionTypeBadge.innerText = getQuestionTypeLabel(currentQuestion.questionType);
@@ -360,7 +434,7 @@ function renderQuestion() {
       ? (Array.isArray(savedAnswer) ? savedAnswer : [])
       : [savedAnswer || ""];
 
-    (currentQuestion.options || []).forEach((option, optionIndex) => {
+    (currentQuestion.options || []).forEach((option) => {
       const label = document.createElement("label");
       label.className = "option-label";
 
@@ -378,9 +452,10 @@ function renderQuestion() {
         if (currentQuestion.questionType === "mcq") {
           answers[currentQuestionIndex] = option;
         } else {
-          const checkedOptions = [...optionsContainer.querySelectorAll("input:checked")].map(el => el.value);
+          const checkedOptions = [...optionsContainer.querySelectorAll("input:checked")].map((el) => el.value);
           answers[currentQuestionIndex] = checkedOptions;
         }
+
         highlightSelectedOptions();
         updateSummary();
         updatePalette();
@@ -405,9 +480,10 @@ function renderQuestion() {
 
 function highlightSelectedOptions() {
   const labels = optionsContainer.querySelectorAll(".option-label");
-  labels.forEach(label => {
+
+  labels.forEach((label) => {
     const input = label.querySelector("input");
-    if (input?.checked) {
+    if (input && input.checked) {
       label.classList.add("selected");
     } else {
       label.classList.remove("selected");
@@ -420,13 +496,15 @@ function saveCurrentAnswer() {
   const currentQuestion = questions[currentQuestionIndex];
   if (!currentQuestion) return;
 
+  ensureQuestionState(currentQuestionIndex).visited = true;
+
   if (currentQuestion.questionType === "numerical") {
     answers[currentQuestionIndex] = numericalAnswer.value.trim();
   } else if (currentQuestion.questionType === "mcq") {
     const selected = optionsContainer.querySelector("input:checked");
     answers[currentQuestionIndex] = selected ? selected.value : "";
   } else {
-    const selected = [...optionsContainer.querySelectorAll("input:checked")].map(el => el.value);
+    const selected = [...optionsContainer.querySelectorAll("input:checked")].map((el) => el.value);
     answers[currentQuestionIndex] = selected;
   }
 
@@ -469,16 +547,16 @@ function evaluateAnswers() {
 
     totalMarksValue += marks;
 
-    let isCorrect = false;
     const attempted = isAnswered(userAnswer, question.questionType);
-
     if (attempted) attemptedCount += 1;
+
+    let isCorrect = false;
 
     if (question.questionType === "mcq") {
       isCorrect = normalizeString(userAnswer) === normalizeString(question.correctAnswer);
     } else if (question.questionType === "multicorrect") {
       isCorrect = arraysEqual(
-        parseMultiAnswer(userAnswer?.join(",")),
+        parseMultiAnswer(userAnswer),
         parseMultiAnswer(question.correctAnswer)
       );
     } else {
@@ -502,7 +580,8 @@ function evaluateAnswers() {
       marks,
       negativeMarks,
       isCorrect,
-      attempted
+      attempted,
+      markedForReview: !!questionStates[index]?.markedForReview
     };
   });
 
@@ -557,13 +636,16 @@ async function submitAssessment(autoSubmit = false) {
     await addDoc(collection(db, "results"), resultPayload);
 
     const userResultRef = doc(db, "users", currentUser.uid, "results", `${assessmentType}_${assessmentId}`);
-    await setDoc(userResultRef, {
-      ...resultPayload,
-      updatedAt: serverTimestamp()
-    }, { merge: true });
+    await setDoc(
+      userResultRef,
+      {
+        ...resultPayload,
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
 
     showResult(result);
-
   } catch (error) {
     console.error("Submit error:", error);
     submitted = false;
@@ -597,6 +679,7 @@ function closeSubmitModal() {
 // ================= EVENTS =================
 prevBtn.addEventListener("click", () => {
   saveCurrentAnswer();
+
   if (currentQuestionIndex > 0) {
     currentQuestionIndex -= 1;
     renderQuestion();
@@ -605,6 +688,7 @@ prevBtn.addEventListener("click", () => {
 
 nextBtn.addEventListener("click", () => {
   saveCurrentAnswer();
+
   if (currentQuestionIndex < questions.length - 1) {
     currentQuestionIndex += 1;
     renderQuestion();
@@ -629,6 +713,16 @@ clearAnswerBtn.addEventListener("click", () => {
   renderQuestion();
 });
 
+if (markReviewBtn) {
+  markReviewBtn.addEventListener("click", () => {
+    const state = ensureQuestionState(currentQuestionIndex);
+    state.markedForReview = !state.markedForReview;
+    updateSummary();
+    updatePalette();
+    updateNavButtons();
+  });
+}
+
 submitTopBtn.addEventListener("click", openSubmitModal);
 submitBottomBtn.addEventListener("click", openSubmitModal);
 cancelSubmitBtn.addEventListener("click", closeSubmitModal);
@@ -639,12 +733,12 @@ confirmSubmitBtn.addEventListener("click", async () => {
 });
 
 numericalAnswer.addEventListener("input", () => {
+  ensureQuestionState(currentQuestionIndex).visited = true;
   answers[currentQuestionIndex] = numericalAnswer.value.trim();
   updateSummary();
   updatePalette();
 });
 
-// ================= TAB CLOSE WARNING =================
 window.addEventListener("beforeunload", (e) => {
   if (!submitted && questions.length > 0) {
     e.preventDefault();

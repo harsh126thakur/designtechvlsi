@@ -674,3 +674,32 @@ button:disabled{
     width:100%;
   }
 }
+.palette-btn.review{
+  background:rgba(168,85,247,0.18);
+  color:#d8b4fe;
+  border-color:rgba(168,85,247,0.3);
+}
+
+.palette-btn.answered-review{
+  background:linear-gradient(135deg,#22c55e,#a855f7);
+  color:#ffffff;
+  border-color:transparent;
+}
+
+.palette-btn.visited{
+  background:rgba(239,68,68,0.16);
+  color:#fca5a5;
+  border-color:rgba(239,68,68,0.24);
+}
+
+.review-box{
+  background:#a855f7;
+}
+
+.answered-review-box{
+  background:linear-gradient(135deg,#22c55e,#a855f7);
+}
+
+.visited-box{
+  background:#ef4444;
+}
