@@ -249,7 +249,7 @@ function updateNavButtons() {
 }
 
 // ================= ACCESS CHECK =================
-function hasAssessmentAccess() {
+async function hasAssessmentAccess() {
   if (!currentUserData) return false;
 
   const role = String(currentUserData.role || "user").toLowerCase();
@@ -258,11 +258,29 @@ function hasAssessmentAccess() {
     return true;
   }
 
-  const purchasedCourses = normalizePurchasedCourses(currentUserData.purchasedCourses);
   const linkedCourseId = assessmentData?.courseId || "";
 
-  if (!linkedCourseId) return true;
+  if (!linkedCourseId) {
+    return true;
+  }
 
+  try {
+    const courseRef = doc(db, "courses", linkedCourseId);
+    const courseSnap = await getDoc(courseRef);
+
+    if (courseSnap.exists()) {
+      const courseData = courseSnap.data();
+      const courseType = String(courseData.type || "").trim().toLowerCase();
+
+      if (courseType === "free") {
+        return true;
+      }
+    }
+  } catch (error) {
+    console.error("Course access check error:", error);
+  }
+
+  const purchasedCourses = normalizePurchasedCourses(currentUserData.purchasedCourses);
   return !!purchasedCourses[linkedCourseId];
 }
 
@@ -325,7 +343,7 @@ async function loadAssessment() {
       return;
     }
 
-    if (!hasAssessmentAccess()) {
+    if (!(await hasAssessmentAccess())) {
       showAlert("You do not have access to this assessment");
       window.location.href = "dashboard.html";
       return;
