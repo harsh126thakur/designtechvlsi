@@ -44,6 +44,8 @@ const quizQuestionCount = document.getElementById("quizQuestionCount");
 const quizMarks = document.getElementById("quizMarks");
 const quizTimer = document.getElementById("quizTimer");
 
+const quizLayout = document.querySelector(".quiz-layout");
+
 const questionNumberBadge = document.getElementById("questionNumberBadge");
 const questionTypeBadge = document.getElementById("questionTypeBadge");
 const progressFill = document.getElementById("progressFill");
@@ -89,6 +91,7 @@ const resultCorrect = document.getElementById("resultCorrect");
 const resultWrong = document.getElementById("resultWrong");
 const resultAttempted = document.getElementById("resultAttempted");
 const resultAccuracy = document.getElementById("resultAccuracy");
+const resultAnswersWrap = document.getElementById("resultAnswersWrap");
 
 // ================= HELPERS =================
 function showAlert(message) {
@@ -297,6 +300,15 @@ function getQuestionOptions(currentQuestion) {
   ].filter((opt) => opt.text || opt.formula || opt.imageUrl);
 }
 
+function formatAnswerForDisplay(answer) {
+  if (Array.isArray(answer)) {
+    return answer.length ? answer.join(", ").toUpperCase() : "Not Answered";
+  }
+
+  const value = String(answer || "").trim();
+  return value ? value : "Not Answered";
+}
+
 // ================= ACCESS CHECK =================
 async function hasAssessmentAccess() {
   if (!currentUserData) return false;
@@ -331,6 +343,25 @@ async function hasAssessmentAccess() {
 
   const purchasedCourses = normalizePurchasedCourses(currentUserData.purchasedCourses);
   return !!purchasedCourses[linkedCourseId];
+}
+
+// ================= EXISTING RESULT CHECK =================
+async function getExistingResult() {
+  const q = query(
+    collection(db, "results"),
+    where("userId", "==", currentUser.uid),
+    where("assessmentId", "==", assessmentId),
+    where("assessmentType", "==", assessmentType)
+  );
+
+  const snap = await getDocs(q);
+
+  if (snap.empty) return null;
+
+  return {
+    id: snap.docs[0].id,
+    ...snap.docs[0].data()
+  };
 }
 
 // ================= LOAD USER =================
@@ -395,6 +426,12 @@ async function loadAssessment() {
     if (!(await hasAssessmentAccess())) {
       showAlert("You do not have access to this assessment");
       window.location.href = "dashboard.html";
+      return;
+    }
+
+    const existingResult = await getExistingResult();
+    if (existingResult) {
+      showPreviousResult(existingResult);
       return;
     }
 
@@ -699,6 +736,7 @@ function evaluateAnswers() {
       questionType: question.questionType || "mcq",
       userAnswer: userAnswer || (question.questionType === "multicorrect" ? [] : ""),
       correctAnswer: correctValue,
+      explanation: question.explanation || "",
       marks,
       negativeMarks,
       isCorrect,
@@ -724,6 +762,85 @@ function evaluateAnswers() {
   };
 }
 
+function renderResultAnswers(answerList = []) {
+  if (!resultAnswersWrap) return;
+
+  resultAnswersWrap.innerHTML = "";
+
+  if (!answerList.length) {
+    resultAnswersWrap.innerHTML = `
+      <div class="review-card">
+        <h3>No answers found</h3>
+      </div>
+    `;
+    return;
+  }
+
+  answerList.forEach((item, index) => {
+    const card = document.createElement("div");
+    card.className = `review-card ${item.isCorrect ? "correct" : (item.attempted ? "wrong" : "unanswered")}`;
+
+    card.innerHTML = `
+      <div class="review-head">
+        <div>
+          <p class="review-qno">Question ${index + 1}</p>
+          <h3 class="review-question">${item.question || "Question not available"}</h3>
+        </div>
+        <span class="review-badge ${item.isCorrect ? "correct-badge" : (item.attempted ? "wrong-badge" : "unanswered-badge")}">
+          ${item.isCorrect ? "Correct" : (item.attempted ? "Wrong" : "Not Answered")}
+        </span>
+      </div>
+
+      <div class="review-meta">
+        <div><strong>Your Answer:</strong> ${formatAnswerForDisplay(item.userAnswer)}</div>
+        <div><strong>Correct Answer:</strong> ${formatAnswerForDisplay(item.correctAnswer)}</div>
+        <div><strong>Marks:</strong> ${Number(item.marks || 0)}</div>
+        <div><strong>Negative Marks:</strong> ${Number(item.negativeMarks || 0)}</div>
+      </div>
+
+      <div class="review-explanation">
+        <strong>Explanation:</strong>
+        <p>${item.explanation || "No explanation available."}</p>
+      </div>
+    `;
+
+    resultAnswersWrap.appendChild(card);
+  });
+
+  renderMath();
+}
+
+// ================= SHOW PREVIOUS RESULT =================
+function showPreviousResult(existingResult) {
+  submitted = true;
+  clearInterval(timerInterval);
+
+  quizModeTag.innerText = assessmentType === "testseries" ? "Test Series" : "Quiz";
+  quizTitle.innerText = existingResult.assessmentTitle || assessmentData?.title || "Assessment Result";
+  quizDescription.innerText = "You have already attempted this assessment. Your saved result is shown below.";
+  quizTypePill.innerText = `Type: ${assessmentType === "testseries" ? "Test Series" : "Quiz"}`;
+  quizQuestionCount.innerText = `Questions: ${existingResult.totalQuestions || 0}`;
+  quizMarks.innerText = `Marks: ${existingResult.totalMarks || 0}`;
+  quizTimer.innerText = "Submitted";
+
+  if (quizLayout) {
+    quizLayout.style.display = "none";
+  }
+
+  submitTopBtn.style.display = "none";
+
+  resultTitle.innerText = existingResult.assessmentTitle || "Assessment Result";
+  resultScore.innerText = existingResult.score || 0;
+  resultTotalMarks.innerText = existingResult.totalMarks || 0;
+  resultCorrect.innerText = existingResult.correctCount || 0;
+  resultWrong.innerText = existingResult.wrongCount || 0;
+  resultAttempted.innerText = existingResult.attemptedCount || 0;
+  resultAccuracy.innerText = `${existingResult.accuracy || 0}%`;
+
+  renderResultAnswers(existingResult.answers || []);
+  resultModal.style.display = "flex";
+}
+
 // ================= SUBMIT =================
 async function submitAssessment(autoSubmit = false) {
   if (submitted) return;
@@ -732,6 +849,12 @@ async function submitAssessment(autoSubmit = false) {
     submitted = true;
     saveCurrentAnswer();
     clearInterval(timerInterval);
+
+    const alreadySubmitted = await getExistingResult();
+    if (alreadySubmitted) {
+      showPreviousResult(alreadySubmitted);
+      return;
+    }
 
     const result = evaluateAnswers();
 
@@ -784,6 +907,13 @@ function showResult(result) {
   resultAttempted.innerText = result.attemptedCount;
   resultAccuracy.innerText = `${result.accuracy}%`;
 
+  if (quizLayout) {
+    quizLayout.style.display = "none";
+  }
+
+  submitTopBtn.style.display = "none";
+
+  renderResultAnswers(result.resultAnswers);
   resultModal.style.display = "flex";
 }
 

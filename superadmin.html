@@ -12,7 +12,6 @@
 
   <div class="admin-shell">
 
-    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
       <div class="brand">
         <div class="brand-logo">SA</div>
@@ -28,6 +27,7 @@
         <button class="nav-item" data-section="quizzes">Quizzes</button>
         <button class="nav-item" data-section="questions">Questions</button>
         <button class="nav-item" data-section="testseries">Test Series</button>
+        <button class="nav-item" data-section="media">Media Library</button>
         <button class="nav-item" data-section="coupons">Coupons</button>
         <button class="nav-item" data-section="podcasts">Podcasts</button>
         <button class="nav-item" data-section="enquiries">Enquiries</button>
@@ -37,10 +37,8 @@
       </nav>
     </aside>
 
-    <!-- MAIN CONTENT -->
     <main class="main-content">
 
-      <!-- TOPBAR -->
       <header class="topbar">
         <div>
           <p class="topbar-tag">Super Admin Workspace</p>
@@ -54,7 +52,6 @@
         </div>
       </header>
 
-      <!-- OVERVIEW -->
       <section class="section-panel active" id="section-overview">
         <div class="stats-grid">
           <div class="stat-card">
@@ -100,7 +97,6 @@
         </div>
       </section>
 
-      <!-- COURSES -->
       <section class="section-panel" id="section-courses">
         <div class="panel-grid two-col">
           <div class="panel-card">
@@ -145,7 +141,6 @@
         </div>
       </section>
 
-      <!-- QUIZZES -->
       <section class="section-panel" id="section-quizzes">
         <div class="panel-grid two-col">
           <div class="panel-card">
@@ -180,7 +175,6 @@
         </div>
       </section>
 
-      <!-- QUESTIONS -->
       <section class="section-panel" id="section-questions">
         <div class="panel-grid two-col">
           <div class="panel-card">
@@ -210,6 +204,7 @@
                 <option value="mcq">MCQ</option>
                 <option value="multicorrect">Multi Correct</option>
                 <option value="numerical">Numerical</option>
+                <option value="formula">Formula</option>
               </select>
 
               <input type="number" id="questionOrder" placeholder="Question Order" />
@@ -217,7 +212,9 @@
               <input type="number" id="questionNegativeMarks" placeholder="Negative Marks" value="0" />
             </div>
 
-            <textarea id="questionText" placeholder="Enter Question"></textarea>
+            <textarea id="questionText" placeholder="Enter Question Text"></textarea>
+            <input type="text" id="questionFormula" placeholder="Question Formula / LaTeX / Equation Text" />
+            <input type="text" id="questionImageUrl" placeholder="Question Image URL" />
 
             <div id="questionOptionsBox">
               <div class="option-row">
@@ -234,7 +231,11 @@
               </div>
             </div>
 
-            <input type="text" id="questionCorrectAnswer" placeholder="Correct Answer (for multicorrect use comma separated)" />
+            <input type="text" id="questionCorrectAnswer" placeholder="Correct Answer (MCQ=a, Multi=a,c, Numerical=value)" />
+            <textarea id="answerText" placeholder="Answer Text / Solution"></textarea>
+            <input type="text" id="answerFormula" placeholder="Answer Formula / Equation Text" />
+            <input type="text" id="answerImageUrl" placeholder="Answer Image URL" />
+            <textarea id="questionExplanation" placeholder="Explanation"></textarea>
 
             <label class="switch-row">
               <input type="checkbox" id="questionIsActive" checked />
@@ -256,7 +257,6 @@
         </div>
       </section>
 
-      <!-- TEST SERIES -->
       <section class="section-panel" id="section-testseries">
         <div class="panel-grid two-col">
           <div class="panel-card">
@@ -294,7 +294,44 @@
         </div>
       </section>
 
-      <!-- COUPONS -->
+      <section class="section-panel" id="section-media">
+        <div class="panel-grid two-col">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h3>Create Media Folder</h3>
+            </div>
+
+            <div class="form-grid">
+              <input type="text" id="mediaFolderName" placeholder="Folder Name" />
+            </div>
+
+            <button class="primary-btn full-btn" id="createMediaFolderBtn" type="button">Create Folder</button>
+
+            <hr style="margin:20px 0; opacity:0.2;" />
+
+            <div class="panel-head">
+              <h3>Upload Image</h3>
+            </div>
+
+            <div class="form-grid">
+              <select id="mediaFolderSelect">
+                <option value="">Select Folder</option>
+              </select>
+              <input type="file" id="mediaFileInput" accept="image/*" />
+            </div>
+
+            <button class="primary-btn full-btn" id="uploadMediaBtn" type="button">Upload Image</button>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-head">
+              <h3>Media Library</h3>
+            </div>
+            <div id="mediaLibraryList" class="card-list"></div>
+          </div>
+        </div>
+      </section>
+
       <section class="section-panel" id="section-coupons">
         <div class="panel-grid two-col">
           <div class="panel-card">
@@ -330,7 +367,6 @@
         </div>
       </section>
 
-      <!-- PODCASTS -->
       <section class="section-panel" id="section-podcasts">
         <div class="panel-grid two-col">
           <div class="panel-card">
@@ -363,7 +399,6 @@
         </div>
       </section>
 
-      <!-- ENQUIRIES -->
       <section class="section-panel" id="section-enquiries">
         <div class="panel-card">
           <div class="panel-head">
@@ -386,7 +421,6 @@
         </div>
       </section>
 
-      <!-- BOOKINGS -->
       <section class="section-panel" id="section-bookings">
         <div class="panel-card">
           <div class="panel-head">
@@ -396,7 +430,6 @@
         </div>
       </section>
 
-      <!-- PAYMENTS -->
       <section class="section-panel" id="section-payments">
         <div class="panel-card">
           <div class="panel-head">
@@ -406,7 +439,6 @@
         </div>
       </section>
 
-      <!-- USERS -->
       <section class="section-panel" id="section-users">
         <div class="panel-card">
           <div class="panel-head">
