@@ -309,6 +309,67 @@ function formatAnswerForDisplay(answer) {
   return value ? value : "Not Answered";
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function getStoredOptions(item) {
+  if (Array.isArray(item.options) && item.options.length > 0) {
+    return item.options.map((opt, index) => ({
+      key: String.fromCharCode(97 + index),
+      text: typeof opt === "object" ? (opt.text || "") : String(opt || ""),
+      formula: typeof opt === "object" ? (opt.formula || "") : "",
+      imageUrl: typeof opt === "object" ? (opt.imageUrl || "") : ""
+    }));
+  }
+
+  return [
+    {
+      key: "a",
+      text: item.option1 || "",
+      formula: item.option1Formula || "",
+      imageUrl: item.option1ImageUrl || ""
+    },
+    {
+      key: "b",
+      text: item.option2 || "",
+      formula: item.option2Formula || "",
+      imageUrl: item.option2ImageUrl || ""
+    },
+    {
+      key: "c",
+      text: item.option3 || "",
+      formula: item.option3Formula || "",
+      imageUrl: item.option3ImageUrl || ""
+    },
+    {
+      key: "d",
+      text: item.option4 || "",
+      formula: item.option4Formula || "",
+      imageUrl: item.option4ImageUrl || ""
+    }
+  ].filter((opt) => opt.text || opt.formula || opt.imageUrl);
+}
+
+function isOptionSelected(answer, optionKey, type) {
+  if (type === "multicorrect") {
+    return Array.isArray(answer) && answer.map((v) => String(v).toLowerCase()).includes(String(optionKey).toLowerCase());
+  }
+  return String(answer || "").trim().toLowerCase() === String(optionKey).trim().toLowerCase();
+}
+
+function isOptionCorrect(correctAnswer, optionKey, type) {
+  if (type === "multicorrect") {
+    return parseMultiAnswer(correctAnswer).includes(String(optionKey).trim().toLowerCase());
+  }
+  return normalizeString(correctAnswer) === normalizeString(optionKey);
+}
+
 // ================= ACCESS CHECK =================
 async function hasAssessmentAccess() {
   if (!currentUserData) return false;
@@ -734,8 +795,29 @@ function evaluateAnswers() {
       questionId: question.id,
       question: question.question || "",
       questionType: question.questionType || "mcq",
+      questionFormula: question.questionFormula || "",
+      questionImageUrl: question.questionImageUrl || "",
+
+      options: Array.isArray(question.options) ? question.options : [],
+
+      option1: question.option1 || "",
+      option2: question.option2 || "",
+      option3: question.option3 || "",
+      option4: question.option4 || "",
+
+      option1Formula: question.option1Formula || "",
+      option2Formula: question.option2Formula || "",
+      option3Formula: question.option3Formula || "",
+      option4Formula: question.option4Formula || "",
+
+      option1ImageUrl: question.option1ImageUrl || "",
+      option2ImageUrl: question.option2ImageUrl || "",
+      option3ImageUrl: question.option3ImageUrl || "",
+      option4ImageUrl: question.option4ImageUrl || "",
+
       userAnswer: userAnswer || (question.questionType === "multicorrect" ? [] : ""),
       correctAnswer: correctValue,
+      correctAnswerText: question.correctAnswerText || correctValue,
       explanation: question.explanation || "",
       marks,
       negativeMarks,
@@ -780,27 +862,63 @@ function renderResultAnswers(answerList = []) {
     const card = document.createElement("div");
     card.className = `review-card ${item.isCorrect ? "correct" : (item.attempted ? "wrong" : "unanswered")}`;
 
+    const options = getStoredOptions(item);
+
+    let optionsHtml = "";
+    if (item.questionType !== "numerical" && options.length) {
+      optionsHtml = `
+        <div class="review-options">
+          ${options.map((option) => {
+            const selected = isOptionSelected(item.userAnswer, option.key, item.questionType);
+            const correct = isOptionCorrect(item.correctAnswer, option.key, item.questionType);
+
+            return `
+              <div class="review-option ${selected ? "selected-option" : ""} ${correct ? "correct-option" : ""}">
+                <div class="review-option-top">
+                  <strong>${escapeHtml(option.key.toUpperCase())}.</strong>
+                  <span>
+                    ${selected ? "Your Choice" : ""}
+                    ${selected && correct ? " | " : ""}
+                    ${correct ? "Correct" : ""}
+                  </span>
+                </div>
+
+                ${option.text ? `<div class="review-option-text">${escapeHtml(option.text)}</div>` : ""}
+                ${option.formula ? `<div class="review-option-formula">${option.formula}</div>` : ""}
+                ${option.imageUrl ? `<img class="review-option-image" src="${escapeHtml(option.imageUrl)}" alt="Option ${escapeHtml(option.key.toUpperCase())}">` : ""}
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
     card.innerHTML = `
       <div class="review-head">
         <div>
           <p class="review-qno">Question ${index + 1}</p>
-          <h3 class="review-question">${item.question || "Question not available"}</h3>
+          <h3 class="review-question">${escapeHtml(item.question || "Question not available")}</h3>
         </div>
         <span class="review-badge ${item.isCorrect ? "correct-badge" : (item.attempted ? "wrong-badge" : "unanswered-badge")}">
           ${item.isCorrect ? "Correct" : (item.attempted ? "Wrong" : "Not Answered")}
         </span>
       </div>
 
+      ${item.questionFormula ? `<div class="review-question-formula">${item.questionFormula}</div>` : ""}
+      ${item.questionImageUrl ? `<img class="review-question-image" src="${escapeHtml(item.questionImageUrl)}" alt="Question Image">` : ""}
+
+      ${optionsHtml}
+
       <div class="review-meta">
-        <div><strong>Your Answer:</strong> ${formatAnswerForDisplay(item.userAnswer)}</div>
-        <div><strong>Correct Answer:</strong> ${formatAnswerForDisplay(item.correctAnswer)}</div>
+        <div><strong>Your Answer:</strong> ${escapeHtml(formatAnswerForDisplay(item.userAnswer))}</div>
+        <div><strong>Correct Answer:</strong> ${escapeHtml(formatAnswerForDisplay(item.correctAnswerText || item.correctAnswer))}</div>
         <div><strong>Marks:</strong> ${Number(item.marks || 0)}</div>
         <div><strong>Negative Marks:</strong> ${Number(item.negativeMarks || 0)}</div>
       </div>
 
       <div class="review-explanation">
         <strong>Explanation:</strong>
-        <p>${item.explanation || "No explanation available."}</p>
+        <p>${escapeHtml(item.explanation || "No explanation available.")}</p>
       </div>
     `;
 
