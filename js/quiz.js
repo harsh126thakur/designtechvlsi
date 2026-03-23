@@ -54,6 +54,11 @@ const optionsContainer = document.getElementById("optionsContainer");
 const numericalBox = document.getElementById("numericalBox");
 const numericalAnswer = document.getElementById("numericalAnswer");
 
+const questionFormulaWrap = document.getElementById("questionFormulaWrap");
+const questionFormula = document.getElementById("questionFormula");
+const questionImageWrap = document.getElementById("questionImageWrap");
+const questionImage = document.getElementById("questionImage");
+
 const prevBtn = document.getElementById("prevBtn");
 const nextBtn = document.getElementById("nextBtn");
 const clearAnswerBtn = document.getElementById("clearAnswerBtn");
@@ -248,6 +253,50 @@ function updateNavButtons() {
   }
 }
 
+function renderMath() {
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    window.MathJax.typesetPromise().catch((err) => console.error("MathJax error:", err));
+  }
+}
+
+function getQuestionOptions(currentQuestion) {
+  if (Array.isArray(currentQuestion.options) && currentQuestion.options.length > 0) {
+    return currentQuestion.options.map((item, index) => ({
+      key: String.fromCharCode(97 + index),
+      text: typeof item === "object" ? (item.text || "") : String(item || ""),
+      formula: typeof item === "object" ? (item.formula || "") : "",
+      imageUrl: typeof item === "object" ? (item.imageUrl || "") : ""
+    }));
+  }
+
+  return [
+    {
+      key: "a",
+      text: currentQuestion.option1 || "",
+      formula: currentQuestion.option1Formula || "",
+      imageUrl: currentQuestion.option1ImageUrl || ""
+    },
+    {
+      key: "b",
+      text: currentQuestion.option2 || "",
+      formula: currentQuestion.option2Formula || "",
+      imageUrl: currentQuestion.option2ImageUrl || ""
+    },
+    {
+      key: "c",
+      text: currentQuestion.option3 || "",
+      formula: currentQuestion.option3Formula || "",
+      imageUrl: currentQuestion.option3ImageUrl || ""
+    },
+    {
+      key: "d",
+      text: currentQuestion.option4 || "",
+      formula: currentQuestion.option4Formula || "",
+      imageUrl: currentQuestion.option4ImageUrl || ""
+    }
+  ].filter((opt) => opt.text || opt.formula || opt.imageUrl);
+}
+
 // ================= ACCESS CHECK =================
 async function hasAssessmentAccess() {
   if (!currentUserData) return false;
@@ -437,6 +486,22 @@ function renderQuestion() {
   questionText.innerText = currentQuestion.question || "Question not available";
   questionMeta.innerText = `Marks: ${Number(currentQuestion.marks || 1)} | Negative: ${Number(currentQuestion.negativeMarks || 0)}`;
 
+  questionFormula.innerHTML = "";
+  questionFormulaWrap.style.display = "none";
+
+  if (currentQuestion.questionFormula && String(currentQuestion.questionFormula).trim() !== "") {
+    questionFormula.innerHTML = currentQuestion.questionFormula;
+    questionFormulaWrap.style.display = "block";
+  }
+
+  questionImage.src = "";
+  questionImageWrap.style.display = "none";
+
+  if (currentQuestion.questionImageUrl && String(currentQuestion.questionImageUrl).trim() !== "") {
+    questionImage.src = currentQuestion.questionImageUrl;
+    questionImageWrap.style.display = "block";
+  }
+
   optionsContainer.innerHTML = "";
   numericalBox.style.display = "none";
   numericalAnswer.value = "";
@@ -452,23 +517,25 @@ function renderQuestion() {
       ? (Array.isArray(savedAnswer) ? savedAnswer : [])
       : [savedAnswer || ""];
 
-    (currentQuestion.options || []).forEach((option) => {
+    const options = getQuestionOptions(currentQuestion);
+
+    options.forEach((option) => {
       const label = document.createElement("label");
       label.className = "option-label";
 
       const input = document.createElement("input");
       input.type = inputType;
       input.name = `question_${currentQuestionIndex}`;
-      input.value = option;
+      input.value = option.key;
 
-      if (selectedValues.includes(option)) {
+      if (selectedValues.includes(option.key)) {
         input.checked = true;
         label.classList.add("selected");
       }
 
       input.addEventListener("change", () => {
         if (currentQuestion.questionType === "mcq") {
-          answers[currentQuestionIndex] = option;
+          answers[currentQuestionIndex] = option.key;
         } else {
           const checkedOptions = [...optionsContainer.querySelectorAll("input:checked")].map((el) => el.value);
           answers[currentQuestionIndex] = checkedOptions;
@@ -479,12 +546,47 @@ function renderQuestion() {
         updatePalette();
       });
 
-      const text = document.createElement("span");
-      text.className = "option-text";
-      text.innerText = option;
+      const contentWrap = document.createElement("div");
+      contentWrap.className = "option-content";
+
+      const keyBadge = document.createElement("span");
+      keyBadge.className = "option-key";
+      keyBadge.innerText = option.key.toUpperCase();
+
+      const textWrap = document.createElement("div");
+      textWrap.className = "option-text-wrap";
+
+      if (option.text) {
+        const text = document.createElement("div");
+        text.className = "option-text";
+        text.innerText = option.text;
+        textWrap.appendChild(text);
+      }
+
+      if (option.formula) {
+        const formula = document.createElement("div");
+        formula.className = "option-formula";
+        formula.innerHTML = option.formula;
+        textWrap.appendChild(formula);
+      }
+
+      if (option.imageUrl) {
+        const img = document.createElement("img");
+        img.className = "option-image";
+        img.src = option.imageUrl;
+        img.alt = `Option ${option.key.toUpperCase()}`;
+        img.style.maxWidth = "220px";
+        img.style.marginTop = "10px";
+        img.style.borderRadius = "10px";
+        img.style.display = "block";
+        textWrap.appendChild(img);
+      }
+
+      contentWrap.appendChild(keyBadge);
+      contentWrap.appendChild(textWrap);
 
       label.appendChild(input);
-      label.appendChild(text);
+      label.appendChild(contentWrap);
       optionsContainer.appendChild(label);
     });
 
@@ -494,6 +596,7 @@ function renderQuestion() {
   updateSummary();
   updatePalette();
   updateNavButtons();
+  renderMath();
 }
 
 function highlightSelectedOptions() {
@@ -569,16 +672,17 @@ function evaluateAnswers() {
     if (attempted) attemptedCount += 1;
 
     let isCorrect = false;
+    const correctValue = question.correctAnswer || question.correctAnswerText || "";
 
     if (question.questionType === "mcq") {
-      isCorrect = normalizeString(userAnswer) === normalizeString(question.correctAnswer);
+      isCorrect = normalizeString(userAnswer) === normalizeString(correctValue);
     } else if (question.questionType === "multicorrect") {
       isCorrect = arraysEqual(
         parseMultiAnswer(userAnswer),
-        parseMultiAnswer(question.correctAnswer)
+        parseMultiAnswer(correctValue)
       );
     } else {
-      isCorrect = normalizeString(userAnswer) === normalizeString(question.correctAnswer);
+      isCorrect = normalizeString(userAnswer) === normalizeString(correctValue);
     }
 
     if (attempted && isCorrect) {
@@ -594,7 +698,7 @@ function evaluateAnswers() {
       question: question.question || "",
       questionType: question.questionType || "mcq",
       userAnswer: userAnswer || (question.questionType === "multicorrect" ? [] : ""),
-      correctAnswer: question.correctAnswer || "",
+      correctAnswer: correctValue,
       marks,
       negativeMarks,
       isCorrect,

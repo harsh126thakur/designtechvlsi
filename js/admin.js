@@ -23,6 +23,7 @@ import {
 
 let currentUser = null;
 let currentAdminData = null;
+const RENDER_API_BASE = "https://razorpay-server-ok0j.onrender.com";
 
 /* ================= ELEMENTS ================= */
 const navItems = document.querySelectorAll(".nav-item");
@@ -113,14 +114,10 @@ function showAdminName(userData) {
 }
 
 function getPurchasedCoursesCount(userData) {
-  if (Array.isArray(userData?.purchasedCourses)) {
-    return userData.purchasedCourses.length;
-  }
-
+  if (Array.isArray(userData?.purchasedCourses)) return userData.purchasedCourses.length;
   if (userData?.purchasedCourses && typeof userData.purchasedCourses === "object") {
     return Object.keys(userData.purchasedCourses).length;
   }
-
   return 0;
 }
 
@@ -139,6 +136,35 @@ function setValue(id, value) {
 function setChecked(id, value) {
   const el = document.getElementById(id);
   if (el) el.checked = value;
+}
+
+function slugifyFolderName(name = "") {
+  return name
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-_ ]/g, "")
+    .replace(/\s+/g, "-");
+}
+
+function getSafeFileName(fileName = "") {
+  const dotIndex = fileName.lastIndexOf(".");
+  const ext = dotIndex >= 0 ? fileName.slice(dotIndex) : "";
+  const base = dotIndex >= 0 ? fileName.slice(0, dotIndex) : fileName;
+  const safeBase = base
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-_ ]/g, "")
+    .replace(/\s+/g, "-");
+  return `${safeBase || "file"}${ext}`;
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 /* ================= AUTH / ROLE CHECK ================= */
@@ -220,7 +246,9 @@ onAuthStateChanged(auth, async (user) => {
       loadEnquiries(),
       loadBookings(),
       loadPayments(),
-      loadUsers()
+      loadUsers(),
+      loadMediaFolders(),
+      loadMediaLibrary()
     ]);
   } catch (error) {
     console.error("Admin auth error:", error);
@@ -514,7 +542,6 @@ async function saveCourse() {
     }
 
     resetCourseForm();
-
     await loadCourses();
     await loadCourseDropdowns();
     await loadOverview();
@@ -887,6 +914,9 @@ function toggleQuestionOptionFields() {
   if (questionType === "numerical") {
     optionsBox.style.display = "none";
     answerInput.placeholder = "Correct Numerical Answer";
+  } else if (questionType === "formula") {
+    optionsBox.style.display = "none";
+    answerInput.placeholder = "Correct Answer Text (optional)";
   } else if (questionType === "multicorrect") {
     optionsBox.style.display = "block";
     answerInput.placeholder = "Correct Answers (comma separated)";
@@ -908,10 +938,19 @@ function fillQuestionFormForEdit(questionId, data) {
   setValue("questionMarks", data.marks ?? 1);
   setValue("questionNegativeMarks", data.negativeMarks ?? 0);
   setValue("questionText", data.question || "");
-  setValue("questionCorrectAnswer", data.correctAnswer || "");
+  setValue("questionFormula", data.questionFormula || "");
+  setValue("questionImageUrl", data.questionImageUrl || "");
+  setValue("questionCorrectAnswer", data.correctAnswer || data.correctAnswerText || "");
+  setValue("answerText", data.answerText || "");
+  setValue("answerFormula", data.answerFormula || "");
+  setValue("answerImageUrl", data.answerImageUrl || "");
+  setValue("questionExplanation", data.explanation || "");
   setChecked("questionIsActive", data.isActive !== false);
 
-  const options = Array.isArray(data.options) ? data.options : [];
+  const options = Array.isArray(data.options)
+    ? data.options
+    : [data.option1 || "", data.option2 || "", data.option3 || "", data.option4 || ""];
+
   setValue("option1", options[0] || "");
   setValue("option2", options[1] || "");
   setValue("option3", options[2] || "");
@@ -939,11 +978,17 @@ function resetQuestionForm() {
   setValue("questionMarks", "1");
   setValue("questionNegativeMarks", "0");
   setValue("questionText", "");
+  setValue("questionFormula", "");
+  setValue("questionImageUrl", "");
   setValue("option1", "");
   setValue("option2", "");
   setValue("option3", "");
   setValue("option4", "");
   setValue("questionCorrectAnswer", "");
+  setValue("answerText", "");
+  setValue("answerFormula", "");
+  setValue("answerImageUrl", "");
+  setValue("questionExplanation", "");
   setChecked("questionIsActive", true);
 
   const saveBtn = document.getElementById("saveQuestionBtn");
@@ -965,22 +1010,28 @@ async function saveQuestion() {
   const order = Number(document.getElementById("questionOrder")?.value || 0);
   const marks = Number(document.getElementById("questionMarks")?.value || 1);
   const negativeMarks = Number(document.getElementById("questionNegativeMarks")?.value || 0);
-  const question = document.getElementById("questionText")?.value.trim();
-  const correctAnswer = document.getElementById("questionCorrectAnswer")?.value.trim();
+  const question = document.getElementById("questionText")?.value.trim() || "";
+  const questionFormula = document.getElementById("questionFormula")?.value.trim() || "";
+  const questionImageUrl = document.getElementById("questionImageUrl")?.value.trim() || "";
+  const correctAnswer = document.getElementById("questionCorrectAnswer")?.value.trim() || "";
+  const answerText = document.getElementById("answerText")?.value.trim() || "";
+  const answerFormula = document.getElementById("answerFormula")?.value.trim() || "";
+  const answerImageUrl = document.getElementById("answerImageUrl")?.value.trim() || "";
+  const explanation = document.getElementById("questionExplanation")?.value.trim() || "";
   const isActive = document.getElementById("questionIsActive")?.checked ?? true;
 
   const saveBtn = document.getElementById("saveQuestionBtn");
   const editId = saveBtn?.dataset.editId || "";
 
-  const options = [
-    document.getElementById("option1")?.value.trim(),
-    document.getElementById("option2")?.value.trim(),
-    document.getElementById("option3")?.value.trim(),
-    document.getElementById("option4")?.value.trim()
-  ].filter(Boolean);
+  const option1 = document.getElementById("option1")?.value.trim() || "";
+  const option2 = document.getElementById("option2")?.value.trim() || "";
+  const option3 = document.getElementById("option3")?.value.trim() || "";
+  const option4 = document.getElementById("option4")?.value.trim() || "";
 
-  if (!question) {
-    alert("Please enter question text");
+  const options = [option1, option2, option3, option4].filter(Boolean);
+
+  if (!question && !questionFormula && !questionImageUrl) {
+    alert("Please enter question text, formula, or image");
     return;
   }
 
@@ -994,12 +1045,24 @@ async function saveQuestion() {
     return;
   }
 
-  if (questionType !== "numerical" && options.length < 2) {
-    alert("Please enter at least 2 options");
+  if (questionType === "mcq" || questionType === "multicorrect") {
+    if (options.length < 2) {
+      alert("Please enter at least 2 options");
+      return;
+    }
+  }
+
+  if (questionType === "numerical" && !correctAnswer) {
+    alert("Please enter correct numerical answer");
     return;
   }
 
-  if (!correctAnswer) {
+  if (questionType === "formula" && !answerText && !answerFormula && !correctAnswer) {
+    alert("Please enter answer text, answer formula, or correct answer");
+    return;
+  }
+
+  if ((questionType === "mcq" || questionType === "multicorrect") && !correctAnswer) {
     alert("Please enter correct answer");
     return;
   }
@@ -1011,8 +1074,19 @@ async function saveQuestion() {
     courseId,
     questionType,
     question,
-    options: questionType === "numerical" ? [] : options,
+    questionFormula,
+    questionImageUrl,
+    option1,
+    option2,
+    option3,
+    option4,
+    options: questionType === "mcq" || questionType === "multicorrect" ? options : [],
     correctAnswer,
+    correctAnswerText: correctAnswer,
+    answerText,
+    answerFormula,
+    answerImageUrl,
+    explanation,
     marks,
     negativeMarks,
     order,
@@ -1056,15 +1130,20 @@ async function loadQuestions() {
 
     snap.forEach((item) => {
       const d = item.data();
+      const titleText =
+        d.question ||
+        d.questionFormula ||
+        (d.questionImageUrl ? "Image Question" : "Untitled Question");
 
       const card = document.createElement("div");
       card.className = "data-card";
       card.innerHTML = `
-        <h4>${safeText(d.question)}</h4>
+        <h4>${safeText(titleText)}</h4>
         <p>Exam Type: ${safeText(d.examType)}</p>
         <p>Question Type: ${safeText(d.questionType)}</p>
         <p>Quiz ID: ${safeText(d.quizId || "-")} | Test Series ID: ${safeText(d.testSeriesId || "-")}</p>
         <p>Marks: ${d.marks || 1} | Negative: ${d.negativeMarks || 0} | Order: ${d.order || 0}</p>
+        <p>Formula: ${d.questionFormula ? "Yes" : "No"} | Question Image: ${d.questionImageUrl ? "Yes" : "No"} | Answer Image: ${d.answerImageUrl ? "Yes" : "No"}</p>
         <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
         <div class="data-actions">
           <button class="small-btn edit-question-btn">Edit</button>
@@ -1097,6 +1176,213 @@ async function loadQuestions() {
   } catch (error) {
     console.error("Load questions error:", error);
     list.innerHTML = `<div class="data-card"><p>Error loading questions</p></div>`;
+  }
+}
+
+/* ================= MEDIA LIBRARY ================= */
+document.getElementById("createMediaFolderBtn")?.addEventListener("click", createMediaFolder);
+document.getElementById("uploadMediaBtn")?.addEventListener("click", uploadMediaFile);
+
+async function createMediaFolder() {
+  const rawName = document.getElementById("mediaFolderName")?.value || "";
+  const folderName = slugifyFolderName(rawName);
+
+  if (!folderName) {
+    alert("Please enter folder name");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${RENDER_API_BASE}/api/github/create-folder`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ folderName })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Failed to create GitHub folder");
+    }
+
+    await setDoc(
+      doc(db, "mediaFolders", folderName),
+      {
+        name: rawName.trim(),
+        slug: folderName,
+        githubPath: result.githubPath || "",
+        folderUrl: result.folderUrl || "",
+        createdAt: serverTimestamp(),
+        createdBy: currentAdminData?.name || currentUser?.email || "Admin"
+      },
+      { merge: true }
+    );
+
+    alert("Folder created successfully");
+    setValue("mediaFolderName", "");
+    await loadMediaFolders();
+  } catch (error) {
+    console.error("Create folder error:", error);
+    alert(error.message || "Error creating folder");
+  }
+}
+
+async function loadMediaFolders() {
+  const select = document.getElementById("mediaFolderSelect");
+  if (!select) return;
+
+  try {
+    const snap = await getDocs(query(collection(db, "mediaFolders"), orderBy("name", "asc")));
+    select.innerHTML = `<option value="">Select Folder</option>`;
+
+    snap.forEach((item) => {
+      const d = item.data();
+      select.innerHTML += `<option value="${item.id}">${safeText(d.name || item.id)}</option>`;
+    });
+  } catch (error) {
+    console.error("Load media folders error:", error);
+  }
+}
+
+async function uploadMediaFile() {
+  const folder = document.getElementById("mediaFolderSelect")?.value || "";
+  const fileInput = document.getElementById("mediaFileInput");
+  const file = fileInput?.files?.[0];
+
+  if (!folder) {
+    alert("Please select folder");
+    return;
+  }
+
+  if (!file) {
+    alert("Please choose an image");
+    return;
+  }
+
+  try {
+    const safeFileName = `${Date.now()}-${getSafeFileName(file.name)}`;
+    const fileBase64 = await fileToBase64(file);
+
+    const response = await fetch(`${RENDER_API_BASE}/api/github/upload-image`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        folderName: folder,
+        fileName: safeFileName,
+        fileBase64
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Failed to upload image");
+    }
+
+    await addDoc(collection(db, "mediaLibrary"), {
+      folder,
+      fileName: file.name,
+      safeFileName,
+      fileType: file.type || "",
+      fileSize: file.size || 0,
+      url: result.rawUrl || "",
+      githubFileUrl: result.githubFileUrl || "",
+      githubPath: result.githubPath || "",
+      createdAt: serverTimestamp(),
+      createdBy: currentAdminData?.name || currentUser?.email || "Admin"
+    });
+
+    alert("Image uploaded successfully");
+    if (fileInput) fileInput.value = "";
+
+    await loadMediaLibrary();
+  } catch (error) {
+    console.error("Upload media error:", error);
+    alert(error.message || "Error uploading image");
+  }
+}
+
+async function deleteMediaItem(id) {
+  try {
+    await deleteDoc(doc(db, "mediaLibrary", id));
+    alert("Media record deleted successfully");
+    await loadMediaLibrary();
+  } catch (error) {
+    console.error("Delete media error:", error);
+    alert("Error deleting media record");
+  }
+}
+
+async function loadMediaLibrary() {
+  const list = document.getElementById("mediaLibraryList");
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  try {
+    const snap = await getDocs(query(collection(db, "mediaLibrary"), orderBy("createdAt", "desc")));
+
+    if (snap.empty) {
+      list.innerHTML = `<div class="data-card"><p>No media files found</p></div>`;
+      return;
+    }
+
+    snap.forEach((item) => {
+      const d = item.data();
+
+      const card = document.createElement("div");
+      card.className = "data-card";
+      card.innerHTML = `
+        <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+          <img src="${safeText(d.url)}" alt="${safeText(d.fileName || "media")}" style="width:100px;height:100px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,255,255,0.1);" />
+          <div style="flex:1;min-width:200px;">
+            <h4>${safeText(d.fileName || "Image")}</h4>
+            <p>Folder: ${safeText(d.folder || "-")}</p>
+            <p>URL: <a href="${safeText(d.url)}" target="_blank">Open File</a></p>
+            ${d.githubFileUrl ? `<p>GitHub: <a href="${safeText(d.githubFileUrl)}" target="_blank">Open in Repo</a></p>` : ""}
+            <div class="data-actions" style="margin-top:10px;">
+              <button class="small-btn copy-media-url-btn">Copy URL</button>
+              <button class="small-btn use-question-image-btn">Use in Question</button>
+              <button class="small-btn use-answer-image-btn">Use in Answer</button>
+              <button class="small-btn delete-media-btn">Delete</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      card.querySelector(".copy-media-url-btn").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(d.url || "");
+          alert("URL copied");
+        } catch {
+          alert("Could not copy URL");
+        }
+      });
+
+      card.querySelector(".use-question-image-btn").addEventListener("click", () => {
+        setValue("questionImageUrl", d.url || "");
+        alert("Question image URL filled");
+      });
+
+      card.querySelector(".use-answer-image-btn").addEventListener("click", () => {
+        setValue("answerImageUrl", d.url || "");
+        alert("Answer image URL filled");
+      });
+
+      card.querySelector(".delete-media-btn").addEventListener("click", async () => {
+        if (!confirm(`Delete image "${d.fileName}"?`)) return;
+        await deleteMediaItem(item.id);
+      });
+
+      list.appendChild(card);
+    });
+  } catch (error) {
+    console.error("Load media library error:", error);
+    list.innerHTML = `<div class="data-card"><p>Error loading media library</p></div>`;
   }
 }
 

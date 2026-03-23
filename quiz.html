@@ -7,6 +7,19 @@
 
   <link rel="stylesheet" href="css/quiz.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
 
@@ -62,6 +75,19 @@
 
         <div class="question-body">
           <h2 id="questionText">Loading question...</h2>
+
+          <div id="questionFormulaWrap" style="display:none; margin:12px 0;">
+            <div id="questionFormula"></div>
+          </div>
+
+          <div id="questionImageWrap" style="display:none; margin:12px 0;">
+            <img
+              id="questionImage"
+              alt="Question Figure"
+              style="max-width:100%; border-radius:12px; display:block;"
+            />
+          </div>
+
           <p id="questionMeta" class="question-meta">Marks: 0 | Negative: 0</p>
         </div>
 

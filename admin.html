@@ -26,6 +26,7 @@
         <button class="nav-item" data-section="courses">Courses</button>
         <button class="nav-item" data-section="quizzes">Quizzes</button>
         <button class="nav-item" data-section="questions">Questions</button>
+        <button class="nav-item" data-section="media">Media Library</button>
         <button class="nav-item" data-section="testseries">Test Series</button>
         <button class="nav-item" data-section="coupons">Coupons</button>
         <button class="nav-item" data-section="podcasts">Podcasts</button>
@@ -207,6 +208,7 @@
                 <option value="mcq">MCQ</option>
                 <option value="multicorrect">Multi Correct</option>
                 <option value="numerical">Numerical</option>
+                <option value="formula">Formula</option>
               </select>
 
               <input type="number" id="questionOrder" placeholder="Question Order" />
@@ -214,7 +216,11 @@
               <input type="number" id="questionNegativeMarks" placeholder="Negative Marks" value="0" />
             </div>
 
-            <textarea id="questionText" placeholder="Enter Question"></textarea>
+            <textarea id="questionText" placeholder="Enter Question Text"></textarea>
+
+            <input type="text" id="questionFormula" placeholder="Question Formula (optional)" />
+
+            <input type="text" id="questionImageUrl" placeholder="Question Image URL (optional)" />
 
             <div id="questionOptionsBox">
               <div class="option-row"><input type="text" id="option1" placeholder="Option 1" /></div>
@@ -224,6 +230,14 @@
             </div>
 
             <input type="text" id="questionCorrectAnswer" placeholder="Correct Answer (for multicorrect use comma separated)" />
+
+            <textarea id="answerText" placeholder="Answer Text / Solution (optional)"></textarea>
+
+            <input type="text" id="answerFormula" placeholder="Answer Formula (optional)" />
+
+            <input type="text" id="answerImageUrl" placeholder="Answer Image URL (optional)" />
+
+            <textarea id="questionExplanation" placeholder="Explanation (optional)"></textarea>
 
             <label class="switch-row">
               <input type="checkbox" id="questionIsActive" checked />
@@ -241,6 +255,40 @@
               <h3>All Questions</h3>
             </div>
             <div id="questionListAdmin" class="card-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEDIA LIBRARY -->
+      <section class="section-panel" id="section-media">
+        <div class="panel-grid two-col">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h3>Media Library</h3>
+            </div>
+
+            <div class="form-grid">
+              <input type="text" id="mediaFolderName" placeholder="Create Folder Name" />
+              <button class="primary-btn" id="createMediaFolderBtn" type="button">Create Folder</button>
+            </div>
+
+            <div class="form-grid" style="margin-top: 16px;">
+              <select id="mediaFolderSelect">
+                <option value="">Select Folder</option>
+              </select>
+              <input type="file" id="mediaFileInput" accept="image/*" />
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-btn full-btn" id="uploadMediaBtn" type="button">Upload Image</button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-head">
+              <h3>Uploaded Files</h3>
+            </div>
+            <div id="mediaLibraryList" class="card-list"></div>
           </div>
         </div>
       </section>
