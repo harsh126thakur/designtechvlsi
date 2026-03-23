@@ -22,18 +22,19 @@
       </div>
 
       <nav class="sidebar-nav">
-        <button class="nav-item active" data-section="overview">Overview</button>
-        <button class="nav-item" data-section="courses">Courses</button>
-        <button class="nav-item" data-section="quizzes">Quizzes</button>
-        <button class="nav-item" data-section="questions">Questions</button>
-        <button class="nav-item" data-section="testseries">Test Series</button>
-        <button class="nav-item" data-section="media">Media Library</button>
-        <button class="nav-item" data-section="coupons">Coupons</button>
-        <button class="nav-item" data-section="podcasts">Podcasts</button>
-        <button class="nav-item" data-section="enquiries">Enquiries</button>
-        <button class="nav-item" data-section="bookings">Bookings</button>
-        <button class="nav-item" data-section="payments">Payments</button>
-        <button class="nav-item" data-section="users">Users</button>
+        <button class="nav-item active" data-section="overview" data-permission="overview">Overview</button>
+        <button class="nav-item" data-section="admins" data-permission="admins">Admins</button>
+        <button class="nav-item" data-section="courses" data-permission="courses">Courses</button>
+        <button class="nav-item" data-section="quizzes" data-permission="quizzes">Quizzes</button>
+        <button class="nav-item" data-section="questions" data-permission="questions">Questions</button>
+        <button class="nav-item" data-section="testseries" data-permission="testSeriesResults">Test Series</button>
+        <button class="nav-item" data-section="media" data-permission="mediaLibrary">Media Library</button>
+        <button class="nav-item" data-section="coupons" data-permission="coupons">Coupons</button>
+        <button class="nav-item" data-section="podcasts" data-permission="podcast">Podcasts</button>
+        <button class="nav-item" data-section="enquiries" data-permission="enquiries">Enquiries</button>
+        <button class="nav-item" data-section="bookings" data-permission="bookings">Bookings</button>
+        <button class="nav-item" data-section="payments" data-permission="payments">Payments</button>
+        <button class="nav-item" data-section="users" data-permission="users">Users</button>
       </nav>
     </aside>
 
@@ -93,6 +94,60 @@
               <h3>Recent Payments</h3>
             </div>
             <div id="recentPayments" class="simple-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-panel" id="section-admins">
+        <div class="panel-grid two-col">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h3>Create / Update Admin</h3>
+            </div>
+
+            <div class="form-grid">
+              <input type="text" id="adminName" placeholder="Admin Name" />
+              <input type="email" id="adminEmail" placeholder="Admin Email" />
+              <select id="adminRole">
+                <option value="admin">Admin</option>
+                <option value="superadmin">Super Admin</option>
+              </select>
+            </div>
+
+            <label class="switch-row">
+              <input type="checkbox" id="adminIsActive" checked />
+              <span>Active Admin</span>
+            </label>
+
+            <h4 class="sub-title">Permissions</h4>
+            <div class="form-grid">
+              <label class="switch-row"><input type="checkbox" id="permAdmins" /> <span>Admins</span></label>
+              <label class="switch-row"><input type="checkbox" id="permCourses" /> <span>Courses</span></label>
+              <label class="switch-row"><input type="checkbox" id="permQuizzes" /> <span>Quizzes</span></label>
+              <label class="switch-row"><input type="checkbox" id="permQuestions" /> <span>Questions</span></label>
+              <label class="switch-row"><input type="checkbox" id="permTestSeriesResults" /> <span>Test Series</span></label>
+              <label class="switch-row"><input type="checkbox" id="permMediaLibrary" /> <span>Media Library</span></label>
+              <label class="switch-row"><input type="checkbox" id="permMediaFolders" /> <span>Media Folders</span></label>
+              <label class="switch-row"><input type="checkbox" id="permCoupons" /> <span>Coupons</span></label>
+              <label class="switch-row"><input type="checkbox" id="permPodcast" /> <span>Podcasts</span></label>
+              <label class="switch-row"><input type="checkbox" id="permEnquiries" /> <span>Enquiries</span></label>
+              <label class="switch-row"><input type="checkbox" id="permBookings" /> <span>Bookings</span></label>
+              <label class="switch-row"><input type="checkbox" id="permPayments" /> <span>Payments</span></label>
+              <label class="switch-row"><input type="checkbox" id="permUsers" /> <span>Users</span></label>
+              <label class="switch-row"><input type="checkbox" id="permResults" /> <span>Results</span></label>
+            </div>
+
+            <div class="form-actions">
+              <button class="primary-btn full-btn" id="saveAdminBtn" type="button">Save Admin</button>
+              <button class="secondary-btn full-btn" id="cancelAdminEditBtn" type="button">Cancel Edit</button>
+            </div>
+          </div>
+
+          <div class="panel-card">
+            <div class="panel-head">
+              <h3>All Admins</h3>
+            </div>
+            <div id="adminList" class="card-list"></div>
           </div>
         </div>
       </section>
@@ -217,18 +272,10 @@
             <input type="text" id="questionImageUrl" placeholder="Question Image URL" />
 
             <div id="questionOptionsBox">
-              <div class="option-row">
-                <input type="text" id="option1" placeholder="Option 1" />
-              </div>
-              <div class="option-row">
-                <input type="text" id="option2" placeholder="Option 2" />
-              </div>
-              <div class="option-row">
-                <input type="text" id="option3" placeholder="Option 3" />
-              </div>
-              <div class="option-row">
-                <input type="text" id="option4" placeholder="Option 4" />
-              </div>
+              <div class="option-row"><input type="text" id="option1" placeholder="Option 1" /></div>
+              <div class="option-row"><input type="text" id="option2" placeholder="Option 2" /></div>
+              <div class="option-row"><input type="text" id="option3" placeholder="Option 3" /></div>
+              <div class="option-row"><input type="text" id="option4" placeholder="Option 4" /></div>
             </div>
 
             <input type="text" id="questionCorrectAnswer" placeholder="Correct Answer (MCQ=a, Multi=a,c, Numerical=value)" />

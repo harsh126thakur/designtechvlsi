@@ -22,18 +22,18 @@
       </div>
 
       <nav class="sidebar-nav">
-        <button class="nav-item active" data-section="overview">Overview</button>
-        <button class="nav-item" data-section="courses">Courses</button>
-        <button class="nav-item" data-section="quizzes">Quizzes</button>
-        <button class="nav-item" data-section="questions">Questions</button>
-        <button class="nav-item" data-section="media">Media Library</button>
-        <button class="nav-item" data-section="testseries">Test Series</button>
-        <button class="nav-item" data-section="coupons">Coupons</button>
-        <button class="nav-item" data-section="podcasts">Podcasts</button>
-        <button class="nav-item" data-section="enquiries">Enquiries</button>
-        <button class="nav-item" data-section="bookings">Bookings</button>
-        <button class="nav-item" data-section="payments">Payments</button>
-        <button class="nav-item" data-section="users">Users</button>
+        <button class="nav-item active" data-section="overview" data-permission="overview">Overview</button>
+        <button class="nav-item" data-section="courses" data-permission="courses">Courses</button>
+        <button class="nav-item" data-section="quizzes" data-permission="quizzes">Quizzes</button>
+        <button class="nav-item" data-section="questions" data-permission="questions">Questions</button>
+        <button class="nav-item" data-section="media" data-permission="mediaLibrary">Media Library</button>
+        <button class="nav-item" data-section="testseries" data-permission="testSeriesResults">Test Series</button>
+        <button class="nav-item" data-section="coupons" data-permission="coupons">Coupons</button>
+        <button class="nav-item" data-section="podcasts" data-permission="podcast">Podcasts</button>
+        <button class="nav-item" data-section="enquiries" data-permission="enquiries">Enquiries</button>
+        <button class="nav-item" data-section="bookings" data-permission="bookings">Bookings</button>
+        <button class="nav-item" data-section="payments" data-permission="payments">Payments</button>
+        <button class="nav-item" data-section="users" data-permission="users">Users</button>
       </nav>
     </aside>
 
@@ -52,8 +52,7 @@
         </div>
       </header>
 
-      <!-- OVERVIEW -->
-      <section class="section-panel active" id="section-overview">
+      <section class="section-panel active" id="section-overview" data-permission="overview">
         <div class="stats-grid">
           <div class="stat-card">
             <p>Total Students</p>
@@ -98,8 +97,7 @@
         </div>
       </section>
 
-      <!-- COURSES -->
-      <section class="section-panel" id="section-courses">
+      <section class="section-panel" id="section-courses" data-permission="courses">
         <div class="panel-grid two-col">
           <div class="panel-card">
             <div class="panel-head">
@@ -143,8 +141,7 @@
         </div>
       </section>
 
-      <!-- QUIZZES -->
-      <section class="section-panel" id="section-quizzes">
+      <section class="section-panel" id="section-quizzes" data-permission="quizzes">
         <div class="panel-grid two-col">
           <div class="panel-card">
             <div class="panel-head">
@@ -178,8 +175,7 @@
         </div>
       </section>
 
-      <!-- QUESTIONS -->
-      <section class="section-panel" id="section-questions">
+      <section class="section-panel" id="section-questions" data-permission="questions">
         <div class="panel-grid two-col">
           <div class="panel-card">
             <div class="panel-head">
@@ -217,9 +213,7 @@
             </div>
 
             <textarea id="questionText" placeholder="Enter Question Text"></textarea>
-
             <input type="text" id="questionFormula" placeholder="Question Formula (optional)" />
-
             <input type="text" id="questionImageUrl" placeholder="Question Image URL (optional)" />
 
             <div id="questionOptionsBox">
@@ -230,13 +224,9 @@
             </div>
 
             <input type="text" id="questionCorrectAnswer" placeholder="Correct Answer (for multicorrect use comma separated)" />
-
             <textarea id="answerText" placeholder="Answer Text / Solution (optional)"></textarea>
-
             <input type="text" id="answerFormula" placeholder="Answer Formula (optional)" />
-
             <input type="text" id="answerImageUrl" placeholder="Answer Image URL (optional)" />
-
             <textarea id="questionExplanation" placeholder="Explanation (optional)"></textarea>
 
             <label class="switch-row">
@@ -259,8 +249,7 @@
         </div>
       </section>
 
-      <!-- MEDIA LIBRARY -->
-      <section class="section-panel" id="section-media">
+      <section class="section-panel" id="section-media" data-permission="mediaLibrary">
         <div class="panel-grid two-col">
           <div class="panel-card">
             <div class="panel-head">
@@ -293,8 +282,7 @@
         </div>
       </section>
 
-      <!-- TEST SERIES -->
-      <section class="section-panel" id="section-testseries">
+      <section class="section-panel" id="section-testseries" data-permission="testSeriesResults">
         <div class="panel-grid two-col">
           <div class="panel-card">
             <div class="panel-head">
@@ -331,8 +319,7 @@
         </div>
       </section>
 
-      <!-- COUPONS -->
-      <section class="section-panel" id="section-coupons">
+      <section class="section-panel" id="section-coupons" data-permission="coupons">
         <div class="panel-grid two-col">
           <div class="panel-card">
             <div class="panel-head">
@@ -367,8 +354,7 @@
         </div>
       </section>
 
-      <!-- PODCASTS -->
-      <section class="section-panel" id="section-podcasts">
+      <section class="section-panel" id="section-podcasts" data-permission="podcast">
         <div class="panel-grid two-col">
           <div class="panel-card">
             <div class="panel-head">
@@ -400,8 +386,7 @@
         </div>
       </section>
 
-      <!-- ENQUIRIES -->
-      <section class="section-panel" id="section-enquiries">
+      <section class="section-panel" id="section-enquiries" data-permission="enquiries">
         <div class="panel-card">
           <div class="panel-head">
             <h3>All Enquiries</h3>
@@ -423,8 +408,7 @@
         </div>
       </section>
 
-      <!-- BOOKINGS -->
-      <section class="section-panel" id="section-bookings">
+      <section class="section-panel" id="section-bookings" data-permission="bookings">
         <div class="panel-card">
           <div class="panel-head">
             <h3>Mentorship Bookings</h3>
@@ -433,8 +417,7 @@
         </div>
       </section>
 
-      <!-- PAYMENTS -->
-      <section class="section-panel" id="section-payments">
+      <section class="section-panel" id="section-payments" data-permission="payments">
         <div class="panel-card">
           <div class="panel-head">
             <h3>Payments</h3>
@@ -443,8 +426,7 @@
         </div>
       </section>
 
-      <!-- USERS -->
-      <section class="section-panel" id="section-users">
+      <section class="section-panel" id="section-users" data-permission="users">
         <div class="panel-card">
           <div class="panel-head">
             <h3>Users</h3>

@@ -25,6 +25,23 @@ let currentUser = null;
 let currentAdminData = null;
 const RENDER_API_BASE = "https://razorpay-server-ok0j.onrender.com";
 
+const DEFAULT_PERMISSIONS = {
+  admins: false,
+  courses: false,
+  quizzes: false,
+  questions: false,
+  testSeriesResults: false,
+  mediaLibrary: false,
+  mediaFolders: false,
+  coupons: false,
+  podcast: false,
+  enquiries: false,
+  bookings: false,
+  payments: false,
+  users: false,
+  results: false
+};
+
 /* ================= ELEMENTS ================= */
 const navItems = document.querySelectorAll(".nav-item");
 const sections = document.querySelectorAll(".section-panel");
@@ -39,7 +56,15 @@ const notesContainer = document.getElementById("notesContainer");
 /* ================= SIDEBAR ================= */
 navItems.forEach((btn) => {
   btn.addEventListener("click", () => {
+    if (btn.disabled) return;
+
     const section = btn.dataset.section;
+    const permissionKey = btn.dataset.permission || "";
+
+    if (!canAccessSection(permissionKey)) {
+      alert("Access denied");
+      return;
+    }
 
     navItems.forEach((item) => item.classList.remove("active"));
     btn.classList.add("active");
@@ -48,13 +73,9 @@ navItems.forEach((btn) => {
     const target = document.getElementById(`section-${section}`);
     if (target) target.classList.add("active");
 
-    if (pageTitle) {
-      pageTitle.innerText = btn.innerText.trim();
-    }
+    if (pageTitle) pageTitle.innerText = btn.innerText.trim();
 
-    if (window.innerWidth <= 960 && sidebar) {
-      sidebar.classList.remove("open");
-    }
+    if (window.innerWidth <= 960 && sidebar) sidebar.classList.remove("open");
   });
 });
 
@@ -107,8 +128,7 @@ function createBadge(text, type = "blue") {
 function showAdminName(userData) {
   const el = document.getElementById("adminWelcome");
   if (!el) return;
-
-  const name = userData?.name || "Admin";
+  const name = userData?.name || userData?.email || "Admin";
   const role = userData?.role || "admin";
   el.innerText = `${name} • ${role}`;
 }
@@ -135,7 +155,7 @@ function setValue(id, value) {
 
 function setChecked(id, value) {
   const el = document.getElementById(id);
-  if (el) el.checked = value;
+  if (el) el.checked = !!value;
 }
 
 function slugifyFolderName(name = "") {
@@ -167,6 +187,71 @@ function fileToBase64(file) {
   });
 }
 
+function getMergedPermissions(userData = {}) {
+  return {
+    ...DEFAULT_PERMISSIONS,
+    ...(userData.permissions || {}),
+    ...(userData.permissions?.payemnts !== undefined
+      ? { payments: !!userData.permissions.payemnts }
+      : {})
+  };
+}
+
+function hasPermission(key) {
+  if (!currentAdminData || currentAdminData.isActive === false) return false;
+  if ((currentAdminData.role || "").toLowerCase() === "superadmin") return true;
+  if (!key || key === "overview") return true;
+  const permissions = getMergedPermissions(currentAdminData);
+  return !!permissions[key];
+}
+
+function canAccessSection(key) {
+  return hasPermission(key);
+}
+
+function requirePermission(key) {
+  if (!hasPermission(key)) {
+    alert("Access denied");
+    throw new Error(`Access denied for permission: ${key}`);
+  }
+}
+
+function applyPermissionUI() {
+  const currentRole = (currentAdminData?.role || "").toLowerCase();
+
+  navItems.forEach((btn) => {
+    const key = btn.dataset.permission || "";
+    if (currentRole === "superadmin" || key === "overview" || hasPermission(key)) {
+      btn.style.display = "";
+      btn.disabled = false;
+    } else {
+      btn.style.display = "none";
+      btn.disabled = true;
+    }
+  });
+
+  sections.forEach((section) => {
+    const key = section.dataset.permission || "";
+    const isAllowed = currentRole === "superadmin" || key === "overview" || hasPermission(key);
+    section.style.display = isAllowed ? "" : "none";
+    section.classList.remove("active");
+  });
+
+  let firstVisibleNav = null;
+  navItems.forEach((btn) => {
+    if (!firstVisibleNav && btn.style.display !== "none") firstVisibleNav = btn;
+    btn.classList.remove("active");
+  });
+
+  if (firstVisibleNav) {
+    firstVisibleNav.classList.add("active");
+    const sectionName = firstVisibleNav.dataset.section;
+    const target = document.getElementById(`section-${sectionName}`);
+    if (target) target.classList.add("active");
+    if (pageTitle) pageTitle.innerText = firstVisibleNav.innerText.trim();
+  }
+}
+
 /* ================= AUTH / ROLE CHECK ================= */
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -179,6 +264,7 @@ onAuthStateChanged(auth, async (user) => {
   try {
     const email = (user.email || "").trim().toLowerCase();
     let userData = null;
+    let userDocId = "";
     let role = "";
     let isActive = true;
 
@@ -187,7 +273,9 @@ onAuthStateChanged(auth, async (user) => {
       const adminEmailSnap = await getDocs(adminEmailQuery);
 
       if (!adminEmailSnap.empty) {
-        userData = adminEmailSnap.docs[0].data();
+        const foundDoc = adminEmailSnap.docs[0];
+        userData = foundDoc.data();
+        userDocId = foundDoc.id;
         role = String(userData.role || "").toLowerCase();
         isActive = userData.isActive !== false;
       }
@@ -199,17 +287,7 @@ onAuthStateChanged(auth, async (user) => {
 
       if (adminSnap.exists()) {
         userData = adminSnap.data();
-        role = String(userData.role || "").toLowerCase();
-        isActive = userData.isActive !== false;
-      }
-    }
-
-    if (!userData) {
-      const userRef = doc(db, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-
-      if (userSnap.exists()) {
-        userData = userSnap.data();
+        userDocId = adminSnap.id;
         role = String(userData.role || "").toLowerCase();
         isActive = userData.isActive !== false;
       }
@@ -229,27 +307,66 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
 
-    currentAdminData = userData;
-    showAdminName(userData);
+    currentAdminData = {
+      ...userData,
+      id: userDocId,
+      permissions: getMergedPermissions(userData)
+    };
 
-    await Promise.all([
-      loadOverview(),
-      loadCourses(),
-      loadCourseDropdowns(),
-      loadQuizzes(),
-      loadQuizDropdowns(),
-      loadQuestions(),
-      loadTestSeries(),
-      loadTestSeriesDropdowns(),
-      loadCoupons(),
-      loadPodcasts(),
-      loadEnquiries(),
-      loadBookings(),
-      loadPayments(),
-      loadUsers(),
-      loadMediaFolders(),
-      loadMediaLibrary()
-    ]);
+    showAdminName(currentAdminData);
+    applyPermissionUI();
+
+    const loadingTasks = [loadOverview()];
+
+    if (hasPermission("courses")) {
+      loadingTasks.push(loadCourses(), loadCourseDropdowns());
+    }
+
+    if (hasPermission("quizzes")) {
+      loadingTasks.push(loadQuizzes(), loadQuizDropdowns());
+    }
+
+    if (hasPermission("questions")) {
+      loadingTasks.push(loadQuestions());
+    }
+
+    if (hasPermission("testSeriesResults")) {
+      loadingTasks.push(loadTestSeries(), loadTestSeriesDropdowns());
+    }
+
+    if (hasPermission("coupons")) {
+      loadingTasks.push(loadCoupons());
+    }
+
+    if (hasPermission("podcast")) {
+      loadingTasks.push(loadPodcasts());
+    }
+
+    if (hasPermission("enquiries")) {
+      loadingTasks.push(loadEnquiries());
+    }
+
+    if (hasPermission("bookings")) {
+      loadingTasks.push(loadBookings());
+    }
+
+    if (hasPermission("payments")) {
+      loadingTasks.push(loadPayments());
+    }
+
+    if (hasPermission("users")) {
+      loadingTasks.push(loadUsers());
+    }
+
+    if (hasPermission("mediaLibrary") || hasPermission("mediaFolders")) {
+      loadingTasks.push(loadMediaFolders(), loadMediaLibrary());
+    }
+
+    if (hasPermission("admins")) {
+      loadingTasks.push(loadAdmins());
+    }
+
+    await Promise.all(loadingTasks);
   } catch (error) {
     console.error("Admin auth error:", error);
     alert("Error loading admin panel");
@@ -258,26 +375,261 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
+/* ================= ADMIN MANAGEMENT ================= */
+document.getElementById("saveAdminBtn")?.addEventListener("click", saveAdmin);
+document.getElementById("cancelAdminEditBtn")?.addEventListener("click", resetAdminForm);
+document.getElementById("adminRole")?.addEventListener("change", toggleAdminPermissionInputs);
+
+function getAdminPermissionsFromForm(roleValue) {
+  if (roleValue === "superadmin") {
+    return { ...DEFAULT_PERMISSIONS, ...Object.fromEntries(Object.keys(DEFAULT_PERMISSIONS).map((key) => [key, true])) };
+  }
+
+  return {
+    admins: document.getElementById("permAdmins")?.checked || false,
+    courses: document.getElementById("permCourses")?.checked || false,
+    quizzes: document.getElementById("permQuizzes")?.checked || false,
+    questions: document.getElementById("permQuestions")?.checked || false,
+    testSeriesResults: document.getElementById("permTestSeriesResults")?.checked || false,
+    mediaLibrary: document.getElementById("permMediaLibrary")?.checked || false,
+    mediaFolders: document.getElementById("permMediaFolders")?.checked || false,
+    coupons: document.getElementById("permCoupons")?.checked || false,
+    podcast: document.getElementById("permPodcast")?.checked || false,
+    enquiries: document.getElementById("permEnquiries")?.checked || false,
+    bookings: document.getElementById("permBookings")?.checked || false,
+    payments: document.getElementById("permPayments")?.checked || false,
+    users: document.getElementById("permUsers")?.checked || false,
+    results: document.getElementById("permResults")?.checked || false
+  };
+}
+
+function fillAdminFormForEdit(adminId, data) {
+  setValue("adminName", data.name || "");
+  setValue("adminEmail", data.email || "");
+  setValue("adminRole", data.role || "admin");
+  setChecked("adminIsActive", data.isActive !== false);
+
+  const permissions = getMergedPermissions(data);
+  setChecked("permAdmins", permissions.admins);
+  setChecked("permCourses", permissions.courses);
+  setChecked("permQuizzes", permissions.quizzes);
+  setChecked("permQuestions", permissions.questions);
+  setChecked("permTestSeriesResults", permissions.testSeriesResults);
+  setChecked("permMediaLibrary", permissions.mediaLibrary);
+  setChecked("permMediaFolders", permissions.mediaFolders);
+  setChecked("permCoupons", permissions.coupons);
+  setChecked("permPodcast", permissions.podcast);
+  setChecked("permEnquiries", permissions.enquiries);
+  setChecked("permBookings", permissions.bookings);
+  setChecked("permPayments", permissions.payments);
+  setChecked("permUsers", permissions.users);
+  setChecked("permResults", permissions.results);
+
+  const saveBtn = document.getElementById("saveAdminBtn");
+  if (saveBtn) {
+    saveBtn.dataset.editId = adminId;
+    saveBtn.innerText = "Update Admin";
+  }
+
+  toggleAdminPermissionInputs();
+
+  const section = document.getElementById("section-admins");
+  if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function resetAdminForm() {
+  setValue("adminName", "");
+  setValue("adminEmail", "");
+  setValue("adminRole", "admin");
+  setChecked("adminIsActive", true);
+
+  setChecked("permAdmins", false);
+  setChecked("permCourses", false);
+  setChecked("permQuizzes", false);
+  setChecked("permQuestions", false);
+  setChecked("permTestSeriesResults", false);
+  setChecked("permMediaLibrary", false);
+  setChecked("permMediaFolders", false);
+  setChecked("permCoupons", false);
+  setChecked("permPodcast", false);
+  setChecked("permEnquiries", false);
+  setChecked("permBookings", false);
+  setChecked("permPayments", false);
+  setChecked("permUsers", false);
+  setChecked("permResults", false);
+
+  const saveBtn = document.getElementById("saveAdminBtn");
+  if (saveBtn) {
+    delete saveBtn.dataset.editId;
+    saveBtn.innerText = "Save Admin";
+  }
+
+  toggleAdminPermissionInputs();
+}
+
+function toggleAdminPermissionInputs() {
+  const role = document.getElementById("adminRole")?.value || "admin";
+  const permissionIds = [
+    "permAdmins",
+    "permCourses",
+    "permQuizzes",
+    "permQuestions",
+    "permTestSeriesResults",
+    "permMediaLibrary",
+    "permMediaFolders",
+    "permCoupons",
+    "permPodcast",
+    "permEnquiries",
+    "permBookings",
+    "permPayments",
+    "permUsers",
+    "permResults"
+  ];
+
+  permissionIds.forEach((id) => {
+    const input = document.getElementById(id);
+    if (!input) return;
+    input.disabled = role === "superadmin";
+    if (role === "superadmin") input.checked = true;
+  });
+}
+
+async function saveAdmin() {
+  try {
+    requirePermission("admins");
+
+    const name = document.getElementById("adminName")?.value.trim();
+    const email = document.getElementById("adminEmail")?.value.trim().toLowerCase();
+    const role = document.getElementById("adminRole")?.value || "admin";
+    const isActive = document.getElementById("adminIsActive")?.checked ?? true;
+    const saveBtn = document.getElementById("saveAdminBtn");
+    const editId = saveBtn?.dataset.editId || "";
+
+    if (!name || !email) {
+      alert("Please fill admin name and email");
+      return;
+    }
+
+    const permissions = getAdminPermissionsFromForm(role);
+
+    const payload = {
+      name,
+      email,
+      role,
+      isActive,
+      permissions,
+      updatedAt: serverTimestamp(),
+      createdBy: currentAdminData?.email || currentUser?.email || "superadmin"
+    };
+
+    if (editId) {
+      await updateDoc(doc(db, "admins", editId), payload);
+      alert("Admin updated successfully");
+    } else {
+      const docId = email.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+      await setDoc(
+        doc(db, "admins", docId),
+        {
+          ...payload,
+          createdAt: serverTimestamp()
+        },
+        { merge: true }
+      );
+      alert("Admin saved successfully");
+    }
+
+    resetAdminForm();
+    await loadAdmins();
+  } catch (error) {
+    console.error("Save admin error:", error);
+    if (!String(error.message || "").includes("Access denied")) {
+      alert("Error saving admin");
+    }
+  }
+}
+
+async function loadAdmins() {
+  const list = document.getElementById("adminList");
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  try {
+    requirePermission("admins");
+
+    const snap = await getDocs(query(collection(db, "admins"), orderBy("createdAt", "desc")));
+
+    if (snap.empty) {
+      list.innerHTML = `<div class="data-card"><p>No admins found</p></div>`;
+      return;
+    }
+
+    snap.forEach((item) => {
+      const d = item.data();
+      const permissions = getMergedPermissions(d);
+      const enabledPermissions = Object.keys(permissions).filter((key) => permissions[key]);
+
+      const card = document.createElement("div");
+      card.className = "data-card";
+      card.innerHTML = `
+        <h4>${safeText(d.name || d.email || "Admin")}</h4>
+        <p>${safeText(d.email || "-")}</p>
+        <p>Role: ${safeText(d.role || "admin")}</p>
+        <p>${d.isActive !== false ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
+        <p>Permissions: ${safeText(enabledPermissions.join(", ") || "None")}</p>
+        <div class="data-actions">
+          <button class="small-btn edit-admin-btn">Edit</button>
+          <button class="small-btn toggle-admin-btn">${d.isActive !== false ? "Deactivate" : "Activate"}</button>
+          <button class="small-btn delete-admin-btn">Delete</button>
+        </div>
+      `;
+
+      card.querySelector(".edit-admin-btn")?.addEventListener("click", () => {
+        fillAdminFormForEdit(item.id, d);
+      });
+
+      card.querySelector(".toggle-admin-btn")?.addEventListener("click", async () => {
+        await updateDoc(doc(db, "admins", item.id), {
+          isActive: d.isActive === false ? true : false,
+          updatedAt: serverTimestamp()
+        });
+        await loadAdmins();
+      });
+
+      card.querySelector(".delete-admin-btn")?.addEventListener("click", async () => {
+        if (!confirm(`Delete admin "${d.email || item.id}"?`)) return;
+        await deleteDoc(doc(db, "admins", item.id));
+        await loadAdmins();
+      });
+
+      list.appendChild(card);
+    });
+  } catch (error) {
+    console.error("Load admins error:", error);
+    if (list) list.innerHTML = `<div class="data-card"><p>Error loading admins</p></div>`;
+  }
+}
+
 /* ================= OVERVIEW ================= */
 async function loadOverview() {
   try {
+    const tasks = [
+      getDocs(collection(db, "users")),
+      getDocs(collection(db, "courses")),
+      getDocs(collection(db, "quizzes")),
+      getDocs(collection(db, "testseries")),
+      getDocs(collection(db, "payments")),
+      getDocs(collection(db, "bookings"))
+    ];
+
     const [
       usersSnap,
       coursesSnap,
       quizzesSnap,
       testSeriesSnap,
-      enquiriesSnap,
       paymentsSnap,
       bookingsSnap
-    ] = await Promise.all([
-      getDocs(collection(db, "users")),
-      getDocs(collection(db, "courses")),
-      getDocs(collection(db, "quizzes")),
-      getDocs(collection(db, "testseries")),
-      getDocs(collection(db, "enquiries")),
-      getDocs(collection(db, "payments")),
-      getDocs(collection(db, "bookings"))
-    ]);
+    ] = await Promise.all(tasks);
 
     const totalUsers = document.getElementById("totalUsers");
     const totalCourses = document.getElementById("totalCourses");
@@ -306,81 +658,100 @@ async function loadOverview() {
 
     if (totalRevenue) totalRevenue.innerText = formatCurrency(revenue);
 
-    const enquiryQuery = query(collection(db, "enquiries"), orderBy("createdAt", "desc"), limit(5));
-    const paymentQuery = query(collection(db, "payments"), orderBy("createdAt", "desc"), limit(5));
-    const bookingQuery = query(collection(db, "bookings"), orderBy("createdAt", "desc"), limit(5));
-
-    const [recentEnquirySnap, recentPaymentSnap, recentBookingSnap] = await Promise.all([
-      getDocs(enquiryQuery),
-      getDocs(paymentQuery),
-      getDocs(bookingQuery)
-    ]);
-
     const recentEnquiries = document.getElementById("recentEnquiries");
     const recentPayments = document.getElementById("recentPayments");
 
     if (recentEnquiries) {
-      recentEnquiries.innerHTML = "";
+      if (hasPermission("enquiries")) {
+        const enquiryQuery = query(collection(db, "enquiries"), orderBy("createdAt", "desc"), limit(5));
+        const recentEnquirySnap = await getDocs(enquiryQuery);
+        recentEnquiries.innerHTML = "";
 
-      if (recentEnquirySnap.empty) {
-        recentEnquiries.innerHTML = `<div class="data-card"><p>No recent enquiries</p></div>`;
+        if (recentEnquirySnap.empty) {
+          recentEnquiries.innerHTML = `<div class="data-card"><p>No recent enquiries</p></div>`;
+        } else {
+          recentEnquirySnap.forEach((item) => {
+            const d = item.data();
+            recentEnquiries.innerHTML += `
+              <div class="data-card">
+                <h4>${safeText(d.name)}</h4>
+                <p>${safeText(d.email)}</p>
+                <p>${safeText(d.message)}</p>
+              </div>
+            `;
+          });
+        }
       } else {
-        recentEnquirySnap.forEach((item) => {
-          const d = item.data();
-          recentEnquiries.innerHTML += `
-            <div class="data-card">
-              <h4>${safeText(d.name)}</h4>
-              <p>${safeText(d.email)}</p>
-              <p>${safeText(d.message)}</p>
-            </div>
-          `;
-        });
+        recentEnquiries.innerHTML = `<div class="data-card"><p>No access to enquiries</p></div>`;
       }
     }
 
     if (recentPayments) {
-      recentPayments.innerHTML = "";
+      if (hasPermission("payments") || hasPermission("bookings")) {
+        const paymentTasks = [];
 
-      const recentItems = [];
+        if (hasPermission("payments")) {
+          paymentTasks.push(getDocs(query(collection(db, "payments"), orderBy("createdAt", "desc"), limit(5))));
+        } else {
+          paymentTasks.push(Promise.resolve({ forEach: () => {} }));
+        }
 
-      recentPaymentSnap.forEach((item) => {
-        const d = item.data();
-        recentItems.push({
-          title: d.courseTitle || d.purchaseType || d.source || "Payment",
-          name: d.userName || d.name || d.userEmail || "",
-          amount: d.finalAmount || d.amount || 0,
-          createdAt: d.createdAt
+        if (hasPermission("bookings")) {
+          paymentTasks.push(getDocs(query(collection(db, "bookings"), orderBy("createdAt", "desc"), limit(5))));
+        } else {
+          paymentTasks.push(Promise.resolve({ forEach: () => {} }));
+        }
+
+        const [recentPaymentSnap, recentBookingSnap] = await Promise.all(paymentTasks);
+
+        recentPayments.innerHTML = "";
+        const recentItems = [];
+
+        if (hasPermission("payments")) {
+          recentPaymentSnap.forEach((item) => {
+            const d = item.data();
+            recentItems.push({
+              title: d.courseTitle || d.purchaseType || d.source || "Payment",
+              name: d.userName || d.name || d.userEmail || "",
+              amount: d.finalAmount || d.amount || 0,
+              createdAt: d.createdAt
+            });
+          });
+        }
+
+        if (hasPermission("bookings")) {
+          recentBookingSnap.forEach((item) => {
+            const d = item.data();
+            recentItems.push({
+              title: d.type || "Booking",
+              name: d.name || d.email || "",
+              amount: d.price || d.amount || 0,
+              createdAt: d.createdAt
+            });
+          });
+        }
+
+        recentItems.sort((a, b) => {
+          const aTime = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : new Date(a.createdAt || 0).getTime();
+          const bTime = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : new Date(b.createdAt || 0).getTime();
+          return bTime - aTime;
         });
-      });
 
-      recentBookingSnap.forEach((item) => {
-        const d = item.data();
-        recentItems.push({
-          title: d.type || "Booking",
-          name: d.name || d.email || "",
-          amount: d.price || d.amount || 0,
-          createdAt: d.createdAt
-        });
-      });
-
-      recentItems.sort((a, b) => {
-        const aTime = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : new Date(a.createdAt || 0).getTime();
-        const bTime = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : new Date(b.createdAt || 0).getTime();
-        return bTime - aTime;
-      });
-
-      if (!recentItems.length) {
-        recentPayments.innerHTML = `<div class="data-card"><p>No recent payments</p></div>`;
+        if (!recentItems.length) {
+          recentPayments.innerHTML = `<div class="data-card"><p>No recent payments</p></div>`;
+        } else {
+          recentItems.slice(0, 5).forEach((item) => {
+            recentPayments.innerHTML += `
+              <div class="data-card">
+                <h4>${safeText(item.title)}</h4>
+                <p>${safeText(item.name)}</p>
+                <p>${formatCurrency(item.amount)}</p>
+              </div>
+            `;
+          });
+        }
       } else {
-        recentItems.slice(0, 5).forEach((item) => {
-          recentPayments.innerHTML += `
-            <div class="data-card">
-              <h4>${safeText(item.title)}</h4>
-              <p>${safeText(item.name)}</p>
-              <p>${formatCurrency(item.amount)}</p>
-            </div>
-          `;
-        });
+        recentPayments.innerHTML = `<div class="data-card"><p>No access to payments</p></div>`;
       }
     }
   } catch (error) {
@@ -400,7 +771,7 @@ function addLectureField(title = "", link = "") {
     <button type="button" class="small-btn remove-row-btn">Remove</button>
   `;
 
-  row.querySelector(".remove-row-btn").addEventListener("click", () => row.remove());
+  row.querySelector(".remove-row-btn")?.addEventListener("click", () => row.remove());
   lectureContainer.appendChild(row);
 }
 
@@ -415,7 +786,7 @@ function addNoteField(title = "", link = "") {
     <button type="button" class="small-btn remove-row-btn">Remove</button>
   `;
 
-  row.querySelector(".remove-row-btn").addEventListener("click", () => row.remove());
+  row.querySelector(".remove-row-btn")?.addEventListener("click", () => row.remove());
   notesContainer.appendChild(row);
 }
 
@@ -483,51 +854,53 @@ document.getElementById("saveCourseBtn")?.addEventListener("click", saveCourse);
 document.getElementById("cancelCourseEditBtn")?.addEventListener("click", resetCourseForm);
 
 async function saveCourse() {
-  const title = document.getElementById("courseTitle")?.value.trim();
-  const category = document.getElementById("courseCategory")?.value.trim();
-  const level = document.getElementById("courseLevel")?.value.trim();
-  const type = document.getElementById("courseType")?.value || "paid";
-  const price = Number(document.getElementById("coursePrice")?.value || 0);
-  const validityMonths = Number(document.getElementById("courseValidity")?.value || 12);
-  const image = document.getElementById("courseImage")?.value.trim();
-  const description = document.getElementById("courseDescription")?.value.trim();
-  const saveBtn = document.getElementById("saveCourseBtn");
-  const editId = saveBtn?.dataset.editId || "";
-
-  if (!title || !description) {
-    alert("Please fill course title and description");
-    return;
-  }
-
-  const lectures = [...document.querySelectorAll(".lecture-row")]
-    .map((row) => ({
-      title: row.querySelector(".lecture-title")?.value.trim(),
-      link: row.querySelector(".lecture-link")?.value.trim()
-    }))
-    .filter((item) => item.title && item.link);
-
-  const notes = [...document.querySelectorAll(".note-row")]
-    .map((row) => ({
-      title: row.querySelector(".note-title")?.value.trim(),
-      link: row.querySelector(".note-link")?.value.trim()
-    }))
-    .filter((item) => item.title && item.link);
-
-  const payload = {
-    title,
-    category: category || "",
-    level: level || "",
-    type,
-    price,
-    validityMonths,
-    image: image || "",
-    description,
-    lectures,
-    notes,
-    updatedAt: serverTimestamp()
-  };
-
   try {
+    requirePermission("courses");
+
+    const title = document.getElementById("courseTitle")?.value.trim();
+    const category = document.getElementById("courseCategory")?.value.trim();
+    const level = document.getElementById("courseLevel")?.value.trim();
+    const type = document.getElementById("courseType")?.value || "paid";
+    const price = Number(document.getElementById("coursePrice")?.value || 0);
+    const validityMonths = Number(document.getElementById("courseValidity")?.value || 12);
+    const image = document.getElementById("courseImage")?.value.trim();
+    const description = document.getElementById("courseDescription")?.value.trim();
+    const saveBtn = document.getElementById("saveCourseBtn");
+    const editId = saveBtn?.dataset.editId || "";
+
+    if (!title || !description) {
+      alert("Please fill course title and description");
+      return;
+    }
+
+    const lectures = [...document.querySelectorAll(".lecture-row")]
+      .map((row) => ({
+        title: row.querySelector(".lecture-title")?.value.trim(),
+        link: row.querySelector(".lecture-link")?.value.trim()
+      }))
+      .filter((item) => item.title && item.link);
+
+    const notes = [...document.querySelectorAll(".note-row")]
+      .map((row) => ({
+        title: row.querySelector(".note-title")?.value.trim(),
+        link: row.querySelector(".note-link")?.value.trim()
+      }))
+      .filter((item) => item.title && item.link);
+
+    const payload = {
+      title,
+      category: category || "",
+      level: level || "",
+      type,
+      price,
+      validityMonths,
+      image: image || "",
+      description,
+      lectures,
+      notes,
+      updatedAt: serverTimestamp()
+    };
+
     if (editId) {
       await updateDoc(doc(db, "courses", editId), payload);
       alert("Course updated successfully");
@@ -547,7 +920,9 @@ async function saveCourse() {
     await loadOverview();
   } catch (error) {
     console.error("Save course error:", error);
-    alert(editId ? "Error updating course" : "Error creating course");
+    if (!String(error.message || "").includes("Access denied")) {
+      alert("Error saving course");
+    }
   }
 }
 
@@ -558,6 +933,8 @@ async function loadCourses() {
   list.innerHTML = "";
 
   try {
+    requirePermission("courses");
+
     const snap = await getDocs(query(collection(db, "courses"), orderBy("createdAt", "desc")));
 
     if (snap.empty) {
@@ -582,11 +959,11 @@ async function loadCourses() {
         </div>
       `;
 
-      card.querySelector(".edit-course-btn").addEventListener("click", () => {
+      card.querySelector(".edit-course-btn")?.addEventListener("click", () => {
         fillCourseFormForEdit(item.id, d);
       });
 
-      card.querySelector(".toggle-course-btn").addEventListener("click", async () => {
+      card.querySelector(".toggle-course-btn")?.addEventListener("click", async () => {
         await updateDoc(doc(db, "courses", item.id), {
           isActive: !d.isActive,
           updatedAt: serverTimestamp()
@@ -594,7 +971,7 @@ async function loadCourses() {
         await loadCourses();
       });
 
-      card.querySelector(".delete-course-btn").addEventListener("click", async () => {
+      card.querySelector(".delete-course-btn")?.addEventListener("click", async () => {
         if (!confirm(`Delete course "${d.title}"?`)) return;
         await deleteDoc(doc(db, "courses", item.id));
         resetCourseForm();
@@ -607,7 +984,7 @@ async function loadCourses() {
     });
   } catch (error) {
     console.error("Load courses error:", error);
-    list.innerHTML = `<div class="data-card"><p>Error loading courses</p></div>`;
+    if (list) list.innerHTML = `<div class="data-card"><p>Error loading courses</p></div>`;
   }
 }
 
@@ -639,19 +1016,21 @@ async function loadCourseDropdowns() {
 document.getElementById("saveQuizBtn")?.addEventListener("click", saveQuiz);
 
 async function saveQuiz() {
-  const title = document.getElementById("quizTitle")?.value.trim();
-  const courseId = document.getElementById("quizCourseId")?.value;
-  const chapterId = document.getElementById("quizChapterId")?.value.trim();
-  const description = document.getElementById("quizDescription")?.value.trim();
-  const totalQuestions = Number(document.getElementById("quizTotalQuestions")?.value || 0);
-  const isActive = document.getElementById("quizIsActive")?.checked ?? true;
-
-  if (!title || !courseId) {
-    alert("Please fill quiz title and select course");
-    return;
-  }
-
   try {
+    requirePermission("quizzes");
+
+    const title = document.getElementById("quizTitle")?.value.trim();
+    const courseId = document.getElementById("quizCourseId")?.value;
+    const chapterId = document.getElementById("quizChapterId")?.value.trim();
+    const description = document.getElementById("quizDescription")?.value.trim();
+    const totalQuestions = Number(document.getElementById("quizTotalQuestions")?.value || 0);
+    const isActive = document.getElementById("quizIsActive")?.checked ?? true;
+
+    if (!title || !courseId) {
+      alert("Please fill quiz title and select course");
+      return;
+    }
+
     await addDoc(collection(db, "quizzes"), {
       title,
       courseId,
@@ -677,7 +1056,9 @@ async function saveQuiz() {
     await loadOverview();
   } catch (error) {
     console.error("Save quiz error:", error);
-    alert("Error creating quiz");
+    if (!String(error.message || "").includes("Access denied")) {
+      alert("Error creating quiz");
+    }
   }
 }
 
@@ -688,6 +1069,8 @@ async function loadQuizzes() {
   list.innerHTML = "";
 
   try {
+    requirePermission("quizzes");
+
     const snap = await getDocs(query(collection(db, "quizzes"), orderBy("createdAt", "desc")));
 
     if (snap.empty) {
@@ -712,7 +1095,7 @@ async function loadQuizzes() {
         </div>
       `;
 
-      card.querySelector(".toggle-quiz-btn").addEventListener("click", async () => {
+      card.querySelector(".toggle-quiz-btn")?.addEventListener("click", async () => {
         await updateDoc(doc(db, "quizzes", item.id), {
           isActive: !d.isActive,
           updatedAt: serverTimestamp()
@@ -720,7 +1103,7 @@ async function loadQuizzes() {
         await loadQuizzes();
       });
 
-      card.querySelector(".delete-quiz-btn").addEventListener("click", async () => {
+      card.querySelector(".delete-quiz-btn")?.addEventListener("click", async () => {
         if (!confirm(`Delete quiz "${d.title}"?`)) return;
         await deleteDoc(doc(db, "quizzes", item.id));
         await loadQuizzes();
@@ -757,22 +1140,24 @@ async function loadQuizDropdowns() {
 document.getElementById("saveTestSeriesBtn")?.addEventListener("click", saveTestSeries);
 
 async function saveTestSeries() {
-  const title = document.getElementById("testSeriesTitle")?.value.trim();
-  const courseId = document.getElementById("testSeriesCourseId")?.value;
-  const category = document.getElementById("testSeriesCategory")?.value.trim();
-  const description = document.getElementById("testSeriesDescription")?.value.trim();
-  const durationMinutes = Number(document.getElementById("testSeriesDuration")?.value || 0);
-  const totalQuestions = Number(document.getElementById("testSeriesTotalQuestions")?.value || 0);
-  const totalMarks = Number(document.getElementById("testSeriesTotalMarks")?.value || 0);
-  const negativeMarks = Number(document.getElementById("testSeriesNegativeMarks")?.value || 0);
-  const isActive = document.getElementById("testSeriesIsActive")?.checked ?? true;
-
-  if (!title) {
-    alert("Please enter test series title");
-    return;
-  }
-
   try {
+    requirePermission("testSeriesResults");
+
+    const title = document.getElementById("testSeriesTitle")?.value.trim();
+    const courseId = document.getElementById("testSeriesCourseId")?.value;
+    const category = document.getElementById("testSeriesCategory")?.value.trim();
+    const description = document.getElementById("testSeriesDescription")?.value.trim();
+    const durationMinutes = Number(document.getElementById("testSeriesDuration")?.value || 0);
+    const totalQuestions = Number(document.getElementById("testSeriesTotalQuestions")?.value || 0);
+    const totalMarks = Number(document.getElementById("testSeriesTotalMarks")?.value || 0);
+    const negativeMarks = Number(document.getElementById("testSeriesNegativeMarks")?.value || 0);
+    const isActive = document.getElementById("testSeriesIsActive")?.checked ?? true;
+
+    if (!title) {
+      alert("Please enter test series title");
+      return;
+    }
+
     await addDoc(collection(db, "testseries"), {
       title,
       courseId: courseId || "",
@@ -804,7 +1189,9 @@ async function saveTestSeries() {
     await loadOverview();
   } catch (error) {
     console.error("Save test series error:", error);
-    alert("Error creating test series");
+    if (!String(error.message || "").includes("Access denied")) {
+      alert("Error creating test series");
+    }
   }
 }
 
@@ -815,6 +1202,8 @@ async function loadTestSeries() {
   list.innerHTML = "";
 
   try {
+    requirePermission("testSeriesResults");
+
     const snap = await getDocs(query(collection(db, "testseries"), orderBy("createdAt", "desc")));
 
     if (snap.empty) {
@@ -839,7 +1228,7 @@ async function loadTestSeries() {
         </div>
       `;
 
-      card.querySelector(".toggle-testseries-btn").addEventListener("click", async () => {
+      card.querySelector(".toggle-testseries-btn")?.addEventListener("click", async () => {
         await updateDoc(doc(db, "testseries", item.id), {
           isActive: !d.isActive,
           updatedAt: serverTimestamp()
@@ -847,7 +1236,7 @@ async function loadTestSeries() {
         await loadTestSeries();
       });
 
-      card.querySelector(".delete-testseries-btn").addEventListener("click", async () => {
+      card.querySelector(".delete-testseries-btn")?.addEventListener("click", async () => {
         if (!confirm(`Delete test series "${d.title}"?`)) return;
         await deleteDoc(doc(db, "testseries", item.id));
         await loadTestSeries();
@@ -1002,99 +1391,101 @@ function resetQuestionForm() {
 }
 
 async function saveQuestion() {
-  const examType = document.getElementById("questionExamType")?.value || "quiz";
-  const quizId = document.getElementById("questionQuizId")?.value || "";
-  const testSeriesId = document.getElementById("questionTestSeriesId")?.value || "";
-  const courseId = document.getElementById("questionCourseId")?.value || "";
-  const questionType = document.getElementById("questionType")?.value || "mcq";
-  const order = Number(document.getElementById("questionOrder")?.value || 0);
-  const marks = Number(document.getElementById("questionMarks")?.value || 1);
-  const negativeMarks = Number(document.getElementById("questionNegativeMarks")?.value || 0);
-  const question = document.getElementById("questionText")?.value.trim() || "";
-  const questionFormula = document.getElementById("questionFormula")?.value.trim() || "";
-  const questionImageUrl = document.getElementById("questionImageUrl")?.value.trim() || "";
-  const correctAnswer = document.getElementById("questionCorrectAnswer")?.value.trim() || "";
-  const answerText = document.getElementById("answerText")?.value.trim() || "";
-  const answerFormula = document.getElementById("answerFormula")?.value.trim() || "";
-  const answerImageUrl = document.getElementById("answerImageUrl")?.value.trim() || "";
-  const explanation = document.getElementById("questionExplanation")?.value.trim() || "";
-  const isActive = document.getElementById("questionIsActive")?.checked ?? true;
+  try {
+    requirePermission("questions");
 
-  const saveBtn = document.getElementById("saveQuestionBtn");
-  const editId = saveBtn?.dataset.editId || "";
+    const examType = document.getElementById("questionExamType")?.value || "quiz";
+    const quizId = document.getElementById("questionQuizId")?.value || "";
+    const testSeriesId = document.getElementById("questionTestSeriesId")?.value || "";
+    const courseId = document.getElementById("questionCourseId")?.value || "";
+    const questionType = document.getElementById("questionType")?.value || "mcq";
+    const order = Number(document.getElementById("questionOrder")?.value || 0);
+    const marks = Number(document.getElementById("questionMarks")?.value || 1);
+    const negativeMarks = Number(document.getElementById("questionNegativeMarks")?.value || 0);
+    const question = document.getElementById("questionText")?.value.trim() || "";
+    const questionFormula = document.getElementById("questionFormula")?.value.trim() || "";
+    const questionImageUrl = document.getElementById("questionImageUrl")?.value.trim() || "";
+    const correctAnswer = document.getElementById("questionCorrectAnswer")?.value.trim() || "";
+    const answerText = document.getElementById("answerText")?.value.trim() || "";
+    const answerFormula = document.getElementById("answerFormula")?.value.trim() || "";
+    const answerImageUrl = document.getElementById("answerImageUrl")?.value.trim() || "";
+    const explanation = document.getElementById("questionExplanation")?.value.trim() || "";
+    const isActive = document.getElementById("questionIsActive")?.checked ?? true;
 
-  const option1 = document.getElementById("option1")?.value.trim() || "";
-  const option2 = document.getElementById("option2")?.value.trim() || "";
-  const option3 = document.getElementById("option3")?.value.trim() || "";
-  const option4 = document.getElementById("option4")?.value.trim() || "";
+    const saveBtn = document.getElementById("saveQuestionBtn");
+    const editId = saveBtn?.dataset.editId || "";
 
-  const options = [option1, option2, option3, option4].filter(Boolean);
+    const option1 = document.getElementById("option1")?.value.trim() || "";
+    const option2 = document.getElementById("option2")?.value.trim() || "";
+    const option3 = document.getElementById("option3")?.value.trim() || "";
+    const option4 = document.getElementById("option4")?.value.trim() || "";
 
-  if (!question && !questionFormula && !questionImageUrl) {
-    alert("Please enter question text, formula, or image");
-    return;
-  }
+    const options = [option1, option2, option3, option4].filter(Boolean);
 
-  if (examType === "quiz" && !quizId) {
-    alert("Please select quiz");
-    return;
-  }
-
-  if (examType === "testseries" && !testSeriesId) {
-    alert("Please select test series");
-    return;
-  }
-
-  if (questionType === "mcq" || questionType === "multicorrect") {
-    if (options.length < 2) {
-      alert("Please enter at least 2 options");
+    if (!question && !questionFormula && !questionImageUrl) {
+      alert("Please enter question text, formula, or image");
       return;
     }
-  }
 
-  if (questionType === "numerical" && !correctAnswer) {
-    alert("Please enter correct numerical answer");
-    return;
-  }
+    if (examType === "quiz" && !quizId) {
+      alert("Please select quiz");
+      return;
+    }
 
-  if (questionType === "formula" && !answerText && !answerFormula && !correctAnswer) {
-    alert("Please enter answer text, answer formula, or correct answer");
-    return;
-  }
+    if (examType === "testseries" && !testSeriesId) {
+      alert("Please select test series");
+      return;
+    }
 
-  if ((questionType === "mcq" || questionType === "multicorrect") && !correctAnswer) {
-    alert("Please enter correct answer");
-    return;
-  }
+    if (questionType === "mcq" || questionType === "multicorrect") {
+      if (options.length < 2) {
+        alert("Please enter at least 2 options");
+        return;
+      }
+    }
 
-  const payload = {
-    examType,
-    quizId: examType === "quiz" ? quizId : "",
-    testSeriesId: examType === "testseries" ? testSeriesId : "",
-    courseId,
-    questionType,
-    question,
-    questionFormula,
-    questionImageUrl,
-    option1,
-    option2,
-    option3,
-    option4,
-    options: questionType === "mcq" || questionType === "multicorrect" ? options : [],
-    correctAnswer,
-    correctAnswerText: correctAnswer,
-    answerText,
-    answerFormula,
-    answerImageUrl,
-    explanation,
-    marks,
-    negativeMarks,
-    order,
-    isActive,
-    updatedAt: serverTimestamp()
-  };
+    if (questionType === "numerical" && !correctAnswer) {
+      alert("Please enter correct numerical answer");
+      return;
+    }
 
-  try {
+    if (questionType === "formula" && !answerText && !answerFormula && !correctAnswer) {
+      alert("Please enter answer text, answer formula, or correct answer");
+      return;
+    }
+
+    if ((questionType === "mcq" || questionType === "multicorrect") && !correctAnswer) {
+      alert("Please enter correct answer");
+      return;
+    }
+
+    const payload = {
+      examType,
+      quizId: examType === "quiz" ? quizId : "",
+      testSeriesId: examType === "testseries" ? testSeriesId : "",
+      courseId,
+      questionType,
+      question,
+      questionFormula,
+      questionImageUrl,
+      option1,
+      option2,
+      option3,
+      option4,
+      options: questionType === "mcq" || questionType === "multicorrect" ? options : [],
+      correctAnswer,
+      correctAnswerText: correctAnswer,
+      answerText,
+      answerFormula,
+      answerImageUrl,
+      explanation,
+      marks,
+      negativeMarks,
+      order,
+      isActive,
+      updatedAt: serverTimestamp()
+    };
+
     if (editId) {
       await updateDoc(doc(db, "questions", editId), payload);
       alert("Question updated successfully");
@@ -1110,7 +1501,9 @@ async function saveQuestion() {
     await loadQuestions();
   } catch (error) {
     console.error("Save question error:", error);
-    alert(editId ? "Error updating question" : "Error adding question");
+    if (!String(error.message || "").includes("Access denied")) {
+      alert("Error saving question");
+    }
   }
 }
 
@@ -1121,6 +1514,8 @@ async function loadQuestions() {
   list.innerHTML = "";
 
   try {
+    requirePermission("questions");
+
     const snap = await getDocs(query(collection(db, "questions"), orderBy("createdAt", "desc")));
 
     if (snap.empty) {
@@ -1152,11 +1547,11 @@ async function loadQuestions() {
         </div>
       `;
 
-      card.querySelector(".edit-question-btn").addEventListener("click", () => {
+      card.querySelector(".edit-question-btn")?.addEventListener("click", () => {
         fillQuestionFormForEdit(item.id, d);
       });
 
-      card.querySelector(".toggle-question-btn").addEventListener("click", async () => {
+      card.querySelector(".toggle-question-btn")?.addEventListener("click", async () => {
         await updateDoc(doc(db, "questions", item.id), {
           isActive: !d.isActive,
           updatedAt: serverTimestamp()
@@ -1164,7 +1559,7 @@ async function loadQuestions() {
         await loadQuestions();
       });
 
-      card.querySelector(".delete-question-btn").addEventListener("click", async () => {
+      card.querySelector(".delete-question-btn")?.addEventListener("click", async () => {
         if (!confirm("Delete this question?")) return;
         await deleteDoc(doc(db, "questions", item.id));
         resetQuestionForm();
@@ -1184,15 +1579,17 @@ document.getElementById("createMediaFolderBtn")?.addEventListener("click", creat
 document.getElementById("uploadMediaBtn")?.addEventListener("click", uploadMediaFile);
 
 async function createMediaFolder() {
-  const rawName = document.getElementById("mediaFolderName")?.value || "";
-  const folderName = slugifyFolderName(rawName);
-
-  if (!folderName) {
-    alert("Please enter folder name");
-    return;
-  }
-
   try {
+    requirePermission("mediaFolders");
+
+    const rawName = document.getElementById("mediaFolderName")?.value || "";
+    const folderName = slugifyFolderName(rawName);
+
+    if (!folderName) {
+      alert("Please enter folder name");
+      return;
+    }
+
     const response = await fetch(`${RENDER_API_BASE}/api/github/create-folder`, {
       method: "POST",
       headers: {
@@ -1225,7 +1622,9 @@ async function createMediaFolder() {
     await loadMediaFolders();
   } catch (error) {
     console.error("Create folder error:", error);
-    alert(error.message || "Error creating folder");
+    if (!String(error.message || "").includes("Access denied")) {
+      alert(error.message || "Error creating folder");
+    }
   }
 }
 
@@ -1247,21 +1646,23 @@ async function loadMediaFolders() {
 }
 
 async function uploadMediaFile() {
-  const folder = document.getElementById("mediaFolderSelect")?.value || "";
-  const fileInput = document.getElementById("mediaFileInput");
-  const file = fileInput?.files?.[0];
-
-  if (!folder) {
-    alert("Please select folder");
-    return;
-  }
-
-  if (!file) {
-    alert("Please choose an image");
-    return;
-  }
-
   try {
+    requirePermission("mediaLibrary");
+
+    const folder = document.getElementById("mediaFolderSelect")?.value || "";
+    const fileInput = document.getElementById("mediaFileInput");
+    const file = fileInput?.files?.[0];
+
+    if (!folder) {
+      alert("Please select folder");
+      return;
+    }
+
+    if (!file) {
+      alert("Please choose an image");
+      return;
+    }
+
     const safeFileName = `${Date.now()}-${getSafeFileName(file.name)}`;
     const fileBase64 = await fileToBase64(file);
 
@@ -1302,18 +1703,23 @@ async function uploadMediaFile() {
     await loadMediaLibrary();
   } catch (error) {
     console.error("Upload media error:", error);
-    alert(error.message || "Error uploading image");
+    if (!String(error.message || "").includes("Access denied")) {
+      alert(error.message || "Error uploading image");
+    }
   }
 }
 
 async function deleteMediaItem(id) {
   try {
+    requirePermission("mediaLibrary");
     await deleteDoc(doc(db, "mediaLibrary", id));
     alert("Media record deleted successfully");
     await loadMediaLibrary();
   } catch (error) {
     console.error("Delete media error:", error);
-    alert("Error deleting media record");
+    if (!String(error.message || "").includes("Access denied")) {
+      alert("Error deleting media record");
+    }
   }
 }
 
@@ -1324,6 +1730,8 @@ async function loadMediaLibrary() {
   list.innerHTML = "";
 
   try {
+    requirePermission("mediaLibrary");
+
     const snap = await getDocs(query(collection(db, "mediaLibrary"), orderBy("createdAt", "desc")));
 
     if (snap.empty) {
@@ -1354,7 +1762,7 @@ async function loadMediaLibrary() {
         </div>
       `;
 
-      card.querySelector(".copy-media-url-btn").addEventListener("click", async () => {
+      card.querySelector(".copy-media-url-btn")?.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(d.url || "");
           alert("URL copied");
@@ -1363,17 +1771,17 @@ async function loadMediaLibrary() {
         }
       });
 
-      card.querySelector(".use-question-image-btn").addEventListener("click", () => {
+      card.querySelector(".use-question-image-btn")?.addEventListener("click", () => {
         setValue("questionImageUrl", d.url || "");
         alert("Question image URL filled");
       });
 
-      card.querySelector(".use-answer-image-btn").addEventListener("click", () => {
+      card.querySelector(".use-answer-image-btn")?.addEventListener("click", () => {
         setValue("answerImageUrl", d.url || "");
         alert("Answer image URL filled");
       });
 
-      card.querySelector(".delete-media-btn").addEventListener("click", async () => {
+      card.querySelector(".delete-media-btn")?.addEventListener("click", async () => {
         if (!confirm(`Delete image "${d.fileName}"?`)) return;
         await deleteMediaItem(item.id);
       });
@@ -1390,19 +1798,21 @@ async function loadMediaLibrary() {
 document.getElementById("saveCouponBtn")?.addEventListener("click", saveCoupon);
 
 async function saveCoupon() {
-  const code = document.getElementById("couponCode")?.value.trim().toUpperCase();
-  const discountType = document.getElementById("couponDiscountType")?.value || "percent";
-  const discountValue = Number(document.getElementById("couponDiscountValue")?.value || 0);
-  const usageLimit = Number(document.getElementById("couponUsageLimit")?.value || 0);
-  const expiryRaw = document.getElementById("couponExpiryDate")?.value;
-  const isActive = document.getElementById("couponIsActive")?.checked ?? true;
-
-  if (!code || discountValue <= 0) {
-    alert("Please fill valid coupon details");
-    return;
-  }
-
   try {
+    requirePermission("coupons");
+
+    const code = document.getElementById("couponCode")?.value.trim().toUpperCase();
+    const discountType = document.getElementById("couponDiscountType")?.value || "percent";
+    const discountValue = Number(document.getElementById("couponDiscountValue")?.value || 0);
+    const usageLimit = Number(document.getElementById("couponUsageLimit")?.value || 0);
+    const expiryRaw = document.getElementById("couponExpiryDate")?.value;
+    const isActive = document.getElementById("couponIsActive")?.checked ?? true;
+
+    if (!code || discountValue <= 0) {
+      alert("Please fill valid coupon details");
+      return;
+    }
+
     await setDoc(
       doc(db, "coupons", code),
       {
@@ -1432,7 +1842,9 @@ async function saveCoupon() {
     await loadCoupons();
   } catch (error) {
     console.error("Save coupon error:", error);
-    alert("Error creating coupon");
+    if (!String(error.message || "").includes("Access denied")) {
+      alert("Error creating coupon");
+    }
   }
 }
 
@@ -1443,6 +1855,8 @@ async function loadCoupons() {
   list.innerHTML = "";
 
   try {
+    requirePermission("coupons");
+
     const snap = await getDocs(query(collection(db, "coupons"), orderBy("createdAt", "desc")));
 
     if (snap.empty) {
@@ -1472,7 +1886,7 @@ async function loadCoupons() {
         </div>
       `;
 
-      card.querySelector(".toggle-coupon-btn").addEventListener("click", async () => {
+      card.querySelector(".toggle-coupon-btn")?.addEventListener("click", async () => {
         await updateDoc(doc(db, "coupons", item.id), {
           isActive: !d.isActive,
           updatedAt: serverTimestamp()
@@ -1480,7 +1894,7 @@ async function loadCoupons() {
         await loadCoupons();
       });
 
-      card.querySelector(".delete-coupon-btn").addEventListener("click", async () => {
+      card.querySelector(".delete-coupon-btn")?.addEventListener("click", async () => {
         if (!confirm(`Delete coupon "${d.code || item.id}"?`)) return;
         await deleteDoc(doc(db, "coupons", item.id));
         await loadCoupons();
@@ -1498,19 +1912,21 @@ async function loadCoupons() {
 document.getElementById("savePodcastBtn")?.addEventListener("click", savePodcast);
 
 async function savePodcast() {
-  const title = document.getElementById("podcastTitle")?.value.trim();
-  const category = document.getElementById("podcastCategory")?.value.trim();
-  const image = document.getElementById("podcastImage")?.value.trim();
-  const videoUrl = document.getElementById("podcastVideoUrl")?.value.trim();
-  const description = document.getElementById("podcastDescription")?.value.trim();
-  const isActive = document.getElementById("podcastIsActive")?.checked ?? true;
-
-  if (!title || !videoUrl) {
-    alert("Please fill podcast title and video URL");
-    return;
-  }
-
   try {
+    requirePermission("podcast");
+
+    const title = document.getElementById("podcastTitle")?.value.trim();
+    const category = document.getElementById("podcastCategory")?.value.trim();
+    const image = document.getElementById("podcastImage")?.value.trim();
+    const videoUrl = document.getElementById("podcastVideoUrl")?.value.trim();
+    const description = document.getElementById("podcastDescription")?.value.trim();
+    const isActive = document.getElementById("podcastIsActive")?.checked ?? true;
+
+    if (!title || !videoUrl) {
+      alert("Please fill podcast title and video URL");
+      return;
+    }
+
     await addDoc(collection(db, "podcast"), {
       title,
       category: category || "",
@@ -1534,7 +1950,9 @@ async function savePodcast() {
     await loadPodcasts();
   } catch (error) {
     console.error("Save podcast error:", error);
-    alert("Error adding podcast");
+    if (!String(error.message || "").includes("Access denied")) {
+      alert("Error adding podcast");
+    }
   }
 }
 
@@ -1545,6 +1963,8 @@ async function loadPodcasts() {
   list.innerHTML = "";
 
   try {
+    requirePermission("podcast");
+
     const snap = await getDocs(query(collection(db, "podcast"), orderBy("createdAt", "desc")));
 
     if (snap.empty) {
@@ -1574,7 +1994,7 @@ async function loadPodcasts() {
         </div>
       `;
 
-      card.querySelector(".toggle-podcast-btn").addEventListener("click", async () => {
+      card.querySelector(".toggle-podcast-btn")?.addEventListener("click", async () => {
         await updateDoc(doc(db, "podcast", item.id), {
           isActive: !d.isActive,
           updatedAt: serverTimestamp()
@@ -1582,7 +2002,7 @@ async function loadPodcasts() {
         await loadPodcasts();
       });
 
-      card.querySelector(".delete-podcast-btn").addEventListener("click", async () => {
+      card.querySelector(".delete-podcast-btn")?.addEventListener("click", async () => {
         if (!confirm(`Delete podcast "${d.title}"?`)) return;
         await deleteDoc(doc(db, "podcast", item.id));
         await loadPodcasts();
@@ -1604,6 +2024,8 @@ async function loadEnquiries() {
   tbody.innerHTML = "";
 
   try {
+    requirePermission("enquiries");
+
     const snap = await getDocs(query(collection(db, "enquiries"), orderBy("createdAt", "desc")));
 
     if (snap.empty) {
@@ -1638,6 +2060,8 @@ async function loadBookings() {
   list.innerHTML = "";
 
   try {
+    requirePermission("bookings");
+
     const snap = await getDocs(query(collection(db, "bookings"), orderBy("createdAt", "desc")));
 
     if (snap.empty) {
@@ -1673,10 +2097,9 @@ async function loadPayments() {
   list.innerHTML = "";
 
   try {
-    const [paymentsSnap, bookingsSnap] = await Promise.all([
-      getDocs(query(collection(db, "payments"), orderBy("createdAt", "desc"))),
-      getDocs(query(collection(db, "bookings"), orderBy("createdAt", "desc")))
-    ]);
+    requirePermission("payments");
+
+    const paymentsSnap = await getDocs(query(collection(db, "payments"), orderBy("createdAt", "desc")));
 
     const items = [];
 
@@ -1690,20 +2113,6 @@ async function loadPayments() {
         couponCode: d.couponCode || "-",
         status: d.paymentStatus || d.status || "paid",
         transactionId: d.transactionId || d.paymentId || "-",
-        createdAt: d.createdAt
-      });
-    });
-
-    bookingsSnap.forEach((item) => {
-      const d = item.data();
-      items.push({
-        title: d.type || "Booking Payment",
-        name: d.name || "-",
-        email: d.email || "-",
-        amount: d.price || d.amount || 0,
-        couponCode: d.couponCode || "-",
-        status: d.status || "paid",
-        transactionId: d.paymentId || d.orderId || "-",
         createdAt: d.createdAt
       });
     });
@@ -1747,6 +2156,8 @@ async function loadUsers() {
   list.innerHTML = "";
 
   try {
+    requirePermission("users");
+
     const snap = await getDocs(query(collection(db, "users"), orderBy("createdAt", "desc")));
 
     if (snap.empty) {
@@ -1771,7 +2182,7 @@ async function loadUsers() {
         </div>
       `;
 
-      card.querySelector(".toggle-user-btn").addEventListener("click", async () => {
+      card.querySelector(".toggle-user-btn")?.addEventListener("click", async () => {
         await updateDoc(doc(db, "users", item.id), {
           isActive: d.isActive === false ? true : false,
           updatedAt: serverTimestamp()
@@ -1792,3 +2203,4 @@ addLectureField();
 addNoteField();
 toggleQuestionTargetFields();
 toggleQuestionOptionFields();
+toggleAdminPermissionInputs();
