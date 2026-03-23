@@ -111,6 +111,16 @@ function getYoutubeEmbedUrl(link) {
   return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
 }
 
+function escapeHtml(value) {
+  if (value === null || value === undefined) return "";
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 // ================= LOAD COURSE =================
 async function loadCourse(role) {
   try {
@@ -185,8 +195,8 @@ function renderLectures(lectures) {
       <div class="lecture-top">
         <span class="lecture-index">${index + 1}</span>
         <div>
-          <h4>${lec.title || "Lecture"}</h4>
-          <p>${lec.duration || "Video lecture"}</p>
+          <h4>${escapeHtml(lec.title || "Lecture")}</h4>
+          <p>${escapeHtml(lec.duration || "Video lecture")}</p>
         </div>
       </div>
     `;
@@ -278,28 +288,57 @@ async function markLectureComplete(index) {
 
 // ================= NOTES =================
 function renderNotes(course) {
-  const notesLink =
+  const notesArray = Array.isArray(course.notes)
+    ? course.notes.filter((note) => note && note.link)
+    : [];
+
+  const singleNotesLink =
     course.notesLink ||
     course.notesUrl ||
     course.driveLink ||
     "";
 
-  if (!notesLink) {
+  if (notesArray.length > 0) {
     notesSection.innerHTML = `
-      <div class="empty-state">
-        <p>Notes are not available for this course yet.</p>
+      <div class="resource-list">
+        ${notesArray
+          .map(
+            (note, index) => `
+              <div class="resource-card">
+                <div>
+                  <h4>${escapeHtml(note.title || `Notes ${index + 1}`)}</h4>
+                  <p>Open study notes, PDFs, and extra resources.</p>
+                </div>
+                <a href="${escapeHtml(note.link)}" target="_blank" rel="noopener noreferrer" class="resource-btn">
+                  Open Notes
+                </a>
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    `;
+    return;
+  }
+
+  if (singleNotesLink) {
+    notesSection.innerHTML = `
+      <div class="resource-card">
+        <div>
+          <h4>Course Notes</h4>
+          <p>Access study notes, PDFs, and extra resources from Google Drive.</p>
+        </div>
+        <a href="${escapeHtml(singleNotesLink)}" target="_blank" rel="noopener noreferrer" class="resource-btn">
+          Open Notes
+        </a>
       </div>
     `;
     return;
   }
 
   notesSection.innerHTML = `
-    <div class="resource-card">
-      <div>
-        <h4>Course Notes</h4>
-        <p>Access study notes, PDFs, and extra resources from Google Drive.</p>
-      </div>
-      <a href="${notesLink}" target="_blank" rel="noopener noreferrer" class="resource-btn">Open Notes</a>
+    <div class="empty-state">
+      <p>Notes are not available for this course yet.</p>
     </div>
   `;
 }
@@ -321,11 +360,11 @@ async function loadCourseQuizzes() {
       html += `
         <div class="assessment-card">
           <div class="assessment-badge quiz-badge">Quiz</div>
-          <h4>${data.title || "Practice Quiz"}</h4>
-          <p>${data.description || "Practice your concepts with a chapter-wise quiz."}</p>
+          <h4>${escapeHtml(data.title || "Practice Quiz")}</h4>
+          <p>${escapeHtml(data.description || "Practice your concepts with a chapter-wise quiz.")}</p>
           <div class="assessment-meta">
             <span>Questions: ${data.totalQuestions || 0}</span>
-            <span>Chapter: ${data.chapterId || "General"}</span>
+            <span>Chapter: ${escapeHtml(data.chapterId || "General")}</span>
           </div>
           <button onclick="startAssessment('quiz','${id}')">Start Quiz</button>
         </div>
@@ -368,8 +407,8 @@ async function loadCourseTestSeries() {
       html += `
         <div class="assessment-card">
           <div class="assessment-badge test-badge">Test Series</div>
-          <h4>${data.title || "Full Test"}</h4>
-          <p>${data.description || "Attempt a full test series and evaluate your preparation."}</p>
+          <h4>${escapeHtml(data.title || "Full Test")}</h4>
+          <p>${escapeHtml(data.description || "Attempt a full test series and evaluate your preparation.")}</p>
           <div class="assessment-meta">
             <span>${data.totalQuestions || 0} Questions</span>
             <span>${data.durationMinutes || 0} Minutes</span>
