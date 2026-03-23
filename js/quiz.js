@@ -92,6 +92,7 @@ const resultWrong = document.getElementById("resultWrong");
 const resultAttempted = document.getElementById("resultAttempted");
 const resultAccuracy = document.getElementById("resultAccuracy");
 const resultAnswersWrap = document.getElementById("resultAnswersWrap");
+const downloadResultBtn = document.getElementById("downloadResultBtn");
 
 // ================= HELPERS =================
 function showAlert(message) {
@@ -1108,6 +1109,12 @@ numericalAnswer.addEventListener("input", () => {
   updateSummary();
   updatePalette();
 });
+
+if (downloadResultBtn) {
+  downloadResultBtn.addEventListener("click", () => {
+    window.print();
+  });
+}
 
 window.addEventListener("beforeunload", (e) => {
   if (!submitted && questions.length > 0) {

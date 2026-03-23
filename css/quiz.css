@@ -703,3 +703,28 @@ button:disabled{
 .visited-box{
   background:#ef4444;
 }
+<style>
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #resultModal,
+  #resultModal * {
+    visibility: visible;
+  }
+
+  #resultModal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white;
+  }
+
+  .modal-actions,
+  #downloadResultBtn {
+    display: none !important;
+  }
+}
+</style>

@@ -184,6 +184,13 @@
       line-height: 1.6;
     }
 
+    .result-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
     @media (max-width: 640px) {
       .review-head {
         flex-direction: column;
@@ -191,6 +198,57 @@
 
       .review-option-top {
         flex-direction: column;
+      }
+    }
+
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+
+      #resultModal,
+      #resultModal * {
+        visibility: visible !important;
+      }
+
+      #resultModal {
+        position: absolute !important;
+        inset: 0 !important;
+        display: block !important;
+        background: #ffffff !important;
+      }
+
+      #resultModal .modal-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        max-height: none !important;
+        overflow: visible !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 24px !important;
+      }
+
+      #resultModal .review-card,
+      #resultModal .review-explanation,
+      #resultModal .review-question-formula,
+      #resultModal .review-option {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #cccccc !important;
+      }
+
+      #resultModal .correct-badge,
+      #resultModal .wrong-badge,
+      #resultModal .unanswered-badge {
+        color: #000000 !important;
+        background: #f3f4f6 !important;
+      }
+
+      .result-actions,
+      #downloadResultBtn {
+        display: none !important;
       }
     }
   </style>
@@ -415,7 +473,8 @@
         <div id="resultAnswersWrap" class="review-list"></div>
       </div>
 
-      <div class="modal-actions">
+      <div class="modal-actions result-actions">
+        <button id="downloadResultBtn" class="secondary-btn" type="button">Download Result</button>
         <a href="dashboard.html" class="primary-link-btn">Back to Dashboard</a>
       </div>
     </div>
