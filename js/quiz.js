@@ -478,6 +478,14 @@ async function loadAssessment() {
       id: assessmentSnap.id,
       ...assessmentSnap.data()
     };
+    // 🔥 ADD THIS BLOCK HERE
+const calcBtn = document.getElementById("openCalc");
+
+if (assessmentData.calculatorEnabled === false) {
+  if (calcBtn) {
+    calcBtn.style.display = "none";
+  }
+}
 
     if (assessmentData.isActive === false) {
       showAlert("This assessment is inactive");
@@ -1130,7 +1138,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const calcWindow = document.getElementById("calcWindow");
 
   if(openBtn){
-    openBtn.onclick = () => popup.style.display = "block";
+    openBtn.onclick = () => {
+  if (assessmentData && assessmentData.calculatorEnabled === false) return;
+  popup.style.display = "block";
+};
   }
 
   if(closeBtn){

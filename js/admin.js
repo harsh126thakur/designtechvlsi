@@ -1152,6 +1152,7 @@ async function saveTestSeries() {
     const totalMarks = Number(document.getElementById("testSeriesTotalMarks")?.value || 0);
     const negativeMarks = Number(document.getElementById("testSeriesNegativeMarks")?.value || 0);
     const isActive = document.getElementById("testSeriesIsActive")?.checked ?? true;
+    const calculatorEnabled = document.getElementById("testSeriesCalculatorEnabled").checked;
 
     if (!title) {
       alert("Please enter test series title");
@@ -1170,8 +1171,8 @@ async function saveTestSeries() {
       isActive,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
-    });
-
+      calculatorEnabled   // 🔥 ADD THIS
+});
     alert("Test series created successfully");
 
     setValue("testSeriesTitle", "");
