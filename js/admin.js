@@ -603,6 +603,7 @@ async function loadAdmins() {
       });
 
       list.appendChild(card);
+      renderMathInElement(card);
     });
   } catch (error) {
     console.error("Load admins error:", error);
@@ -948,7 +949,7 @@ async function loadCourses() {
       const card = document.createElement("div");
       card.className = "data-card";
       card.innerHTML = `
-        <h4>${safeText(d.title)}</h4>
+   <h4>${safeText(d.title || "Untitled Course")}</h4>
         <p>${safeText(d.category)} • ${safeText(d.level)}</p>
         <p>${safeText(d.type)} • ${formatCurrency(d.price || 0)} • ${d.validityMonths || 12} months</p>
         <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
@@ -1533,7 +1534,9 @@ async function loadQuestions() {
   try {
     requirePermission("questions");
 
-    const snap = await getDocs(query(collection(db, "questions"), orderBy("createdAt", "desc")));
+    const snap = await getDocs(
+      query(collection(db, "questions"), orderBy("createdAt", "desc"))
+    );
 
     if (snap.empty) {
       list.innerHTML = `<div class="data-card"><p>No questions found</p></div>`;
@@ -1542,28 +1545,130 @@ async function loadQuestions() {
 
     snap.forEach((item) => {
       const d = item.data();
-      const titleText =
-        d.question ||
-        d.questionFormula ||
-        (d.questionImageUrl ? "Image Question" : "Untitled Question");
+
+      let optionsArray = [];
+
+      // ✅ Priority 1: structured options
+      if (Array.isArray(d.options) && typeof d.options[0] === "object") {
+        optionsArray = d.options;
+      }
+
+      // ✅ Priority 2: string array (detect image URLs)
+      else if (Array.isArray(d.options)) {
+        optionsArray = d.options.map((opt) => {
+          const isImage =
+            typeof opt === "string" &&
+            opt.startsWith("http") &&
+            (opt.includes(".png") ||
+              opt.includes(".jpg") ||
+              opt.includes(".jpeg") ||
+              opt.includes(".webp"));
+
+          return {
+            text: isImage ? "" : opt,
+            formula: "",
+            imageUrl: isImage ? opt : "",
+          };
+        });
+      }
+
+      // ✅ Priority 3: old fields
+      else {
+        optionsArray = [
+          d.option1,
+          d.option2,
+          d.option3,
+          d.option4,
+        ]
+          .filter(Boolean)
+          .map((opt) => {
+            const isImage =
+              typeof opt === "string" &&
+              opt.startsWith("http") &&
+              (opt.includes(".png") ||
+                opt.includes(".jpg") ||
+                opt.includes(".jpeg") ||
+                opt.includes(".webp"));
+
+            return {
+              text: isImage ? "" : opt,
+              formula: "",
+              imageUrl: isImage ? opt : "",
+            };
+          });
+      }
 
       const card = document.createElement("div");
       card.className = "data-card";
+
       card.innerHTML = `
-        <h4>${safeText(titleText)}</h4>
+        <!-- ✅ QUESTION TEXT (NO class="math") -->
+        <h4>${safeText(d.question || "")}</h4>
+
+        <!-- ✅ QUESTION FORMULA -->
+        ${
+          d.questionFormula
+            ? `<div>$${safeText(d.questionFormula)}$</div>`
+            : ""
+        }
+
+        <!-- ✅ QUESTION IMAGE -->
+        ${
+          d.questionImageUrl
+            ? `<img src="${safeText(d.questionImageUrl)}" 
+                 style="max-width:200px;margin:10px 0;border-radius:8px;" />`
+            : ""
+        }
+
         <p>Exam Type: ${safeText(d.examType)}</p>
         <p>Question Type: ${safeText(d.questionType)}</p>
-        <p>Quiz ID: ${safeText(d.quizId || "-")} | Test Series ID: ${safeText(d.testSeriesId || "-")}</p>
-        <p>Marks: ${d.marks || 1} | Negative: ${d.negativeMarks || 0} | Order: ${d.order || 0}</p>
-        <p>Formula: ${d.questionFormula ? "Yes" : "No"} | Question Image: ${d.questionImageUrl ? "Yes" : "No"} | Answer Image: ${d.answerImageUrl ? "Yes" : "No"}</p>
-        <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
+
+        ${
+          optionsArray.length
+            ? `
+        <div style="margin-top:10px;">
+          ${optionsArray
+            .map(
+              (opt, i) => `
+            <div style="padding:8px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;margin-bottom:6px;">
+              
+              <b>${String.fromCharCode(65 + i)}.</b>
+
+              ${opt.text ? `<span>${safeText(opt.text)}</span>` : ""}
+
+              ${
+                opt.formula
+                  ? `<div>$${safeText(opt.formula)}$</div>`
+                  : ""
+              }
+
+              ${
+                opt.imageUrl
+                  ? `<img src="${safeText(opt.imageUrl)}" 
+                       style="max-width:120px;margin-top:5px;border-radius:6px;" />`
+                  : ""
+              }
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+        `
+            : ""
+        }
+
+        <p>Marks: ${d.marks || 1} | Negative: ${d.negativeMarks || 0}</p>
+
         <div class="data-actions">
           <button class="small-btn edit-question-btn">Edit</button>
-          <button class="small-btn toggle-question-btn">${d.isActive ? "Deactivate" : "Activate"}</button>
+          <button class="small-btn toggle-question-btn">
+            ${d.isActive ? "Deactivate" : "Activate"}
+          </button>
           <button class="small-btn delete-question-btn">Delete</button>
         </div>
       `;
 
+      // BUTTONS
       card.querySelector(".edit-question-btn")?.addEventListener("click", () => {
         fillQuestionFormForEdit(item.id, d);
       });
@@ -1571,7 +1676,7 @@ async function loadQuestions() {
       card.querySelector(".toggle-question-btn")?.addEventListener("click", async () => {
         await updateDoc(doc(db, "questions", item.id), {
           isActive: !d.isActive,
-          updatedAt: serverTimestamp()
+          updatedAt: serverTimestamp(),
         });
         await loadQuestions();
       });
@@ -1585,6 +1690,15 @@ async function loadQuestions() {
 
       list.appendChild(card);
     });
+
+    // 🔥🔥🔥 MOST IMPORTANT FIX
+    renderMathInElement(list, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false }
+      ]
+    });
+
   } catch (error) {
     console.error("Load questions error:", error);
     list.innerHTML = `<div class="data-card"><p>Error loading questions</p></div>`;
@@ -1759,26 +1873,42 @@ async function loadMediaLibrary() {
     snap.forEach((item) => {
       const d = item.data();
 
-      const card = document.createElement("div");
-      card.className = "data-card";
-      card.innerHTML = `
-        <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
-          <img src="${safeText(d.url)}" alt="${safeText(d.fileName || "media")}" style="width:100px;height:100px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,255,255,0.1);" />
-          <div style="flex:1;min-width:200px;">
-            <h4>${safeText(d.fileName || "Image")}</h4>
-            <p>Folder: ${safeText(d.folder || "-")}</p>
-            <p>URL: <a href="${safeText(d.url)}" target="_blank">Open File</a></p>
-            ${d.githubFileUrl ? `<p>GitHub: <a href="${safeText(d.githubFileUrl)}" target="_blank">Open in Repo</a></p>` : ""}
-            <div class="data-actions" style="margin-top:10px;">
-              <button class="small-btn copy-media-url-btn">Copy URL</button>
-              <button class="small-btn use-question-image-btn">Use in Question</button>
-              <button class="small-btn use-answer-image-btn">Use in Answer</button>
-              <button class="small-btn delete-media-btn">Delete</button>
-            </div>
-          </div>
-        </div>
-      `;
+    const card = document.createElement("div");
+card.className = "data-card";
 
+card.innerHTML = `
+  <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+    
+    <img src="${safeText(d.url)}" 
+         alt="${safeText(d.fileName || "media")}"
+         style="width:100px;height:100px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,255,255,0.1);" />
+
+    <div style="flex:1;min-width:200px;">
+      <h4>${safeText(d.fileName || "Image")}</h4>
+      <p>Folder: ${safeText(d.folder || "-")}</p>
+
+      <p>
+        URL: 
+        <a href="${safeText(d.url)}" target="_blank">Open File</a>
+      </p>
+
+      ${d.githubFileUrl ? `
+        <p>
+          GitHub: 
+          <a href="${safeText(d.githubFileUrl)}" target="_blank">Open in Repo</a>
+        </p>
+      ` : ""}
+
+      <div class="data-actions" style="margin-top:10px;">
+        <button class="small-btn copy-media-url-btn">Copy URL</button>
+        <button class="small-btn use-question-image-btn">Use in Question</button>
+        <button class="small-btn use-answer-image-btn">Use in Answer</button>
+        <button class="small-btn delete-media-btn">Delete</button>
+      </div>
+    </div>
+
+  </div>
+`;
       card.querySelector(".copy-media-url-btn")?.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(d.url || "");

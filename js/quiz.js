@@ -257,20 +257,39 @@ function updateNavButtons() {
   }
 }
 
-function renderMath() {
-  if (window.MathJax && window.MathJax.typesetPromise) {
-    window.MathJax.typesetPromise().catch((err) => console.error("MathJax error:", err));
+function renderMath(container = document.body) {
+  if (typeof renderMathInElement === "function") {
+    renderMathInElement(container, {
+      delimiters: [
+        { left: "$$", right: "$$", display: true },
+        { left: "$", right: "$", display: false }
+      ]
+    });
   }
 }
-
 function getQuestionOptions(currentQuestion) {
   if (Array.isArray(currentQuestion.options) && currentQuestion.options.length > 0) {
-    return currentQuestion.options.map((item, index) => ({
-      key: String.fromCharCode(97 + index),
-      text: typeof item === "object" ? (item.text || "") : String(item || ""),
-      formula: typeof item === "object" ? (item.formula || "") : "",
-      imageUrl: typeof item === "object" ? (item.imageUrl || "") : ""
-    }));
+   return currentQuestion.options.map((item, index) => {
+
+  const raw = typeof item === "object" ? item.text : item;
+
+  const isImage = typeof raw === "string" && (
+    raw.startsWith("http") &&
+    (raw.includes(".png") || raw.includes(".jpg") || raw.includes(".jpeg") || raw.includes(".webp"))
+  );
+
+  return {
+    key: String.fromCharCode(97 + index),
+
+    text: isImage ? "" : String(raw || ""),
+
+    formula: typeof item === "object" ? (item.formula || "") : "",
+
+    imageUrl: typeof item === "object"
+      ? (item.imageUrl || "")
+      : (isImage ? raw : "")
+  };
+});
   }
 
   return [
@@ -318,15 +337,29 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 }
-
 function getStoredOptions(item) {
   if (Array.isArray(item.options) && item.options.length > 0) {
-    return item.options.map((opt, index) => ({
-      key: String.fromCharCode(97 + index),
-      text: typeof opt === "object" ? (opt.text || "") : String(opt || ""),
-      formula: typeof opt === "object" ? (opt.formula || "") : "",
-      imageUrl: typeof opt === "object" ? (opt.imageUrl || "") : ""
-    }));
+    return item.options.map((opt, index) => {
+
+      const raw = typeof opt === "object" ? opt.text : opt;
+
+      const isImage = typeof raw === "string" && (
+        raw.startsWith("http") &&
+        (raw.includes(".png") || raw.includes(".jpg") || raw.includes(".jpeg") || raw.includes(".webp"))
+      );
+
+      return {
+        key: String.fromCharCode(97 + index),
+
+        text: isImage ? "" : String(raw || ""),
+
+        formula: typeof opt === "object" ? (opt.formula || "") : "",
+
+        imageUrl: typeof opt === "object"
+          ? (opt.imageUrl || "")
+          : (isImage ? raw : "")
+      };
+    });
   }
 
   return [
@@ -597,7 +630,7 @@ function renderQuestion() {
   questionFormulaWrap.style.display = "none";
 
   if (currentQuestion.questionFormula && String(currentQuestion.questionFormula).trim() !== "") {
-    questionFormula.innerHTML = currentQuestion.questionFormula;
+   questionFormula.innerHTML = `$${currentQuestion.questionFormula}$`;
     questionFormulaWrap.style.display = "block";
   }
 
@@ -666,14 +699,14 @@ function renderQuestion() {
       if (option.text) {
         const text = document.createElement("div");
         text.className = "option-text";
-        text.innerText = option.text;
+        text.innerHTML = option.text;
         textWrap.appendChild(text);
       }
 
       if (option.formula) {
         const formula = document.createElement("div");
         formula.className = "option-formula";
-        formula.innerHTML = option.formula;
+       formula.innerHTML = `$${option.formula}$`;
         textWrap.appendChild(formula);
       }
 
@@ -681,6 +714,9 @@ function renderQuestion() {
         const img = document.createElement("img");
         img.className = "option-image";
         img.src = option.imageUrl;
+        img.onerror = () => {
+  img.style.display = "none";
+};
         img.alt = `Option ${option.key.toUpperCase()}`;
         img.style.maxWidth = "220px";
         img.style.marginTop = "10px";
@@ -703,7 +739,7 @@ function renderQuestion() {
   updateSummary();
   updatePalette();
   updateNavButtons();
-  renderMath();
+  renderMath(document.body);
 }
 
 function highlightSelectedOptions() {
@@ -801,12 +837,16 @@ function evaluateAnswers() {
     }
 
     return {
-      questionId: question.id,
-      question: question.question || "",
-      questionType: question.questionType || "mcq",
-      questionFormula: question.questionFormula || "",
-      questionImageUrl: question.questionImageUrl || "",
+  questionId: question.id,
+  question: question.question || "",
+  questionType: question.questionType || "mcq",
+  questionFormula: question.questionFormula || "",
+  questionImageUrl: question.questionImageUrl || "",
 
+  // ✅ ADD HERE
+  explanation: question.explanation || "",
+  explanationFormula: question.explanationFormula || "",
+  explanationImageUrl: question.explanationImageUrl || "",
       options: Array.isArray(question.options) ? question.options : [],
 
       option1: question.option1 || "",
@@ -893,7 +933,7 @@ function renderResultAnswers(answerList = []) {
                 </div>
 
                 ${option.text ? `<div class="review-option-text">${escapeHtml(option.text)}</div>` : ""}
-                ${option.formula ? `<div class="review-option-formula">${option.formula}</div>` : ""}
+                ${option.formula ? `<div class="review-option-formula">$${option.formula}$</div>` : ""}
                 ${option.imageUrl ? `<img class="review-option-image" src="${escapeHtml(option.imageUrl)}" alt="Option ${escapeHtml(option.key.toUpperCase())}">` : ""}
               </div>
             `;
@@ -913,7 +953,7 @@ function renderResultAnswers(answerList = []) {
         </span>
       </div>
 
-      ${item.questionFormula ? `<div class="review-question-formula">${item.questionFormula}</div>` : ""}
+      ${item.questionFormula ? `<div class="review-question-formula">$${item.questionFormula}$</div>` : ""}
       ${item.questionImageUrl ? `<img class="review-question-image" src="${escapeHtml(item.questionImageUrl)}" alt="Question Image">` : ""}
 
       ${optionsHtml}
@@ -925,16 +965,28 @@ function renderResultAnswers(answerList = []) {
         <div><strong>Negative Marks:</strong> ${Number(item.negativeMarks || 0)}</div>
       </div>
 
-      <div class="review-explanation">
-        <strong>Explanation:</strong>
-        <p>${escapeHtml(item.explanation || "No explanation available.")}</p>
-      </div>
+<div class="review-explanation">
+  <strong>Explanation:</strong>
+
+  ${item.explanation 
+    ? `<p>${escapeHtml(item.explanation)}</p>` 
+    : ""}
+
+  ${item.explanationFormula 
+    ? `<div class="review-explanation-formula">$${item.explanationFormula}$</div>` 
+    : ""}
+
+  ${item.explanationImageUrl 
+    ? `<img class="review-explanation-image" src="${escapeHtml(item.explanationImageUrl)}" 
+         style="max-width:250px;margin-top:10px;border-radius:10px;" />` 
+    : ""}
+</div>
     `;
 
     resultAnswersWrap.appendChild(card);
   });
 
-  renderMath();
+  renderMath(document.body);
 }
 
 // ================= SHOW PREVIOUS RESULT =================
