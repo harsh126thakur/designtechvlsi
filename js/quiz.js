@@ -1122,3 +1122,40 @@ window.addEventListener("beforeunload", (e) => {
     e.returnValue = "";
   }
 });
+document.addEventListener("DOMContentLoaded", () => {
+
+  const popup = document.getElementById("calcPopup");
+  const openBtn = document.getElementById("openCalc");
+  const closeBtn = document.getElementById("closeCalc");
+  const calcWindow = document.getElementById("calcWindow");
+
+  if(openBtn){
+    openBtn.onclick = () => popup.style.display = "block";
+  }
+
+  if(closeBtn){
+    closeBtn.onclick = () => popup.style.display = "none";
+  }
+
+  let isDragging = false, offsetX, offsetY;
+
+  const header = document.getElementById("calcHeader");
+
+  if(header){
+    header.addEventListener("mousedown",(e)=>{
+      isDragging = true;
+      offsetX = e.clientX - calcWindow.offsetLeft;
+      offsetY = e.clientY - calcWindow.offsetTop;
+    });
+
+    document.addEventListener("mousemove",(e)=>{
+      if(isDragging){
+        calcWindow.style.left = (e.clientX - offsetX)+"px";
+        calcWindow.style.top = (e.clientY - offsetY)+"px";
+      }
+    });
+
+    document.addEventListener("mouseup",()=> isDragging=false);
+  }
+
+});

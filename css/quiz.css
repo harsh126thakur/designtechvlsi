@@ -1,3 +1,4 @@
+
 /* ================= RESET ================= */
 *{
   margin:0;
@@ -702,4 +703,31 @@ button:disabled{
 
 .visited-box{
   background:#ef4444;
+}
+#calcPopup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:9999;
+}
+
+#calcWindow{
+  position:absolute;
+  top:100px;
+  right:60px;
+  width:500px;
+  background:#cfcfcf;
+  border-radius:6px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.6);
+}
+
+#calcHeader{
+  background:#3b82f6;
+  color:white;
+  padding:8px;
+  display:flex;
+  justify-content:space-between;
+  cursor:move;
 }

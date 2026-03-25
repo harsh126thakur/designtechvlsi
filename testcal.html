@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Scientific Calculator</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
+
+<style>
+body{
+  margin:0;
+  background:#d6d6d6;
+  font-family:Segoe UI, Arial;
+}
+
+/* Calculator (FIXED SIZE FOR POPUP) */
+.calculator{
+  width:100%;
+  margin:0;
+  background:#cfcfcf;
+}
+
+/* Header */
+.header{
+  background:#3b82f6;
+  color:white;
+  padding:6px 10px;
+  font-size:13px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* Display */
+.display{
+  padding:6px;
+}
+
+#screen{
+  width:100%;
+  height:26px;
+  margin-bottom:4px;
+  font-size:14px;
+  text-align:right;
+  padding:4px;
+  border:1px solid #999;
+  background:#f1f1f1;
+}
+
+#screen2{
+  width:100%;
+  height:24px;
+  font-size:14px;
+  text-align:right;
+  padding:4px;
+  border:1px solid #999;
+  background:white;
+}
+
+/* Grid (COMPACT) */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:3px;
+  padding:6px;
+}
+
+/* Buttons (SMALLER) */
+button{
+  height:30px;
+  font-size:12px;
+  border:1px solid #9ca3af;
+  background:#e5e5e5;
+  border-radius:3px;
+  padding:2px;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#d4d4d4;
+}
+
+/* Special buttons */
+.red{
+  background:#e74c3c;
+  color:white;
+}
+
+.green{
+  background:#2ecc71;
+  color:white;
+}
+
+.wide{
+  grid-column:span 2;
+}
+
+.equal{
+  grid-row:span 2;
+  height:100%;
+}
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+  <div class="header">
+    <span>Scientific Calculator</span>
+    <span>✕</span>
+  </div>
+
+  <div class="display">
+    <input id="screen" readonly>
+    <input id="screen2" value="0" readonly>
+  </div>
+
+  <div class="grid">
+
+    <!-- Row 1 -->
+    <button>mod</button>
+    <button onclick="setDeg()">Deg</button>
+    <button onclick="setRad()">Rad</button>
+    <button onclick="mc()">MC</button>
+    <button onclick="mr()">MR</button>
+    <button onclick="ms()">MS</button>
+
+    <!-- Row 2 -->
+    <button onclick="press('sinh(')">sinh</button>
+    <button onclick="press('cosh(')">cosh</button>
+    <button onclick="press('tanh(')">tanh</button>
+    <button onclick="press('exp(')">Exp</button>
+    <button onclick="press('(')">(</button>
+    <button onclick="press(')')">)</button>
+
+    <!-- Row 3 -->
+    <button onclick="press('asin(')">sinh⁻¹</button>
+    <button onclick="press('acosh(')">cosh⁻¹</button>
+    <button onclick="press('atanh(')">tanh⁻¹</button>
+    <button onclick="press('log10(')">log₂x</button>
+    <button onclick="press('ln(')">ln</button>
+    <button onclick="press('log10(')">log</button>
+
+    <!-- Row 4 -->
+    <button onclick="press('pi')">π</button>
+    <button onclick="press('e')">e</button>
+    <button onclick="press('!')">n!</button>
+    <button onclick="press('^')">logᵧx</button>
+    <button onclick="press('exp(')">eˣ</button>
+    <button onclick="press('10^')">10ˣ</button>
+
+    <!-- Row 5 -->
+    <button onclick="press('sin(')">sin</button>
+    <button onclick="press('cos(')">cos</button>
+    <button onclick="press('tan(')">tan</button>
+    <button onclick="press('^')">xʸ</button>
+    <button onclick="press('^3')">x³</button>
+    <button onclick="press('^2')">x²</button>
+
+    <!-- Row 6 -->
+    <button onclick="press('asin(')">sin⁻¹</button>
+    <button onclick="press('acos(')">cos⁻¹</button>
+    <button onclick="press('atan(')">tan⁻¹</button>
+    <button onclick="press('sqrt(')">√</button>
+    <button onclick="press('cbrt(')">³√</button>
+    <button onclick="press('abs(')">|x|</button>
+
+    <!-- Numbers -->
+    <button onclick="press('7')">7</button>
+    <button onclick="press('8')">8</button>
+    <button onclick="press('9')">9</button>
+    <button onclick="press('/')">/</button>
+    <button onclick="press('%')">%</button>
+    <button class="red" onclick="back()">←</button>
+
+    <button onclick="press('4')">4</button>
+    <button onclick="press('5')">5</button>
+    <button onclick="press('6')">6</button>
+    <button onclick="press('*')">*</button>
+    <button onclick="press('1/')">1/x</button>
+    <button class="red" onclick="clearScreen()">C</button>
+
+    <button onclick="press('1')">1</button>
+    <button onclick="press('2')">2</button>
+    <button onclick="press('3')">3</button>
+    <button onclick="press('-')">-</button>
+    <button onclick="toggleSign()">+/-</button>
+    <button onclick="press('sqrt(')">√</button>
+
+    <button class="wide" onclick="press('0')">0</button>
+    <button onclick="press('.')">.</button>
+    <button onclick="press('+')">+</button>
+    <button class="green equal" onclick="calculate()">=</button>
+
+  </div>
+</div>
+
+<script>
+let memory=0,isDeg=true;
+const screen=document.getElementById("screen");
+const screen2=document.getElementById("screen2");
+
+function press(v){screen.value+=v;}
+function clearScreen(){screen.value=""; screen2.value="0";}
+function back(){screen.value=screen.value.slice(0,-1);}
+function toggleSign(){screen.value = -parseFloat(screen.value||0);}
+
+function ms(){memory=parseFloat(screen.value)||0;}
+function mr(){screen.value+=memory;}
+function mc(){memory=0;}
+
+function setDeg(){isDeg=true;}
+function setRad(){isDeg=false;}
+
+function calculate(){
+  try{
+    let expr=screen.value;
+
+    if(isDeg){
+      expr=expr.replace(/sin\((.*?)\)/g,"sin(($1)*pi/180)");
+      expr=expr.replace(/cos\((.*?)\)/g,"cos(($1)*pi/180)");
+      expr=expr.replace(/tan\((.*?)\)/g,"tan(($1)*pi/180)");
+    }
+
+    screen2.value=math.evaluate(expr);
+  }catch{
+    screen2.value="Error";
+  }
+}
+</script>
+
+</body>
+</html>
