@@ -623,14 +623,17 @@ function renderQuestion() {
 
   questionNumberBadge.innerText = `Question ${currentQuestionIndex + 1}`;
   questionTypeBadge.innerText = getQuestionTypeLabel(currentQuestion.questionType);
-  questionText.innerText = currentQuestion.question || "Question not available";
+
+  // ✅ FIXED
+  questionText.innerHTML = currentQuestion.question || "Question not available";
+
   questionMeta.innerText = `Marks: ${Number(currentQuestion.marks || 1)} | Negative: ${Number(currentQuestion.negativeMarks || 0)}`;
 
   questionFormula.innerHTML = "";
   questionFormulaWrap.style.display = "none";
 
   if (currentQuestion.questionFormula && String(currentQuestion.questionFormula).trim() !== "") {
-   questionFormula.innerHTML = `$${currentQuestion.questionFormula}$`;
+    questionFormula.innerHTML = `$$${currentQuestion.questionFormula}$$`;
     questionFormulaWrap.style.display = "block";
   }
 
@@ -641,6 +644,10 @@ function renderQuestion() {
     questionImage.src = currentQuestion.questionImageUrl;
     questionImageWrap.style.display = "block";
   }
+
+  // ✅ VERY IMPORTANT (ADD THIS)
+  renderMathInElement(questionText);
+  renderMathInElement(questionFormulaWrap);
 
   optionsContainer.innerHTML = "";
   numericalBox.style.display = "none";
@@ -867,7 +874,6 @@ function evaluateAnswers() {
       userAnswer: userAnswer || (question.questionType === "multicorrect" ? [] : ""),
       correctAnswer: correctValue,
       correctAnswerText: question.correctAnswerText || correctValue,
-      explanation: question.explanation || "",
       marks,
       negativeMarks,
       isCorrect,
@@ -972,10 +978,10 @@ function renderResultAnswers(answerList = []) {
     ? `<p>${escapeHtml(item.explanation)}</p>` 
     : ""}
 
-  ${item.explanationFormula 
-    ? `<div class="review-explanation-formula">$${item.explanationFormula}$</div>` 
-    : ""}
-
+ ${item.explanationFormula 
+  ? `<div class="review-explanation-formula">$$${item.explanationFormula}$$</div>` 
+  : ""}
+  
   ${item.explanationImageUrl 
     ? `<img class="review-explanation-image" src="${escapeHtml(item.explanationImageUrl)}" 
          style="max-width:250px;margin-top:10px;border-radius:10px;" />` 
