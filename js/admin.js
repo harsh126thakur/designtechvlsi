@@ -1152,7 +1152,9 @@ async function saveTestSeries() {
     const totalMarks = Number(document.getElementById("testSeriesTotalMarks")?.value || 0);
     const negativeMarks = Number(document.getElementById("testSeriesNegativeMarks")?.value || 0);
     const isActive = document.getElementById("testSeriesIsActive")?.checked ?? true;
-    const calculatorEnabled = document.getElementById("testSeriesCalculatorEnabled").checked;
+
+    // 🔥 CALCULATOR FIELD
+    const calculatorEnabled = document.getElementById("testSeriesCalculatorEnabled")?.checked ?? true;
 
     if (!title) {
       alert("Please enter test series title");
@@ -1169,12 +1171,16 @@ async function saveTestSeries() {
       totalMarks,
       negativeMarks,
       isActive,
+
+      calculatorEnabled,   // ✅ FIXED (IMPORTANT)
+
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
-      calculatorEnabled   // 🔥 ADD THIS
-});
+    });
+
     alert("Test series created successfully");
 
+    // RESET FORM
     setValue("testSeriesTitle", "");
     setValue("testSeriesCourseId", "");
     setValue("testSeriesCategory", "");
@@ -1185,9 +1191,13 @@ async function saveTestSeries() {
     setValue("testSeriesNegativeMarks", "0");
     setChecked("testSeriesIsActive", true);
 
+    // 🔥 RESET CALCULATOR CHECKBOX
+    setChecked("testSeriesCalculatorEnabled", true);
+
     await loadTestSeries();
     await loadTestSeriesDropdowns();
     await loadOverview();
+
   } catch (error) {
     console.error("Save test series error:", error);
     if (!String(error.message || "").includes("Access denied")) {
@@ -1223,6 +1233,12 @@ async function loadTestSeries() {
         <p>Category: ${safeText(d.category || "-")}</p>
         <p>Duration: ${d.durationMinutes || 0} min | Questions: ${d.totalQuestions || 0} | Marks: ${d.totalMarks || 0}</p>
         <p>${d.isActive ? createBadge("Active", "green") : createBadge("Inactive", "red")}</p>
+
+        <!-- 🔥 OPTIONAL: SHOW CALCULATOR STATUS -->
+        <p>${d.calculatorEnabled !== false 
+          ? createBadge("Calculator ON", "green") 
+          : createBadge("Calculator OFF", "red")}</p>
+
         <div class="data-actions">
           <button class="small-btn toggle-testseries-btn">${d.isActive ? "Deactivate" : "Activate"}</button>
           <button class="small-btn delete-testseries-btn">Delete</button>
