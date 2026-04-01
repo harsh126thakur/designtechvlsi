@@ -7,6 +7,22 @@
 
   <link rel="stylesheet" href="css/course.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* 🔥 FIX: Ensure iframe always visible */
+    .player iframe {
+      width: 100%;
+      height: 500px; /* IMPORTANT FIX */
+      border-radius: 10px;
+      border: none;
+    }
+
+    #videoLoader {
+      text-align: center;
+      padding: 20px;
+      color: #94a3b8;
+    }
+  </style>
 </head>
 
 <body>
@@ -29,7 +45,7 @@
       <p class="course-validity" id="courseValidity">Validity: 12 Months</p>
     </div>
 
-    <!-- ✅ FIXED BACK BUTTON -->
+    <!-- ✅ FIXED BUTTON -->
     <button id="backBtn">⬅ Back</button>
   </div>
 
@@ -42,23 +58,21 @@
       <!-- PLAYER -->
       <div class="player">
 
-        <!-- ✅ VIDEO LOADER -->
-        <div id="videoLoader" style="text-align:center; padding:20px;">
+        <!-- ✅ LOADER -->
+        <div id="videoLoader">
           Loading video...
         </div>
 
-        <!-- ✅ VIDEO PLAYER -->
+        <!-- ✅ IMPORTANT: NO display:none -->
         <iframe
           id="videoPlayer"
           src=""
-          style="display:none;"
           title="Course Video Player"
-          frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen>
         </iframe>
 
-      </div> <!-- ✅ FIXED CLOSING DIV -->
+      </div>
 
       <!-- NOTES -->
       <div class="content-card">
@@ -105,7 +119,7 @@
 
   </div>
 
-  <!-- COURSE SCRIPT -->
+  <!-- SCRIPT -->
   <script type="module" src="js/course.js"></script>
 
 </body>

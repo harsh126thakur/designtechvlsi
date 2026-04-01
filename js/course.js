@@ -146,12 +146,25 @@ async function loadCourse(role) {
 
     const purchasedCourses = getPurchasedCoursesMap(currentUserData);
 
-    const hasAccess =
-      role === "admin" ||
-      role === "superadmin" ||
-      currentCourse.type === "free" ||
-      !!purchasedCourses[courseId];
+const purchasedData = purchasedCourses[courseId];
 
+let hasAccess =
+  role === "admin" ||
+  role === "superadmin" ||
+  currentCourse.type === "free" ||
+  !!purchasedData;
+
+// 🔐 VALIDITY CHECK
+if (hasAccess && purchasedData?.validTill) {
+  const expiry = new Date(purchasedData.validTill);
+  const now = new Date();
+
+  if (expiry < now) {
+    alert("Your course validity has expired");
+    window.location.href = "dashboard.html";
+    return;
+  }
+}
     if (!hasAccess) {
       alert("You do not have access to this course");
       window.location.href = "dashboard.html";
@@ -159,7 +172,16 @@ async function loadCourse(role) {
     }
 
     titleEl.innerText = currentCourse.title || "Course";
-    validityEl.innerText = `Validity: ${currentCourse.validityMonths || 12} Months`;
+    // 🔐 Show actual validity
+if (purchasedData?.validTill) {
+  const expiryDate = new Date(purchasedData.validTill);
+
+  validityEl.innerText =
+    "Valid Till: " + expiryDate.toLocaleDateString();
+} else {
+  validityEl.innerText =
+    `Validity: ${currentCourse.validityMonths || 12} Months`;
+}
 
     renderLectures(currentCourse.lectures || []);
     renderNotes(currentCourse);
@@ -184,7 +206,7 @@ function renderLectures(lectures) {
   let firstPlayableLecture = null;
 
   lectures.forEach((lec, index) => {
-    if (!lec?.link) return;
+  if (!lec?.link || typeof lec.link !== "string") return;
 
     const div = document.createElement("div");
     div.className = "lecture";
@@ -231,9 +253,16 @@ function playVideo(link) {
     return;
   }
 
-  player.src = embedUrl;
-}
+  const loader = document.getElementById("videoLoader");
 
+  // 🔐 Show loader
+  if (loader) loader.style.display = "block";
+
+  // Reset player
+player.src = "";
+setTimeout(() => {
+  player.src = embedUrl;
+}, 100);
 function setActive(el) {
   document.querySelectorAll(".lecture").forEach((item) => {
     item.classList.remove("active");
@@ -442,6 +471,14 @@ window.startAssessment = function(type, id) {
   window.location.href = `quiz.html?type=${type}&id=${id}`;
 };
 
-window.goBack = function() {
-  window.location.href = "dashboard.html";
-};
+// Back button handler
+const backBtn = document.getElementById("backBtn");
+if (backBtn) {
+  backBtn.addEventListener("click", () => {
+    window.location.href = "dashboard.html";
+  });
+}
+// 🚫 Disable right click (basic protection)
+document.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+});
