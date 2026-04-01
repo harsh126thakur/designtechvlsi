@@ -23,9 +23,9 @@ let selectedCouponCode = "";
 // ================= PARAMS =================
 const params = new URLSearchParams(window.location.search);
 
-// ✅ ONLY TRUST courseId
+// ✅ FIXED (no duplicate)
 const courseId = params.get("id") || "";
-const type = decodeURIComponent(params.get("type") || "Course Purchase");
+const type = decodeURIComponent(params.get("type") || "");
 const date = params.get("date") || "";
 const time = params.get("time") || "";
 
@@ -37,7 +37,7 @@ const phoneEl = document.getElementById("phone");
 const couponEl = document.getElementById("coupon");
 
 if (titleEl) {
-  titleEl.innerText = type;
+  titleEl.innerText = type || "Course Purchase";
 }
 
 // ================= AUTH STATE =================
@@ -93,7 +93,6 @@ function getFriendlyErrorMessage(error) {
 }
 
 // ================= APPLY COUPON =================
-// ✅ Only store coupon, DO NOT calculate price
 export async function applyCoupon() {
   const code = (couponEl?.value || "").trim().toUpperCase();
 
@@ -155,8 +154,9 @@ export async function payNow() {
       return;
     }
 
-    if (!courseId) {
-      alert("Invalid course");
+    // ✅ FIXED (support both)
+    if (!courseId && !type) {
+      alert("Invalid request");
       return;
     }
 
@@ -166,14 +166,15 @@ export async function payNow() {
     await fetch("https://razorpay-server-ok0j.onrender.com");
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // ✅ SECURE REQUEST (NO PRICE SENT)
+    // ✅ FIXED (send both)
     const orderResponse = await fetch("https://razorpay-server-ok0j.onrender.com/create-order", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        courseId: courseId,
+        courseId: courseId || null,
+        type: type || null,
         couponCode: selectedCouponCode || ""
       })
     });
@@ -188,7 +189,7 @@ export async function payNow() {
       throw new Error("Invalid order response");
     }
 
-    // ✅ TRUST BACKEND PRICE
+    // ✅ TRUST BACKEND
     price = order.amount / 100;
     originalPrice = price;
     updateAmountUI();
@@ -198,7 +199,7 @@ export async function payNow() {
       amount: order.amount,
       currency: "INR",
       name: "Design Tech VLSI",
-      description: type,
+      description: type || "Course Purchase",
       order_id: order.id,
       prefill: {
         name,
@@ -232,7 +233,6 @@ export async function payNow() {
 
           const purchasedCourses = normalizePurchasedCourses(userData.purchasedCourses);
 
-          // ✅ SAVE TRUSTED PRICE
           await addDoc(collection(db, "bookings"), {
             userId: currentUser.uid,
             name,
@@ -251,7 +251,7 @@ export async function payNow() {
             createdAt: serverTimestamp()
           });
 
-          // Save purchased course
+          // Course purchase logic (unchanged)
           if (courseId) {
             let validityMonths = 12;
 
@@ -262,7 +262,7 @@ export async function payNow() {
               if (courseSnap.exists()) {
                 validityMonths = Number(courseSnap.data().validityMonths || 12);
               }
-            } catch (err) {}
+            } catch {}
 
             purchasedCourses[courseId] = {
               purchasedAt: new Date().toISOString(),
@@ -280,7 +280,7 @@ export async function payNow() {
 
         } catch (err) {
           console.error(err);
-          alert("Payment saved failed. Contact support.");
+          alert("Payment save failed. Contact support.");
         }
       }
     };
