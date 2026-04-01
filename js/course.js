@@ -68,6 +68,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     await loadCourse(role);
+
   } catch (err) {
     console.error("Course auth error:", err);
     alert("Error loading course");
@@ -94,6 +95,7 @@ function getPurchasedCoursesMap(userData) {
   return {};
 }
 
+// 🔥 FIXED (Chrome autoplay issue)
 function getYoutubeEmbedUrl(link) {
   if (!link) return "";
 
@@ -108,7 +110,8 @@ function getYoutubeEmbedUrl(link) {
   }
 
   if (!videoId) return "";
-  return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+
+  return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
 }
 
 function escapeHtml(value) {
@@ -116,9 +119,7 @@ function escapeHtml(value) {
   return String(value)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+    .replace(/>/g, "&gt;");
 }
 
 // ================= LOAD COURSE =================
@@ -145,26 +146,26 @@ async function loadCourse(role) {
     }
 
     const purchasedCourses = getPurchasedCoursesMap(currentUserData);
+    const purchasedData = purchasedCourses[courseId];
 
-const purchasedData = purchasedCourses[courseId];
+    let hasAccess =
+      role === "admin" ||
+      role === "superadmin" ||
+      currentCourse.type === "free" ||
+      !!purchasedData;
 
-let hasAccess =
-  role === "admin" ||
-  role === "superadmin" ||
-  currentCourse.type === "free" ||
-  !!purchasedData;
+    // 🔐 VALIDITY CHECK
+    if (hasAccess && purchasedData?.validTill) {
+      const expiry = new Date(purchasedData.validTill);
+      const now = new Date();
 
-// 🔐 VALIDITY CHECK
-if (hasAccess && purchasedData?.validTill) {
-  const expiry = new Date(purchasedData.validTill);
-  const now = new Date();
+      if (expiry < now) {
+        alert("Your course validity has expired");
+        window.location.href = "dashboard.html";
+        return;
+      }
+    }
 
-  if (expiry < now) {
-    alert("Your course validity has expired");
-    window.location.href = "dashboard.html";
-    return;
-  }
-}
     if (!hasAccess) {
       alert("You do not have access to this course");
       window.location.href = "dashboard.html";
@@ -172,21 +173,21 @@ if (hasAccess && purchasedData?.validTill) {
     }
 
     titleEl.innerText = currentCourse.title || "Course";
-    // 🔐 Show actual validity
-if (purchasedData?.validTill) {
-  const expiryDate = new Date(purchasedData.validTill);
 
-  validityEl.innerText =
-    "Valid Till: " + expiryDate.toLocaleDateString();
-} else {
-  validityEl.innerText =
-    `Validity: ${currentCourse.validityMonths || 12} Months`;
-}
+    if (purchasedData?.validTill) {
+      const expiryDate = new Date(purchasedData.validTill);
+      validityEl.innerText =
+        "Valid Till: " + expiryDate.toLocaleDateString();
+    } else {
+      validityEl.innerText =
+        `Validity: ${currentCourse.validityMonths || 12} Months`;
+    }
 
     renderLectures(currentCourse.lectures || []);
     renderNotes(currentCourse);
     await loadCourseQuizzes();
     await loadCourseTestSeries();
+
   } catch (err) {
     console.error("Load course error:", err);
     alert("Error loading course");
@@ -206,7 +207,7 @@ function renderLectures(lectures) {
   let firstPlayableLecture = null;
 
   lectures.forEach((lec, index) => {
-  if (!lec?.link || typeof lec.link !== "string") return;
+    if (!lec?.link || typeof lec.link !== "string") return;
 
     const div = document.createElement("div");
     div.className = "lecture";
@@ -245,6 +246,7 @@ function renderLectures(lectures) {
   setActive(firstPlayableLecture);
 }
 
+// 🔥 FIXED VIDEO FUNCTION
 function playVideo(link) {
   const embedUrl = getYoutubeEmbedUrl(link);
 
@@ -255,14 +257,17 @@ function playVideo(link) {
 
   const loader = document.getElementById("videoLoader");
 
-  // 🔐 Show loader
   if (loader) loader.style.display = "block";
 
-  // Reset player
-player.src = "";
-setTimeout(() => {
-  player.src = embedUrl;
-}, 100);
+  player.src = "";
+
+  setTimeout(() => {
+    player.src = embedUrl;
+
+    if (loader) loader.style.display = "none";
+  }, 100);
+}
+
 function setActive(el) {
   document.querySelectorAll(".lecture").forEach((item) => {
     item.classList.remove("active");
@@ -276,7 +281,7 @@ function setActive(el) {
   });
 }
 
-// ================= MARK PROGRESS =================
+// ================= PROGRESS =================
 async function markLectureComplete(index) {
   try {
     if (!currentUser || !courseId) return;
@@ -328,157 +333,59 @@ function renderNotes(course) {
     "";
 
   if (notesArray.length > 0) {
-    notesSection.innerHTML = `
-      <div class="resource-list">
-        ${notesArray
-          .map(
-            (note, index) => `
-              <div class="resource-card">
-                <div>
-                  <h4>${escapeHtml(note.title || `Notes ${index + 1}`)}</h4>
-                  <p>Open study notes, PDFs, and extra resources.</p>
-                </div>
-                <a href="${escapeHtml(note.link)}" target="_blank" rel="noopener noreferrer" class="resource-btn">
-                  Open Notes
-                </a>
-              </div>
-            `
-          )
-          .join("")}
-      </div>
-    `;
+    notesSection.innerHTML = notesArray.map(note =>
+      `<a href="${escapeHtml(note.link)}" target="_blank">${escapeHtml(note.title)}</a>`
+    ).join("");
     return;
   }
 
   if (singleNotesLink) {
-    notesSection.innerHTML = `
-      <div class="resource-card">
-        <div>
-          <h4>Course Notes</h4>
-          <p>Access study notes, PDFs, and extra resources from Google Drive.</p>
-        </div>
-        <a href="${escapeHtml(singleNotesLink)}" target="_blank" rel="noopener noreferrer" class="resource-btn">
-          Open Notes
-        </a>
-      </div>
-    `;
+    notesSection.innerHTML =
+      `<a href="${escapeHtml(singleNotesLink)}" target="_blank">Open Notes</a>`;
     return;
   }
 
-  notesSection.innerHTML = `
-    <div class="empty-state">
-      <p>Notes are not available for this course yet.</p>
-    </div>
-  `;
+  notesSection.innerHTML = "<p>No notes available</p>";
 }
 
-// ================= QUIZZES =================
+// ================= QUIZ =================
 async function loadCourseQuizzes() {
-  try {
-    const q = query(collection(db, "quizzes"), where("courseId", "==", courseId));
-    const snap = await getDocs(q);
+  const q = query(collection(db, "quizzes"), where("courseId", "==", courseId));
+  const snap = await getDocs(q);
 
-    let html = "";
+  let html = "";
 
-    snap.forEach((docSnap) => {
-      const data = docSnap.data();
-      const id = docSnap.id;
+  snap.forEach(docSnap => {
+    const data = docSnap.data();
+    html += `<button onclick="startAssessment('quiz','${docSnap.id}')">${data.title}</button>`;
+  });
 
-      if (data.isActive === false) return;
-
-      html += `
-        <div class="assessment-card">
-          <div class="assessment-badge quiz-badge">Quiz</div>
-          <h4>${escapeHtml(data.title || "Practice Quiz")}</h4>
-          <p>${escapeHtml(data.description || "Practice your concepts with a chapter-wise quiz.")}</p>
-          <div class="assessment-meta">
-            <span>Questions: ${data.totalQuestions || 0}</span>
-            <span>Chapter: ${escapeHtml(data.chapterId || "General")}</span>
-          </div>
-          <button onclick="startAssessment('quiz','${id}')">Start Quiz</button>
-        </div>
-      `;
-    });
-
-    if (!html) {
-      html = `
-        <div class="empty-state">
-          <p>No quizzes available for this course yet.</p>
-        </div>
-      `;
-    }
-
-    courseQuizList.innerHTML = html;
-  } catch (err) {
-    console.error("Quiz load error:", err);
-    courseQuizList.innerHTML = `
-      <div class="empty-state">
-        <p>Error loading quizzes.</p>
-      </div>
-    `;
-  }
+  courseQuizList.innerHTML = html || "No quizzes";
 }
 
-// ================= TEST SERIES =================
+// ================= TEST =================
 async function loadCourseTestSeries() {
-  try {
-    const q = query(collection(db, "testseries"), where("courseId", "==", courseId));
-    const snap = await getDocs(q);
+  const q = query(collection(db, "testseries"), where("courseId", "==", courseId));
+  const snap = await getDocs(q);
 
-    let html = "";
+  let html = "";
 
-    snap.forEach((docSnap) => {
-      const data = docSnap.data();
-      const id = docSnap.id;
+  snap.forEach(docSnap => {
+    const data = docSnap.data();
+    html += `<button onclick="startAssessment('testseries','${docSnap.id}')">${data.title}</button>`;
+  });
 
-      if (data.isActive === false) return;
-
-      html += `
-        <div class="assessment-card">
-          <div class="assessment-badge test-badge">Test Series</div>
-          <h4>${escapeHtml(data.title || "Full Test")}</h4>
-          <p>${escapeHtml(data.description || "Attempt a full test series and evaluate your preparation.")}</p>
-          <div class="assessment-meta">
-            <span>${data.totalQuestions || 0} Questions</span>
-            <span>${data.durationMinutes || 0} Minutes</span>
-          </div>
-          <button onclick="startAssessment('testseries','${id}')">Attempt Test</button>
-        </div>
-      `;
-    });
-
-    if (!html) {
-      html = `
-        <div class="empty-state">
-          <p>No test series available for this course yet.</p>
-        </div>
-      `;
-    }
-
-    courseTestSeriesList.innerHTML = html;
-  } catch (err) {
-    console.error("Test series load error:", err);
-    courseTestSeriesList.innerHTML = `
-      <div class="empty-state">
-        <p>Error loading test series.</p>
-      </div>
-    `;
-  }
+  courseTestSeriesList.innerHTML = html || "No tests";
 }
 
-// ================= GLOBAL NAV =================
+// ================= NAV =================
 window.startAssessment = function(type, id) {
   window.location.href = `quiz.html?type=${type}&id=${id}`;
 };
 
-// Back button handler
-const backBtn = document.getElementById("backBtn");
-if (backBtn) {
-  backBtn.addEventListener("click", () => {
-    window.location.href = "dashboard.html";
-  });
-}
-// 🚫 Disable right click (basic protection)
-document.addEventListener("contextmenu", (e) => {
-  e.preventDefault();
+document.getElementById("backBtn")?.addEventListener("click", () => {
+  window.location.href = "dashboard.html";
 });
+
+// Basic protection
+document.addEventListener("contextmenu", (e) => e.preventDefault());
