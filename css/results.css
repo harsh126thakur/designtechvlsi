@@ -1,0 +1,33 @@
+body {
+  background: #0f172a;
+  color: #fff;
+  font-family: Poppins;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.card {
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.correct {
+  border-left: 5px solid green;
+}
+
+.wrong {
+  border-left: 5px solid red;
+}

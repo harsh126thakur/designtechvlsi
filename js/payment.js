@@ -23,14 +23,11 @@ let selectedCouponCode = "";
 // ================= PARAMS =================
 const params = new URLSearchParams(window.location.search);
 
+// ✅ ONLY TRUST courseId
 const courseId = params.get("id") || "";
-const rawPrice = Number(params.get("price")) || 0;
 const type = decodeURIComponent(params.get("type") || "Course Purchase");
 const date = params.get("date") || "";
 const time = params.get("time") || "";
-
-price = rawPrice;
-originalPrice = rawPrice;
 
 // ================= UI =================
 const titleEl = document.getElementById("title");
@@ -42,8 +39,6 @@ const couponEl = document.getElementById("coupon");
 if (titleEl) {
   titleEl.innerText = type;
 }
-
-updateAmountUI();
 
 // ================= AUTH STATE =================
 onAuthStateChanged(auth, async (user) => {
@@ -58,13 +53,8 @@ onAuthStateChanged(auth, async (user) => {
     if (userSnap.exists()) {
       const userData = userSnap.data();
 
-      if (nameEl && userData.name) {
-        nameEl.value = userData.name;
-      }
-
-      if (phoneEl && userData.phone) {
-        phoneEl.value = userData.phone;
-      }
+      if (nameEl && userData.name) nameEl.value = userData.name;
+      if (phoneEl && userData.phone) phoneEl.value = userData.phone;
     }
   } catch (error) {
     console.error("Error loading user profile:", error);
@@ -74,7 +64,7 @@ onAuthStateChanged(auth, async (user) => {
 // ================= HELPERS =================
 function updateAmountUI() {
   if (amountEl) {
-    amountEl.innerText = `₹${price}`;
+    amountEl.innerText = price ? `₹${price}` : "Calculating...";
   }
 }
 
@@ -84,22 +74,7 @@ function sanitizePhone(phone) {
 
 function normalizePurchasedCourses(existingValue) {
   if (!existingValue) return {};
-
-  if (Array.isArray(existingValue)) {
-    const mapped = {};
-    existingValue.forEach((id) => {
-      mapped[id] = {
-        purchasedAt: new Date().toISOString(),
-        legacy: true
-      };
-    });
-    return mapped;
-  }
-
-  if (typeof existingValue === "object") {
-    return existingValue;
-  }
-
+  if (typeof existingValue === "object") return existingValue;
   return {};
 }
 
@@ -111,15 +86,14 @@ function getValidityDateISO(months = 12) {
 
 function getFriendlyErrorMessage(error) {
   const message = error?.message || "";
-
   if (message.includes("Failed to fetch")) {
     return "Unable to connect to payment server. Please try again.";
   }
-
   return "Payment failed. Please try again.";
 }
 
 // ================= APPLY COUPON =================
+// ✅ Only store coupon, DO NOT calculate price
 export async function applyCoupon() {
   const code = (couponEl?.value || "").trim().toUpperCase();
 
@@ -143,30 +117,15 @@ export async function applyCoupon() {
     }
 
     const couponData = snap.data();
-    const discount = Number(couponData.discount || 0);
-    const isActive = couponData.isActive !== false;
 
-    if (!isActive) {
+    if (couponData.isActive === false) {
       alert("This coupon is inactive");
       return;
     }
 
-    if (discount <= 0) {
-      alert("Invalid coupon discount");
-      return;
-    }
-
-    let discountedPrice = originalPrice - (originalPrice * discount / 100);
-
-    if (discountedPrice < 10) {
-      discountedPrice = 10;
-    }
-
-    price = Math.round(discountedPrice);
     couponApplied = true;
     selectedCouponCode = code;
 
-    updateAmountUI();
     alert("Coupon applied successfully");
   } catch (error) {
     console.error("Coupon error:", error);
@@ -196,22 +155,27 @@ export async function payNow() {
       return;
     }
 
-    if (!price || price < 1) {
-      alert("Invalid payment amount");
+    if (!courseId) {
+      alert("Invalid course");
       return;
     }
 
+    updateAmountUI();
+
     // Wake server
     await fetch("https://razorpay-server-ok0j.onrender.com");
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // Create order
+    // ✅ SECURE REQUEST (NO PRICE SENT)
     const orderResponse = await fetch("https://razorpay-server-ok0j.onrender.com/create-order", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ amount: price })
+      body: JSON.stringify({
+        courseId: courseId,
+        couponCode: selectedCouponCode || ""
+      })
     });
 
     if (!orderResponse.ok) {
@@ -223,6 +187,11 @@ export async function payNow() {
     if (!order?.id || !order?.amount) {
       throw new Error("Invalid order response");
     }
+
+    // ✅ TRUST BACKEND PRICE
+    price = order.amount / 100;
+    originalPrice = price;
+    updateAmountUI();
 
     const options = {
       key: "rzp_live_ST5Uj4sGNxUAGJ",
@@ -239,6 +208,7 @@ export async function payNow() {
       theme: {
         color: "#38bdf8"
       },
+
       handler: async function (response) {
         try {
           const verifyResponse = await fetch("https://razorpay-server-ok0j.onrender.com/verify-payment", {
@@ -262,7 +232,7 @@ export async function payNow() {
 
           const purchasedCourses = normalizePurchasedCourses(userData.purchasedCourses);
 
-          // Save booking/payment record
+          // ✅ SAVE TRUSTED PRICE
           await addDoc(collection(db, "bookings"), {
             userId: currentUser.uid,
             name,
@@ -271,8 +241,8 @@ export async function payNow() {
             type,
             date,
             time,
-            price,
-            originalPrice,
+            price: order.amount / 100,
+            originalPrice: order.amount / 100,
             couponCode: selectedCouponCode || "",
             courseId: courseId || "",
             paymentId: response.razorpay_payment_id || "",
@@ -281,15 +251,7 @@ export async function payNow() {
             createdAt: serverTimestamp()
           });
 
-          // Save user basic profile
-          const mergedUserData = {
-            name,
-            phone,
-            email: currentUser.email || userData.email || "",
-            updatedAt: serverTimestamp()
-          };
-
-          // Save purchased course access if course payment
+          // Save purchased course
           if (courseId) {
             let validityMonths = 12;
 
@@ -298,45 +260,36 @@ export async function payNow() {
               const courseSnap = await getDoc(courseRef);
 
               if (courseSnap.exists()) {
-                const courseData = courseSnap.data();
-                validityMonths = Number(courseData.validityMonths || 12);
+                validityMonths = Number(courseSnap.data().validityMonths || 12);
               }
-            } catch (courseError) {
-              console.error("Error loading course validity:", courseError);
-            }
+            } catch (err) {}
 
             purchasedCourses[courseId] = {
               purchasedAt: new Date().toISOString(),
               validTill: getValidityDateISO(validityMonths),
-              pricePaid: price,
+              pricePaid: order.amount / 100,
               couponCode: selectedCouponCode || "",
               paymentId: response.razorpay_payment_id || ""
             };
-
-            mergedUserData.purchasedCourses = purchasedCourses;
           }
 
-          await setDoc(userRef, mergedUserData, { merge: true });
+          await setDoc(userRef, { purchasedCourses }, { merge: true });
 
           alert("Payment successful");
           window.location.href = "success.html";
-        } catch (handlerError) {
-          console.error("Post-payment error:", handlerError);
-          alert("Payment was successful, but saving data failed. Please contact support.");
-        }
-      },
-      modal: {
-        ondismiss: function () {
-          console.log("Payment popup closed");
+
+        } catch (err) {
+          console.error(err);
+          alert("Payment saved failed. Contact support.");
         }
       }
     };
 
     const rzp = new Razorpay(options);
     rzp.open();
+
   } catch (error) {
     console.error("Payment error:", error);
     alert(getFriendlyErrorMessage(error));
-    throw error;
   }
 }
