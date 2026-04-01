@@ -95,7 +95,7 @@ function getPurchasedCoursesMap(userData) {
   return {};
 }
 
-// 🔥 FIXED (Chrome autoplay issue)
+// 🔥 FIXED YOUTUBE URL
 function getYoutubeEmbedUrl(link) {
   if (!link) return "";
 
@@ -156,10 +156,7 @@ async function loadCourse(role) {
 
     // 🔐 VALIDITY CHECK
     if (hasAccess && purchasedData?.validTill) {
-      const expiry = new Date(purchasedData.validTill);
-      const now = new Date();
-
-      if (expiry < now) {
+      if (new Date(purchasedData.validTill) < new Date()) {
         alert("Your course validity has expired");
         window.location.href = "dashboard.html";
         return;
@@ -175,9 +172,9 @@ async function loadCourse(role) {
     titleEl.innerText = currentCourse.title || "Course";
 
     if (purchasedData?.validTill) {
-      const expiryDate = new Date(purchasedData.validTill);
       validityEl.innerText =
-        "Valid Till: " + expiryDate.toLocaleDateString();
+        "Valid Till: " +
+        new Date(purchasedData.validTill).toLocaleDateString();
     } else {
       validityEl.innerText =
         `Validity: ${currentCourse.validityMonths || 12} Months`;
@@ -195,7 +192,7 @@ async function loadCourse(role) {
   }
 }
 
-// ================= LECTURES =================
+// ================= LECTURES (🔥 FIXED) =================
 function renderLectures(lectures) {
   playlistEl.innerHTML = "";
 
@@ -204,15 +201,13 @@ function renderLectures(lectures) {
     return;
   }
 
-  let firstPlayableLecture = null;
+  let firstLink = null;
 
   lectures.forEach((lec, index) => {
     if (!lec?.link || typeof lec.link !== "string") return;
 
     const div = document.createElement("div");
     div.className = "lecture";
-    div.dataset.link = lec.link;
-    div.dataset.index = index;
 
     div.innerHTML = `
       <div class="lecture-top">
@@ -232,21 +227,17 @@ function renderLectures(lectures) {
 
     playlistEl.appendChild(div);
 
-    if (!firstPlayableLecture) {
-      firstPlayableLecture = div;
-    }
+    if (!firstLink) firstLink = lec.link;
   });
 
-  if (!firstPlayableLecture) {
+  if (firstLink) {
+    playVideo(firstLink);
+  } else {
     playlistEl.innerHTML = "<p>No valid lecture links available</p>";
-    return;
   }
-
-  playVideo(firstPlayableLecture.dataset.link);
-  setActive(firstPlayableLecture);
 }
 
-// 🔥 FIXED VIDEO FUNCTION
+// ================= VIDEO =================
 function playVideo(link) {
   const embedUrl = getYoutubeEmbedUrl(link);
 
@@ -302,19 +293,16 @@ async function markLectureComplete(index) {
 
     completed.push(index);
 
-    await setDoc(
-      userRef,
-      {
-        progress: {
-          ...progress,
-          [courseId]: {
-            ...courseProgress,
-            completed
-          }
+    await setDoc(userRef, {
+      progress: {
+        ...progress,
+        [courseId]: {
+          ...courseProgress,
+          completed
         }
-      },
-      { merge: true }
-    );
+      }
+    }, { merge: true });
+
   } catch (err) {
     console.error("Progress update error:", err);
   }
@@ -322,30 +310,15 @@ async function markLectureComplete(index) {
 
 // ================= NOTES =================
 function renderNotes(course) {
-  const notesArray = Array.isArray(course.notes)
-    ? course.notes.filter((note) => note && note.link)
-    : [];
+  const link = course.notesLink || "";
 
-  const singleNotesLink =
-    course.notesLink ||
-    course.notesUrl ||
-    course.driveLink ||
-    "";
-
-  if (notesArray.length > 0) {
-    notesSection.innerHTML = notesArray.map(note =>
-      `<a href="${escapeHtml(note.link)}" target="_blank">${escapeHtml(note.title)}</a>`
-    ).join("");
+  if (!link) {
+    notesSection.innerHTML = "<p>No notes</p>";
     return;
   }
 
-  if (singleNotesLink) {
-    notesSection.innerHTML =
-      `<a href="${escapeHtml(singleNotesLink)}" target="_blank">Open Notes</a>`;
-    return;
-  }
-
-  notesSection.innerHTML = "<p>No notes available</p>";
+  notesSection.innerHTML =
+    `<a href="${link}" target="_blank">Open Notes</a>`;
 }
 
 // ================= QUIZ =================
