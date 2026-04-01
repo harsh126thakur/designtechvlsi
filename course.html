@@ -28,7 +28,9 @@
       <h2 id="courseTitle">Loading...</h2>
       <p class="course-validity" id="courseValidity">Validity: 12 Months</p>
     </div>
-    <button onclick="goBack()">⬅ Back</button>
+
+    <!-- ✅ FIXED BACK BUTTON -->
+    <button id="backBtn">⬅ Back</button>
   </div>
 
   <!-- MAIN -->
@@ -36,17 +38,29 @@
 
     <!-- LEFT -->
     <div class="player-section">
+
+      <!-- PLAYER -->
       <div class="player">
+
+        <!-- ✅ VIDEO LOADER -->
+        <div id="videoLoader" style="text-align:center; padding:20px;">
+          Loading video...
+        </div>
+
+        <!-- ✅ VIDEO PLAYER -->
         <iframe
           id="videoPlayer"
           src=""
+          style="display:none;"
           title="Course Video Player"
           frameborder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen>
         </iframe>
-      </div>
 
+      </div> <!-- ✅ FIXED CLOSING DIV -->
+
+      <!-- NOTES -->
       <div class="content-card">
         <div class="section-head">
           <h3>Lecture Resources</h3>
@@ -55,6 +69,7 @@
         <div id="notesSection"></div>
       </div>
 
+      <!-- QUIZZES -->
       <div class="content-card">
         <div class="section-head">
           <h3>Practice Quizzes</h3>
@@ -63,6 +78,7 @@
         <div id="courseQuizList"></div>
       </div>
 
+      <!-- TEST SERIES -->
       <div class="content-card">
         <div class="section-head">
           <h3>Test Series</h3>
@@ -70,6 +86,7 @@
         </div>
         <div id="courseTestSeriesList"></div>
       </div>
+
     </div>
 
     <!-- RIGHT -->
@@ -79,6 +96,7 @@
           <h3>Course Lectures</h3>
           <p>Select a lecture to continue learning</p>
         </div>
+
         <div class="playlist" id="playlist">
           <p>Loading lectures...</p>
         </div>
@@ -87,13 +105,8 @@
 
   </div>
 
+  <!-- COURSE SCRIPT -->
   <script type="module" src="js/course.js"></script>
-
-  <script>
-    function goBack(){
-      window.location.href = "dashboard.html";
-    }
-  </script>
 
 </body>
 </html>
