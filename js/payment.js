@@ -131,7 +131,39 @@ export async function applyCoupon() {
     couponApplied = true;
     selectedCouponCode = code;
 
-    alert("Coupon applied successfully");
+   alert("Coupon applied successfully");
+
+async function refreshPriceFromBackend() {
+  try {
+    const response = await fetch("https://razorpay-server-ok0j.onrender.com/create-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        courseId: courseId || null,
+        type: type || null,
+        couponCode: selectedCouponCode || ""
+      })
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    if (!data?.amount) return;
+
+    // 🔥 UPDATE PRICE FROM BACKEND
+    price = data.amount / 100;
+
+    updateAmountUI();
+
+  } catch (err) {
+    console.error("Coupon price update error:", err);
+  }
+}
+// 🔥 ADD THIS LINE
+await refreshPriceFromBackend();
   } catch (error) {
     console.error("Coupon error:", error);
     alert("Error applying coupon");
