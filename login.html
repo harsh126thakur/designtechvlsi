@@ -42,10 +42,6 @@
       signOut
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
-      collection,
-      query,
-      where,
-      getDocs,
       doc,
       getDoc,
       serverTimestamp,
@@ -77,41 +73,11 @@
 
         console.log("AUTH SUCCESS:", user.uid, user.email);
 
-        const adminQuery = query(collection(db, "admins"), where("email", "==", email));
-        const adminSnap = await getDocs(adminQuery);
-
-        console.log("ADMIN QUERY SIZE:", adminSnap.size);
-
-        if (!adminSnap.empty) {
-          const adminData = adminSnap.docs[0].data();
-          const adminRole = String(adminData.role || "").toLowerCase();
-
-          console.log("ADMIN DATA:", adminData);
-
-          if (adminData.isActive === false) {
-            await signOut(auth);
-            errorBox.innerText = "Admin account is inactive";
-            loginBtn.disabled = false;
-            loginBtn.innerText = "Login";
-            return;
-          }
-
-          if (adminRole === "superadmin") {
-            window.location.href = "superadmin.html";
-            return;
-          }
-
-          if (adminRole === "admin") {
-            window.location.href = "admin.html";
-            return;
-          }
-        }
-
+        // ================= SECURE USER FETCH =================
         const userRef = doc(db, "users", user.uid);
         const userSnap = await getDoc(userRef);
 
-        console.log("USER DOC EXISTS:", userSnap.exists());
-
+        // ================= NEW USER =================
         if (!userSnap.exists()) {
           await setDoc(userRef, {
             name: user.displayName || "",
@@ -130,6 +96,7 @@
         const userData = userSnap.data();
         console.log("USER DATA:", userData);
 
+        // ================= INACTIVE USER =================
         if (userData.isActive === false) {
           await signOut(auth);
           errorBox.innerText = "Your account is inactive";
@@ -138,11 +105,13 @@
           return;
         }
 
+        // ================= UPDATE LOGIN TIME =================
         await setDoc(userRef, {
           lastLoginAt: serverTimestamp(),
           updatedAt: serverTimestamp()
         }, { merge: true });
 
+        // ================= 🔐 SECURE ROLE CHECK =================
         const role = String(userData.role || "student").toLowerCase();
 
         if (role === "superadmin") {
