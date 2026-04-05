@@ -556,7 +556,7 @@ return;
 btn.innerText = "Processing...";
 btn.disabled = true;
 
-const url = `payment.html?type=${encodeURIComponent(selectedType)}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`;
+const url = `payment.html?type=${encodeURIComponent(selectedType)}&price=${selectedPrice}&date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`;
 window.location.href = url;
 }
 </script>
