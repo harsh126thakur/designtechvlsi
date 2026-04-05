@@ -29,6 +29,12 @@ const type = decodeURIComponent(params.get("type") || "");
 const date = params.get("date") || "";
 const time = params.get("time") || "";
 
+//ADDED (price is optional, backend will calculate)
+const frontendPrice = parseInt(params.get("price")) || 0;
+
+price = frontendPrice;
+originalPrice = frontendPrice;
+
 // ================= UI =================
 const titleEl = document.getElementById("title");
 const amountEl = document.getElementById("amount");
@@ -39,7 +45,7 @@ const couponEl = document.getElementById("coupon");
 if (titleEl) {
   titleEl.innerText = type || "Course Purchase";
 }
-
+updateAmountUI();
 // ================= AUTH STATE =================
 onAuthStateChanged(auth, async (user) => {
   currentUser = user || null;
@@ -64,7 +70,7 @@ onAuthStateChanged(auth, async (user) => {
 // ================= HELPERS =================
 function updateAmountUI() {
   if (amountEl) {
-    amountEl.innerText = price ? `₹${price}` : "Calculating...";
+    amountEl.innerText = `₹${price || 0}`;
   }
 }
 
