@@ -23,13 +23,12 @@ let selectedCouponCode = "";
 // ================= PARAMS =================
 const params = new URLSearchParams(window.location.search);
 
-// ✅ FIXED (no duplicate)
 const courseId = params.get("id") || "";
 const type = decodeURIComponent(params.get("type") || "");
 const date = params.get("date") || "";
 const time = params.get("time") || "";
 
-//ADDED (price is optional, backend will calculate)
+// Optional frontend price
 const frontendPrice = parseInt(params.get("price")) || 0;
 
 price = frontendPrice;
@@ -45,8 +44,10 @@ const couponEl = document.getElementById("coupon");
 if (titleEl) {
   titleEl.innerText = type || "Course Purchase";
 }
+
 updateAmountUI();
-// ================= AUTH STATE =================
+
+// ================= AUTH =================
 onAuthStateChanged(auth, async (user) => {
   currentUser = user || null;
 
@@ -131,8 +132,18 @@ export async function applyCoupon() {
     couponApplied = true;
     selectedCouponCode = code;
 
-   alert("Coupon applied successfully");
+    alert("Coupon applied successfully");
 
+    // 🔥 Refresh price from backend
+    await refreshPriceFromBackend();
+
+  } catch (error) {
+    console.error("Coupon error:", error);
+    alert("Error applying coupon");
+  }
+}
+
+// ================= REFRESH PRICE =================
 async function refreshPriceFromBackend() {
   try {
     const response = await fetch("https://razorpay-server-ok0j.onrender.com/create-order", {
@@ -153,20 +164,12 @@ async function refreshPriceFromBackend() {
 
     if (!data?.amount) return;
 
-    // 🔥 UPDATE PRICE FROM BACKEND
     price = data.amount / 100;
 
     updateAmountUI();
 
   } catch (err) {
     console.error("Coupon price update error:", err);
-  }
-}
-// 🔥 ADD THIS LINE
-await refreshPriceFromBackend();
-  } catch (error) {
-    console.error("Coupon error:", error);
-    alert("Error applying coupon");
   }
 }
 
@@ -192,7 +195,6 @@ export async function payNow() {
       return;
     }
 
-    // ✅ FIXED (support both)
     if (!courseId && !type) {
       alert("Invalid request");
       return;
@@ -204,7 +206,6 @@ export async function payNow() {
     await fetch("https://razorpay-server-ok0j.onrender.com");
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // ✅ FIXED (send both)
     const orderResponse = await fetch("https://razorpay-server-ok0j.onrender.com/create-order", {
       method: "POST",
       headers: {
@@ -227,7 +228,7 @@ export async function payNow() {
       throw new Error("Invalid order response");
     }
 
-    // ✅ TRUST BACKEND
+    // ✅ Backend price (final)
     price = order.amount / 100;
     originalPrice = price;
     updateAmountUI();
@@ -289,7 +290,6 @@ export async function payNow() {
             createdAt: serverTimestamp()
           });
 
-          // Course purchase logic (unchanged)
           if (courseId) {
             let validityMonths = 12;
 
